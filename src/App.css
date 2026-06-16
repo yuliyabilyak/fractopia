@@ -1,0 +1,193 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #f5f3ff;
+  color: #222;
+}
+
+#root {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ---- Pages ---- */
+.home-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
+  gap: 16px;
+}
+
+.home-page h1 {
+  font-size: 2.8rem;
+  margin: 0;
+  color: #3b28cc;
+}
+
+.home-page p {
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.fractions-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 80px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.center-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
+  gap: 16px;
+  text-align: center;
+}
+
+/* ---- Progress bar ---- */
+.progress-bar-wrapper {
+  width: 100%;
+  height: 10px;
+  background: #ddd;
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6c63ff, #a78bfa);
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.exercise-counter {
+  font-size: 0.85rem;
+  color: #888;
+  margin-bottom: 24px;
+}
+
+/* ---- Exercise card ---- */
+.exercise-card {
+  background: white;
+  border-radius: 20px;
+  padding: 28px 24px 24px;
+  box-shadow: 0 4px 24px rgba(108, 99, 255, 0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.exercise-prompt {
+  font-size: 1.25rem;
+  text-align: center;
+  color: #333;
+  margin: 0;
+}
+
+/* ---- Buttons ---- */
+.btn-start {
+  background: #6c63ff;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 14px 36px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-start:hover {
+  background: #5548e0;
+}
+
+.btn-check {
+  background: #6c63ff;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 10px 28px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-check:hover {
+  background: #5548e0;
+}
+
+.compare-btns {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-choice {
+  background: #f0eeff;
+  color: #3b28cc;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 10px 18px;
+  border: 2px solid #c4beff;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn-choice:hover {
+  background: #ddd9ff;
+  border-color: #6c63ff;
+}
+
+/* ---- Feedback banner ---- */
+.feedback-banner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 16px;
+}
+
+.feedback-banner.correct {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.feedback-banner.wrong {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.feedback-banner button {
+  background: white;
+  border: 2px solid currentColor;
+  color: inherit;
+  font-weight: 700;
+  padding: 8px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
