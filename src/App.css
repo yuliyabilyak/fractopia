@@ -17,6 +17,29 @@ body {
 }
 
 /* ---- Pages ---- */
+/* ---- Language switcher ---- */
+.lang-switcher {
+  display: flex;
+  gap: 8px;
+}
+
+.lang-btn {
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.lang-btn.active {
+  border-color: #6c63ff;
+  background: #f0eeff;
+  color: #3b28cc;
+  font-weight: 700;
+}
+
 .home-page {
   display: flex;
   flex-direction: column;

@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { useAuth } from '../hooks/useAuth'
+import { useLang } from '../i18n/LangContext'
 import { useProgress } from '../hooks/useProgress'
 import FractionBar from '../components/FractionBar'
 import PizzaFraction from '../components/PizzaFraction'
@@ -135,6 +136,7 @@ export default function Fractions() {
   const [score, setScore] = useState(0)
   const { user } = useAuth()
   const { saveResult } = useProgress(user?.uid)
+  const { t } = useLang()
 
   const current = session[index]
 
@@ -162,10 +164,10 @@ export default function Fractions() {
   if (index >= session.length) {
     return (
       <div className="center-page">
-        <h2>All done! 🎉</h2>
-        <p>You got <strong>{score}/{session.length}</strong> correct.</p>
+        <h2>{t('doneTitle')}</h2>
+        <p dangerouslySetInnerHTML={{ __html: t('doneScore', { score, total: session.length }).replace(/(\d+\/\d+)/, '<strong>$1</strong>') }} />
         <button className="btn-start" onClick={() => window.location.reload()}>
-          Play Again
+          {t('playAgain')}
         </button>
       </div>
     )
@@ -176,7 +178,7 @@ export default function Fractions() {
       <div className="progress-bar-wrapper">
         <div className="progress-bar-fill" style={{ width: `${(index / session.length) * 100}%` }} />
       </div>
-      <p className="exercise-counter">Exercise {index + 1} / {session.length} · Score: {score}</p>
+      <p className="exercise-counter">{t('counter', { i: index + 1, total: session.length, score })}</p>
 
       {current.type === 'bar' && feedback === null && (
         <FractionBar key={index} denominator={current.denominator} targetNumerator={current.numerator} onAnswer={handleAnswer} />

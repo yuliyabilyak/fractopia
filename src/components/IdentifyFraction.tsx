@@ -1,5 +1,6 @@
 import { Stage, Layer, Rect, Arc, Circle } from 'react-konva'
 import type { Fraction } from '../types'
+import { useLang } from '../i18n/LangContext'
 
 interface Props {
   shape: 'bar' | 'pizza' | 'grid'
@@ -83,9 +84,10 @@ function StaticGrid({ cols, rows, numerator }: { cols: number; rows: number; num
 }
 
 export default function IdentifyFraction({ shape, denominator, numerator, cols, rows, choices, correctIndex, onAnswer }: Props) {
+  const { t } = useLang()
   return (
     <div className="exercise-card">
-      <p className="exercise-prompt">What fraction is shaded?</p>
+      <p className="exercise-prompt">{t('identify')}</p>
       {shape === 'bar' && <StaticBar denominator={denominator} numerator={numerator} />}
       {shape === 'pizza' && <StaticPizza denominator={denominator} numerator={numerator} />}
       {shape === 'grid' && cols && rows && <StaticGrid cols={cols} rows={rows} numerator={numerator} />}

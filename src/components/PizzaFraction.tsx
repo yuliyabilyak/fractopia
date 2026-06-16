@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Stage, Layer, Arc, Circle } from 'react-konva'
+import { useLang } from '../i18n/LangContext'
 
 interface Props {
   denominator: number
@@ -17,6 +18,7 @@ const STROKE_COLOR = '#E06B1A'
 
 export default function PizzaFraction({ denominator, targetNumerator, onAnswer }: Props) {
   const [selected, setSelected] = useState<Set<number>>(new Set())
+  const { t } = useLang()
 
   const sliceDeg = 360 / denominator
 
@@ -34,9 +36,9 @@ export default function PizzaFraction({ denominator, targetNumerator, onAnswer }
 
   return (
     <div className="exercise-card">
-      <p className="exercise-prompt">
-        Tap <strong>{targetNumerator}/{denominator}</strong> slices of the pizza
-      </p>
+      <p className="exercise-prompt"
+        dangerouslySetInnerHTML={{ __html: t('tapPizza', { n: targetNumerator, d: denominator }).replace(/(\d+\/\d+)/, '<strong>$1</strong>') }}
+      />
       <Stage width={SIZE} height={SIZE}>
         <Layer>
           <Circle x={CX} y={CY} radius={RADIUS + 2} fill={STROKE_COLOR} />
@@ -62,7 +64,7 @@ export default function PizzaFraction({ denominator, targetNumerator, onAnswer }
           })}
         </Layer>
       </Stage>
-      <button className="btn-check" onClick={check}>Check</button>
+      <button className="btn-check" onClick={check}>{t('check')}</button>
     </div>
   )
 }

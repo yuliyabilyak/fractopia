@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Stage, Layer, Rect, Text, Group, Line } from 'react-konva'
+import { useLang } from '../i18n/LangContext'
 
 interface Props {
   denominator: number
@@ -15,6 +16,7 @@ const STROKE_COLOR = '#9B97D4'
 
 export default function FractionBar({ denominator, targetNumerator, onAnswer }: Props) {
   const [selected, setSelected] = useState<Set<number>>(new Set())
+  const { t } = useLang()
 
   const sliceWidth = BAR_WIDTH / denominator
 
@@ -32,9 +34,9 @@ export default function FractionBar({ denominator, targetNumerator, onAnswer }: 
 
   return (
     <div className="exercise-card">
-      <p className="exercise-prompt">
-        Shade <strong>{targetNumerator}/{denominator}</strong> of the bar
-      </p>
+      <p className="exercise-prompt"
+        dangerouslySetInnerHTML={{ __html: t('shadeBar', { n: targetNumerator, d: denominator }).replace(/(\d+\/\d+)/, '<strong>$1</strong>') }}
+      />
       <Stage width={BAR_WIDTH} height={BAR_HEIGHT + 24}>
         <Layer>
           {Array.from({ length: denominator }, (_, i) => (
@@ -64,7 +66,7 @@ export default function FractionBar({ denominator, targetNumerator, onAnswer }: 
           <Line points={[0, BAR_HEIGHT + 20 + 10, BAR_WIDTH, BAR_HEIGHT + 20 + 10]} stroke="transparent" />
         </Layer>
       </Stage>
-      <button className="btn-check" onClick={check}>Check</button>
+      <button className="btn-check" onClick={check}>{t('check')}</button>
     </div>
   )
 }

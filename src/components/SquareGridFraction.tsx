@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Stage, Layer, Rect } from 'react-konva'
+import { useLang } from '../i18n/LangContext'
 
 interface Props {
   cols: number
@@ -17,6 +18,7 @@ const STROKE_COLOR = '#d97706'
 export default function SquareGridFraction({ cols, rows, targetNumerator, onAnswer }: Props) {
   const [selected, setSelected] = useState<Set<number>>(new Set())
 
+  const { t } = useLang()
   const denominator = cols * rows
   const cellW = (GRID_SIZE - PAD * 2) / cols
   const cellH = (GRID_SIZE - PAD * 2) / rows
@@ -33,9 +35,9 @@ export default function SquareGridFraction({ cols, rows, targetNumerator, onAnsw
 
   return (
     <div className="exercise-card">
-      <p className="exercise-prompt">
-        Tap <strong>{targetNumerator}/{denominator}</strong> squares
-      </p>
+      <p className="exercise-prompt"
+        dangerouslySetInnerHTML={{ __html: t('tapGrid', { n: targetNumerator, d: denominator }).replace(/(\d+\/\d+)/, '<strong>$1</strong>') }}
+      />
       <Stage width={GRID_SIZE} height={GRID_SIZE}>
         <Layer>
           {Array.from({ length: denominator }, (_, i) => {
@@ -60,7 +62,7 @@ export default function SquareGridFraction({ cols, rows, targetNumerator, onAnsw
           })}
         </Layer>
       </Stage>
-      <button className="btn-check" onClick={check}>Check</button>
+      <button className="btn-check" onClick={check}>{t('check')}</button>
     </div>
   )
 }

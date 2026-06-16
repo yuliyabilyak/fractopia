@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Stage, Layer, Line, RegularPolygon } from 'react-konva'
+import { useLang } from '../i18n/LangContext'
 
 interface Props {
   targetNumerator: number
@@ -22,6 +23,7 @@ function hexVertex(i: number) {
 
 export default function HexagonFraction({ targetNumerator, onAnswer }: Props) {
   const [selected, setSelected] = useState<Set<number>>(new Set())
+  const { t } = useLang()
 
   const toggle = (i: number) => {
     setSelected((prev) => {
@@ -35,9 +37,9 @@ export default function HexagonFraction({ targetNumerator, onAnswer }: Props) {
 
   return (
     <div className="exercise-card">
-      <p className="exercise-prompt">
-        Tap <strong>{targetNumerator}/{DENOMINATOR}</strong> parts of the hexagon
-      </p>
+      <p className="exercise-prompt"
+        dangerouslySetInnerHTML={{ __html: t('tapHexagon', { n: targetNumerator, d: DENOMINATOR }).replace(/(\d+\/\d+)/, '<strong>$1</strong>') }}
+      />
       <Stage width={SIZE} height={SIZE}>
         <Layer>
           <RegularPolygon
@@ -64,7 +66,7 @@ export default function HexagonFraction({ targetNumerator, onAnswer }: Props) {
           })}
         </Layer>
       </Stage>
-      <button className="btn-check" onClick={check}>Check</button>
+      <button className="btn-check" onClick={check}>{t('check')}</button>
     </div>
   )
 }

@@ -1,9 +1,12 @@
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import { useLang } from '../i18n/LangContext'
+import LangSwitcher from '../components/LangSwitcher'
 
 export default function Home() {
   const { user, loading, loginAnonymously } = useAuth()
   const navigate = useNavigate()
+  const { t } = useLang()
 
   const start = async () => {
     if (!user) await loginAnonymously()
@@ -14,10 +17,11 @@ export default function Home() {
 
   return (
     <div className="home-page">
-      <h1>🍕 Math with Fractions</h1>
-      <p>Learn fractions with pizzas and bars!</p>
+      <LangSwitcher />
+      <h1>{t('homeTitle')}</h1>
+      <p>{t('homeSubtitle')}</p>
       <button className="btn-start" onClick={start}>
-        Start Learning
+        {t('start')}
       </button>
     </div>
   )
