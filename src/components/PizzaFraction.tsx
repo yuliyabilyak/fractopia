@@ -55,6 +55,7 @@ export default function PizzaFraction({ denominator, targetNumerator, onAnswer }
                 stroke={STROKE_COLOR}
                 strokeWidth={2}
                 onClick={() => toggle(i)}
+                onTap={() => toggle(i)}
                 style={{ cursor: 'pointer' }}
               />
             )

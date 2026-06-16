@@ -38,7 +38,7 @@ export default function FractionBar({ denominator, targetNumerator, onAnswer }: 
       <Stage width={BAR_WIDTH} height={BAR_HEIGHT + 24}>
         <Layer>
           {Array.from({ length: denominator }, (_, i) => (
-            <Group key={i} x={i * sliceWidth} y={20} onClick={() => toggle(i)}>
+            <Group key={i} x={i * sliceWidth} y={20} onClick={() => toggle(i)} onTap={() => toggle(i)}>
               <Rect
                 width={sliceWidth}
                 height={BAR_HEIGHT}

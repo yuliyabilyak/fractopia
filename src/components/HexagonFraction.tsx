@@ -57,6 +57,7 @@ export default function HexagonFraction({ targetNumerator, onAnswer }: Props) {
                 stroke={STROKE_COLOR}
                 strokeWidth={2}
                 onClick={() => toggle(i)}
+                onTap={() => toggle(i)}
                 style={{ cursor: 'pointer' }}
               />
             )

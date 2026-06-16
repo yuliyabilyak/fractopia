@@ -53,6 +53,7 @@ export default function SquareGridFraction({ cols, rows, targetNumerator, onAnsw
                 strokeWidth={2}
                 cornerRadius={4}
                 onClick={() => toggle(i)}
+                onTap={() => toggle(i)}
                 style={{ cursor: 'pointer' }}
               />
             )
