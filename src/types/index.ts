@@ -4,7 +4,7 @@ export interface Fraction {
 }
 
 export interface ExerciseResult {
-  exerciseType: 'fraction-bar' | 'pizza' | 'compare' | 'hexagon' | 'grid'
+  exerciseType: 'fraction-bar' | 'pizza' | 'compare' | 'hexagon' | 'grid' | 'identify'
   correct: boolean
   timestamp: number
   question: string
