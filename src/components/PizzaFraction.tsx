@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Stage, Layer, Arc, Text, Circle } from 'react-konva'
+import { Stage, Layer, Arc, Circle } from 'react-konva'
 
 interface Props {
   denominator: number

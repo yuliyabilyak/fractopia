@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Stage, Layer, Line, Text, RegularPolygon } from 'react-konva'
+import { Stage, Layer, Line, RegularPolygon } from 'react-konva'
 
 interface Props {
   targetNumerator: number
