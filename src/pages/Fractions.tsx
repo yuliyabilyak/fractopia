@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import { useLang } from '../i18n/LangContext'
 import { useProgress } from '../hooks/useProgress'
@@ -130,7 +130,8 @@ function toExerciseType(type: ExerciseType): ExerciseResult['exerciseType'] {
 }
 
 export default function Fractions() {
-  const [session] = useState<Exercise[]>(() => shuffle(ALL_EXERCISES).slice(0, SESSION_SIZE))
+  const [sessionKey, setSessionKey] = useState(0)
+  const session = useMemo(() => shuffle(ALL_EXERCISES).slice(0, SESSION_SIZE), [sessionKey])
   const [index, setIndex] = useState(0)
   const [feedback, setFeedback] = useState<boolean | null>(null)
   const [score, setScore] = useState(0)
@@ -166,7 +167,7 @@ export default function Fractions() {
       <div className="center-page">
         <h2>{t('doneTitle')}</h2>
         <p dangerouslySetInnerHTML={{ __html: t('doneScore', { score, total: session.length }).replace(/(\d+\/\d+)/, '<strong>$1</strong>') }} />
-        <button className="btn-start" onClick={() => window.location.reload()}>
+        <button className="btn-start" onClick={() => { setSessionKey(k => k + 1); setIndex(0); setScore(0); setFeedback(null) }}>
           {t('playAgain')}
         </button>
       </div>
