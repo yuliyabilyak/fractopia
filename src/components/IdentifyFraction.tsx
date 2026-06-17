@@ -1,6 +1,7 @@
 import { Stage, Layer, Rect, Arc, Circle } from 'react-konva'
 import type { Fraction } from '../types'
 import { useLang } from '../i18n/LangContext'
+import { useContainerWidth } from '../hooks/useContainerWidth'
 
 interface Props {
   shape: 'bar' | 'pizza' | 'grid'
@@ -13,19 +14,20 @@ interface Props {
   onAnswer: (correct: boolean) => void
 }
 
-function StaticBar({ denominator, numerator }: { denominator: number; numerator: number }) {
-  const W = 480, H = 72
-  const sliceW = W / denominator
+function StaticBar({ denominator, numerator, maxWidth }: { denominator: number; numerator: number; maxWidth: number }) {
+  const BASE_W = 480, H = 72
+  const scale = Math.min(1, maxWidth / BASE_W)
+  const sliceW = BASE_W / denominator
   return (
-    <Stage width={W} height={H}>
-      <Layer>
+    <Stage width={BASE_W * scale} height={H * scale}>
+      <Layer scaleX={scale} scaleY={scale}>
         {Array.from({ length: denominator }, (_, i) => (
           <Rect
             key={i}
             x={i * sliceW} y={0}
             width={sliceW} height={H}
-            fill={i < numerator ? '#6C63FF' : '#E8E8F0'}
-            stroke="#9B97D4" strokeWidth={2}
+            fill={i < numerator ? '#f97316' : '#fff0e0'}
+            stroke="#fdba74" strokeWidth={2}
             cornerRadius={i === 0 ? [8, 0, 0, 8] : i === denominator - 1 ? [0, 8, 8, 0] : 0}
           />
         ))}
@@ -34,12 +36,14 @@ function StaticBar({ denominator, numerator }: { denominator: number; numerator:
   )
 }
 
-function StaticPizza({ denominator, numerator }: { denominator: number; numerator: number }) {
-  const SIZE = 220, CX = SIZE / 2, CY = SIZE / 2, R = 95
+function StaticPizza({ denominator, numerator, maxWidth }: { denominator: number; numerator: number; maxWidth: number }) {
+  const BASE_SIZE = 220, R = 95
+  const scale = Math.min(1, maxWidth / BASE_SIZE)
+  const CX = BASE_SIZE / 2, CY = BASE_SIZE / 2
   const sliceDeg = 360 / denominator
   return (
-    <Stage width={SIZE} height={SIZE}>
-      <Layer>
+    <Stage width={BASE_SIZE * scale} height={BASE_SIZE * scale}>
+      <Layer scaleX={scale} scaleY={scale}>
         <Circle x={CX} y={CY} radius={R + 2} fill="#E06B1A" />
         {Array.from({ length: denominator }, (_, i) => (
           <Arc
@@ -57,14 +61,15 @@ function StaticPizza({ denominator, numerator }: { denominator: number; numerato
   )
 }
 
-function StaticGrid({ cols, rows, numerator }: { cols: number; rows: number; numerator: number }) {
-  const SIZE = 220, PAD = 16
+function StaticGrid({ cols, rows, numerator, maxWidth }: { cols: number; rows: number; numerator: number; maxWidth: number }) {
+  const BASE_SIZE = 220, PAD = 16
+  const scale = Math.min(1, maxWidth / BASE_SIZE)
   const denominator = cols * rows
-  const cellW = (SIZE - PAD * 2) / cols
-  const cellH = (SIZE - PAD * 2) / rows
+  const cellW = (BASE_SIZE - PAD * 2) / cols
+  const cellH = (BASE_SIZE - PAD * 2) / rows
   return (
-    <Stage width={SIZE} height={SIZE}>
-      <Layer>
+    <Stage width={BASE_SIZE * scale} height={BASE_SIZE * scale}>
+      <Layer scaleX={scale} scaleY={scale}>
         {Array.from({ length: denominator }, (_, i) => {
           const col = i % cols, row = Math.floor(i / cols)
           return (
@@ -85,12 +90,16 @@ function StaticGrid({ cols, rows, numerator }: { cols: number; rows: number; num
 
 export default function IdentifyFraction({ shape, denominator, numerator, cols, rows, choices, correctIndex, onAnswer }: Props) {
   const { t } = useLang()
+  const { ref, width: containerWidth } = useContainerWidth(480)
+
   return (
     <div className="exercise-card">
       <p className="exercise-prompt">{t('identify')}</p>
-      {shape === 'bar' && <StaticBar denominator={denominator} numerator={numerator} />}
-      {shape === 'pizza' && <StaticPizza denominator={denominator} numerator={numerator} />}
-      {shape === 'grid' && cols && rows && <StaticGrid cols={cols} rows={rows} numerator={numerator} />}
+      <div ref={ref} style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+        {shape === 'bar' && <StaticBar denominator={denominator} numerator={numerator} maxWidth={containerWidth} />}
+        {shape === 'pizza' && <StaticPizza denominator={denominator} numerator={numerator} maxWidth={containerWidth} />}
+        {shape === 'grid' && cols && rows && <StaticGrid cols={cols} rows={rows} numerator={numerator} maxWidth={containerWidth} />}
+      </div>
       <div className="compare-btns">
         {choices.map((c, i) => (
           <button key={i} className="btn-choice" onClick={() => onAnswer(i === correctIndex)}>

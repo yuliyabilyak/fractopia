@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useLang } from '../i18n/LangContext'
 import LangSwitcher from '../components/LangSwitcher'
+import ThemeToggle from '../components/ThemeToggle'
 
 export default function Home() {
   const { user, loading, loginAnonymously } = useAuth()
@@ -17,7 +18,10 @@ export default function Home() {
 
   return (
     <div className="home-page">
-      <LangSwitcher />
+      <div className="top-bar">
+        <LangSwitcher />
+        <ThemeToggle />
+      </div>
       <h1>{t('homeTitle')}</h1>
       <p>{t('homeSubtitle')}</p>
       <button className="btn-start" onClick={start}>

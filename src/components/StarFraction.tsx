@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Stage, Layer, Line, RegularPolygon } from 'react-konva'
+import { Stage, Layer, Line } from 'react-konva'
 import { useLang } from '../i18n/LangContext'
 import { useContainerWidth } from '../hooks/useContainerWidth'
 
@@ -8,21 +8,28 @@ interface Props {
   onAnswer: (correct: boolean) => void
 }
 
+const DENOMINATOR = 5
 const BASE_SIZE = 280
 const CX = BASE_SIZE / 2
 const CY = BASE_SIZE / 2
-const R = 110
-const DENOMINATOR = 6
-const FILLED_COLOR = '#10b981'
-const EMPTY_COLOR = '#d1fae5'
-const STROKE_COLOR = '#059669'
+const OUTER_R = 105
+const INNER_R = 40  // ≈ OUTER_R × 0.382 (golden star ratio)
 
-function hexVertex(i: number) {
-  const angle = ((i * 60 - 90) * Math.PI) / 180
-  return { x: CX + R * Math.cos(angle), y: CY + R * Math.sin(angle) }
+const FILLED_COLOR = '#f97316'
+const EMPTY_COLOR  = '#fff7ed'
+const STROKE_COLOR = '#fdba74'
+
+function outerPt(i: number) {
+  const a = -Math.PI / 2 + (i * 2 * Math.PI) / DENOMINATOR
+  return { x: CX + OUTER_R * Math.cos(a), y: CY + OUTER_R * Math.sin(a) }
 }
 
-export default function HexagonFraction({ targetNumerator, onAnswer }: Props) {
+function innerPt(i: number) {
+  const a = -Math.PI / 2 + Math.PI / DENOMINATOR + (i * 2 * Math.PI) / DENOMINATOR
+  return { x: CX + INNER_R * Math.cos(a), y: CY + INNER_R * Math.sin(a) }
+}
+
+export default function StarFraction({ targetNumerator, onAnswer }: Props) {
   const [selected, setSelected] = useState<Set<number>>(new Set())
   const { t } = useLang()
   const { ref, width: containerWidth } = useContainerWidth(BASE_SIZE)
@@ -31,7 +38,7 @@ export default function HexagonFraction({ targetNumerator, onAnswer }: Props) {
   const stageSize = BASE_SIZE * scale
 
   const toggle = (i: number) => {
-    setSelected((prev) => {
+    setSelected(prev => {
       const next = new Set(prev)
       next.has(i) ? next.delete(i) : next.add(i)
       return next
@@ -43,19 +50,22 @@ export default function HexagonFraction({ targetNumerator, onAnswer }: Props) {
   return (
     <div className="exercise-card">
       <p className="exercise-prompt"
-        dangerouslySetInnerHTML={{ __html: t('tapHexagon', { n: targetNumerator, d: DENOMINATOR }).replace(/(\d+\/\d+)/, '<strong>$1</strong>') }}
+        dangerouslySetInnerHTML={{ __html: t('tapStar', { n: targetNumerator, d: DENOMINATOR }).replace(/(\d+\/\d+)/, '<strong>$1</strong>') }}
       />
       <div ref={ref} style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         <Stage width={stageSize} height={stageSize}>
           <Layer scaleX={scale} scaleY={scale}>
-            <RegularPolygon x={CX} y={CY} sides={6} radius={R + 2} fill={STROKE_COLOR} />
+            {/* Each sector is a kite from center through two inner vertices and one outer tip.
+                Together the 5 kites tile the entire star, so stroke forms both the outer
+                zigzag boundary and the interior dividing lines. */}
             {Array.from({ length: DENOMINATOR }, (_, i) => {
-              const v1 = hexVertex(i)
-              const v2 = hexVertex(i + 1)
+              const prev = innerPt((i - 1 + DENOMINATOR) % DENOMINATOR)
+              const out  = outerPt(i)
+              const next = innerPt(i)
               return (
                 <Line
                   key={i}
-                  points={[CX, CY, v1.x, v1.y, v2.x, v2.y]}
+                  points={[CX, CY, prev.x, prev.y, out.x, out.y, next.x, next.y]}
                   closed
                   fill={selected.has(i) ? FILLED_COLOR : EMPTY_COLOR}
                   stroke={STROKE_COLOR}

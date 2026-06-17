@@ -1,34 +1,41 @@
 import { useState } from 'react'
-import { Stage, Layer, Rect } from 'react-konva'
+import { Stage, Layer, Line } from 'react-konva'
 import { useLang } from '../i18n/LangContext'
 import { useContainerWidth } from '../hooks/useContainerWidth'
 
 interface Props {
-  cols: number
-  rows: number
   targetNumerator: number
   onAnswer: (correct: boolean) => void
 }
 
-const BASE_GRID_SIZE = 280
-const PAD = 20
-const FILLED_COLOR = '#f59e0b'
-const EMPTY_COLOR = '#fef3c7'
-const STROKE_COLOR = '#d97706'
+const DENOMINATOR = 4
+const BASE_SIZE = 280
+const CX = BASE_SIZE / 2
+const CY = BASE_SIZE / 2
+const VR = 115  // vertical radius (taller)
+const HR = 85   // horizontal radius
 
-export default function SquareGridFraction({ cols, rows, targetNumerator, onAnswer }: Props) {
+const CORNERS = [
+  { x: CX,      y: CY - VR },  // top
+  { x: CX + HR, y: CY      },  // right
+  { x: CX,      y: CY + VR },  // bottom
+  { x: CX - HR, y: CY      },  // left
+]
+
+const FILLED_COLOR = '#16a34a'
+const EMPTY_COLOR  = '#dcfce7'
+const STROKE_COLOR = '#86efac'
+
+export default function DiamondFraction({ targetNumerator, onAnswer }: Props) {
   const [selected, setSelected] = useState<Set<number>>(new Set())
   const { t } = useLang()
-  const { ref, width: containerWidth } = useContainerWidth(BASE_GRID_SIZE)
+  const { ref, width: containerWidth } = useContainerWidth(BASE_SIZE)
 
-  const scale = Math.min(1, containerWidth / BASE_GRID_SIZE)
-  const stageSize = BASE_GRID_SIZE * scale
-  const denominator = cols * rows
-  const cellW = (BASE_GRID_SIZE - PAD * 2) / cols
-  const cellH = (BASE_GRID_SIZE - PAD * 2) / rows
+  const scale = Math.min(1, containerWidth / BASE_SIZE)
+  const stageSize = BASE_SIZE * scale
 
   const toggle = (i: number) => {
-    setSelected((prev) => {
+    setSelected(prev => {
       const next = new Set(prev)
       next.has(i) ? next.delete(i) : next.add(i)
       return next
@@ -40,23 +47,22 @@ export default function SquareGridFraction({ cols, rows, targetNumerator, onAnsw
   return (
     <div className="exercise-card">
       <p className="exercise-prompt"
-        dangerouslySetInnerHTML={{ __html: t('tapGrid', { n: targetNumerator, d: denominator }).replace(/(\d+\/\d+)/, '<strong>$1</strong>') }}
+        dangerouslySetInnerHTML={{ __html: t('shadeDiamond', { n: targetNumerator, d: DENOMINATOR }).replace(/(\d+\/\d+)/, '<strong>$1</strong>') }}
       />
       <div ref={ref} style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         <Stage width={stageSize} height={stageSize}>
           <Layer scaleX={scale} scaleY={scale}>
-            {Array.from({ length: denominator }, (_, i) => {
-              const col = i % cols
-              const row = Math.floor(i / cols)
+            {Array.from({ length: DENOMINATOR }, (_, i) => {
+              const c1 = CORNERS[i]
+              const c2 = CORNERS[(i + 1) % DENOMINATOR]
               return (
-                <Rect
+                <Line
                   key={i}
-                  x={PAD + col * cellW} y={PAD + row * cellH}
-                  width={cellW} height={cellH}
+                  points={[CX, CY, c1.x, c1.y, c2.x, c2.y]}
+                  closed
                   fill={selected.has(i) ? FILLED_COLOR : EMPTY_COLOR}
                   stroke={STROKE_COLOR}
                   strokeWidth={2}
-                  cornerRadius={4}
                   onClick={() => toggle(i)}
                   onTap={() => toggle(i)}
                   style={{ cursor: 'pointer' }}
