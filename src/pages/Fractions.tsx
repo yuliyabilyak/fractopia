@@ -24,12 +24,13 @@ import type { ItemKey } from '../components/FractionQuantity'
 import MatchingFractions from '../components/MatchingFractions'
 import type { FracPair } from '../components/MatchingFractions'
 import FractionTower from '../components/FractionTower'
+import IceCreamShop from '../components/IceCreamShop'
 import FeedbackBanner from '../components/FeedbackBanner'
 import PerfectScoreAnimation from '../components/PerfectScoreAnimation'
 import ThemeToggle from '../components/ThemeToggle'
 import type { ExerciseResult, Fraction } from '../types'
 
-type ExerciseType = 'bar' | 'pizza' | 'compare' | 'hexagon' | 'grid' | 'identify' | 'triangle' | 'star' | 'diamond' | 'number-line' | 'equivalent' | 'sort' | 'hit-target' | 'time-fraction' | 'fraction-quantity' | 'time-operation' | 'matching' | 'fraction-tower'
+type ExerciseType = 'bar' | 'pizza' | 'compare' | 'hexagon' | 'grid' | 'identify' | 'triangle' | 'star' | 'diamond' | 'number-line' | 'equivalent' | 'sort' | 'hit-target' | 'time-fraction' | 'fraction-quantity' | 'time-operation' | 'matching' | 'fraction-tower' | 'ice-cream'
 
 interface Exercise {
   type: ExerciseType
@@ -398,6 +399,20 @@ const ALL_EXERCISES: Exercise[] = [
     {n:1,d:2},{n:1,d:4},{n:1,d:4},{n:1,d:3},{n:2,d:3},
   ]},
 
+  // --- ice cream shop (improper fractions → whole numbers) ---
+  { type: 'ice-cream', denominator: 2, numerator: 4  },   // 4/2  = 2
+  { type: 'ice-cream', denominator: 3, numerator: 6  },   // 6/3  = 2
+  { type: 'ice-cream', denominator: 4, numerator: 8  },   // 8/4  = 2
+  { type: 'ice-cream', denominator: 2, numerator: 6  },   // 6/2  = 3
+  { type: 'ice-cream', denominator: 3, numerator: 9  },   // 9/3  = 3
+  { type: 'ice-cream', denominator: 4, numerator: 12 },   // 12/4 = 3
+  { type: 'ice-cream', denominator: 2, numerator: 8  },   // 8/2  = 4
+  { type: 'ice-cream', denominator: 3, numerator: 12 },   // 12/3 = 4
+  { type: 'ice-cream', denominator: 4, numerator: 16 },   // 16/4 = 4
+  { type: 'ice-cream', denominator: 2, numerator: 10 },   // 10/2 = 5
+  { type: 'ice-cream', denominator: 3, numerator: 15 },   // 15/3 = 5
+  { type: 'ice-cream', denominator: 4, numerator: 20 },   // 20/4 = 5
+
   // --- compare ---
   { type: 'compare', denominator: 4, numerator: 1, left: { numerator: 1, denominator: 2 }, right: { numerator: 1, denominator: 4 } },
   { type: 'compare', denominator: 4, numerator: 1, left: { numerator: 2, denominator: 6 }, right: { numerator: 1, denominator: 3 } },
@@ -444,6 +459,7 @@ function toExerciseType(type: ExerciseType): ExerciseResult['exerciseType'] {
   if (type === 'time-operation')    return 'time-operation'
   if (type === 'matching')          return 'matching'
   if (type === 'fraction-tower')    return 'fraction-tower'
+  if (type === 'ice-cream')         return 'ice-cream'
   return 'pizza'
 }
 
@@ -585,6 +601,9 @@ export default function Fractions() {
       )}
       {current.type === 'fraction-tower' && feedback === null && current.towerTiles && (
         <FractionTower key={index} tiles={current.towerTiles} onAnswer={handleAnswer} />
+      )}
+      {current.type === 'ice-cream' && feedback === null && (
+        <IceCreamShop key={index} numerator={current.numerator} denominator={current.denominator} onAnswer={handleAnswer} />
       )}
       {current.type === 'compare' && feedback === null && current.left && current.right && (
         <CompareFractions key={index} left={current.left} right={current.right} onAnswer={handleCompareAnswer} />

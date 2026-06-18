@@ -21,6 +21,7 @@ type Keys =
   | 'fracQuantity'
   | 'itemApples' | 'itemEggs' | 'itemStars' | 'itemFlowers' | 'itemPencils'
   | 'itemBalloons' | 'itemOranges' | 'itemStrawberries' | 'itemBooks' | 'itemLemons'
+  | 'iceCreamPrompt'
   | 'identify' | 'compare' | 'isBigger' | 'equal'
   | 'check' | 'next' | 'playAgain'
   | 'counter' | 'correct' | 'wrong'
@@ -71,6 +72,7 @@ const T: Record<Lang, Record<Keys, string>> = {
     itemStrawberries:   'strawberries',
     itemBooks:          'books',
     itemLemons:         'lemons',
+    iceCreamPrompt: 'Fill the order! Make {n}/{d} scoops',
     identify:    'What fraction is shaded?',
     compare:     'Which fraction is bigger?',
     isBigger:    '{f} is bigger',
@@ -129,6 +131,7 @@ const T: Record<Lang, Record<Keys, string>> = {
     itemStrawberries:   'полуниць',
     itemBooks:          'книжок',
     itemLemons:         'лимонів',
+    iceCreamPrompt: 'Виконай замовлення! Зроби {n}/{d} кульок',
     identify:    'Яка частина зафарбована?',
     compare:     'Який дріб більший?',
     isBigger:    '{f} більший',
@@ -187,6 +190,7 @@ const T: Record<Lang, Record<Keys, string>> = {
     itemStrawberries:   'jahůdek',
     itemBooks:          'knih',
     itemLemons:         'citronů',
+    iceCreamPrompt: 'Splň objednávku! Přidej {n}/{d} kopečků',
     identify:    'Jaký zlomek je vybarven?',
     compare:     'Který zlomek je větší?',
     isBigger:    '{f} je větší',

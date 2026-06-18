@@ -1034,3 +1034,266 @@ body {
 .tower-undo:hover {
   background: var(--surface-subtle);
 }
+
+/* ── Ice Cream Shop ──────────────────────────────────────────────────────────── */
+
+/* Chalkboard-style order ticket — always dark regardless of theme */
+.ice-ticket {
+  background: #2D3748;
+  color: #F7FAFC;
+  border-radius: 16px;
+  padding: 14px 20px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.ice-ticket-header {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #90A4AE;
+}
+
+.ice-ticket-frac-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Oversized chalk-yellow fraction inside the ticket */
+.ice-frac--order .frac-n,
+.ice-frac--order .frac-d {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #F6E05E;
+}
+
+.ice-frac--order .frac-bar-line {
+  height: 3.5px;
+  min-width: 42px;
+  background: #F6E05E;
+}
+
+.ice-ticket-unit {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #CBD5E0;
+}
+
+.ice-ticket-counter {
+  margin: 0;
+  font-size: 1rem;
+  color: #90A4AE;
+}
+
+.ice-ticket-count {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #68D391;
+}
+
+.ice-ticket-sep {
+  font-size: 0.95rem;
+}
+
+/* Cone scene wrapper */
+.ice-cone-scene {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.ice-cone-svg {
+  width: 160px;
+  height: auto;
+  display: block;
+  overflow: visible;
+  transform-box: fill-box;
+  transform-origin: 50% 95%;   /* wiggle pivots near cone tip */
+}
+
+/* New scoop bounces in from above */
+@keyframes iceScoop {
+  0%   { transform: translateY(-56px); opacity: 0.55; }
+  55%  { transform: translateY(7px); }
+  75%  { transform: translateY(-4px); }
+  100% { transform: translateY(0);   opacity: 1; }
+}
+
+.ice-scoop--new {
+  animation: iceScoop 0.44s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Celebratory wiggle for the whole cone */
+@keyframes iceConeWiggle {
+  0%, 100% { transform: rotate(0deg); }
+  20%       { transform: rotate(4deg); }
+  40%       { transform: rotate(-4deg); }
+  60%       { transform: rotate(2.5deg); }
+  80%       { transform: rotate(-2deg); }
+}
+
+.ice-cone--wiggle {
+  animation: iceConeWiggle 0.65s ease-in-out;
+}
+
+/* Add / Remove scoop controls */
+.ice-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.ice-btn-add {
+  background: var(--orange);
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 700;
+  font-family: 'OpenDyslexic', sans-serif;
+  padding: 16px 28px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  min-height: 56px;
+  width: 100%;
+  max-width: 320px;
+  transition: background 0.15s, transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ice-btn-add:hover:not(:disabled) {
+  background: var(--orange-hover);
+}
+
+.ice-btn-add:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.ice-btn-add:disabled {
+  background: var(--border);
+  color: var(--text-faint);
+  cursor: not-allowed;
+}
+
+.ice-btn-remove {
+  background: none;
+  border: 2px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 8px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.ice-btn-remove:hover {
+  background: var(--surface-subtle);
+}
+
+/* Discovery reveal panel */
+.ice-discovery {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  animation: feedbackBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Equation box: fraction = whole-number */
+.ice-discovery-eq {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: var(--orange-surface);
+  border: 3px solid var(--orange-border);
+  border-radius: 20px;
+  padding: 14px 24px;
+  width: 100%;
+}
+
+.ice-frac--reveal .frac-n,
+.ice-frac--reveal .frac-d {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: var(--orange-dark);
+}
+
+.ice-frac--reveal .frac-bar-line {
+  height: 4px;
+  min-width: 46px;
+  background: var(--orange-dark);
+}
+
+.ice-eq-sign {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+.ice-eq-whole {
+  font-size: 3rem;
+  font-weight: 900;
+  font-family: 'OpenDyslexic', sans-serif;
+  color: var(--orange);
+  line-height: 1;
+  min-width: 2ch;
+  text-align: center;
+}
+
+/* "A perfect whole number!" callout */
+.ice-discovery-msg {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--correct-text);
+  background: var(--correct-bg);
+  padding: 12px 20px;
+  border-radius: 12px;
+  margin: 0;
+  text-align: center;
+  width: 100%;
+}
+
+/* Teal "Next Order" button */
+.ice-btn-next {
+  background: #0D9488;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: 'OpenDyslexic', sans-serif;
+  padding: 16px 32px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  min-height: 56px;
+  width: 100%;
+  max-width: 320px;
+  transition: background 0.15s, transform 0.12s;
+}
+
+.ice-btn-next:hover  { background: #0F766E; }
+.ice-btn-next:active { transform: scale(0.96); }
+
+@media (max-width: 480px) {
+  .ice-cone-svg { width: 130px; }
+
+  .ice-frac--order .frac-n,
+  .ice-frac--order .frac-d  { font-size: 1.6rem; }
+
+  .ice-frac--reveal .frac-n,
+  .ice-frac--reveal .frac-d { font-size: 1.75rem; }
+
+  .ice-eq-whole { font-size: 2.4rem; }
+
+  .ice-btn-add,
+  .ice-btn-next { font-size: 1rem; padding: 14px 18px; }
+}
