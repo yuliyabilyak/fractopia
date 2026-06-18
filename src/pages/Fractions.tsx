@@ -25,12 +25,17 @@ import MatchingFractions from '../components/MatchingFractions'
 import type { FracPair } from '../components/MatchingFractions'
 import FractionTower from '../components/FractionTower'
 import IceCreamShop from '../components/IceCreamShop'
+import TrainBuilder from '../components/TrainBuilder'
+import RocketLaunch from '../components/RocketLaunch'
+import MonsterBattle from '../components/MonsterBattle'
+import FractionDetective from '../components/FractionDetective'
+import type { DetectiveCard } from '../components/FractionDetective'
 import FeedbackBanner from '../components/FeedbackBanner'
 import PerfectScoreAnimation from '../components/PerfectScoreAnimation'
 import ThemeToggle from '../components/ThemeToggle'
 import type { ExerciseResult, Fraction } from '../types'
 
-type ExerciseType = 'bar' | 'pizza' | 'compare' | 'hexagon' | 'grid' | 'identify' | 'triangle' | 'star' | 'diamond' | 'number-line' | 'equivalent' | 'sort' | 'hit-target' | 'time-fraction' | 'fraction-quantity' | 'time-operation' | 'matching' | 'fraction-tower' | 'ice-cream'
+type ExerciseType = 'bar' | 'pizza' | 'compare' | 'hexagon' | 'grid' | 'identify' | 'triangle' | 'star' | 'diamond' | 'number-line' | 'equivalent' | 'sort' | 'hit-target' | 'time-fraction' | 'fraction-quantity' | 'time-operation' | 'matching' | 'fraction-tower' | 'ice-cream' | 'train' | 'rocket' | 'monster' | 'detective'
 
 interface Exercise {
   type: ExerciseType
@@ -60,6 +65,7 @@ interface Exercise {
   divisor?: number
   pairs?: FracPair[]
   towerTiles?: { n: number; d: number }[]
+  detectives?: DetectiveCard[]
 }
 
 const SESSION_SIZE = 12
@@ -413,6 +419,140 @@ const ALL_EXERCISES: Exercise[] = [
   { type: 'ice-cream', denominator: 3, numerator: 15 },   // 15/3 = 5
   { type: 'ice-cream', denominator: 4, numerator: 20 },   // 20/4 = 5
 
+  { type: 'train', numerator: 3,  denominator: 2 },   // 1½
+  { type: 'train', numerator: 5,  denominator: 2 },   // 2½
+  { type: 'train', numerator: 7,  denominator: 2 },   // 3½
+  { type: 'train', numerator: 4,  denominator: 3 },   // 1⅓
+  { type: 'train', numerator: 7,  denominator: 3 },   // 2⅓
+  { type: 'train', numerator: 10, denominator: 3 },   // 3⅓
+  { type: 'train', numerator: 5,  denominator: 4 },   // 1¼
+  { type: 'train', numerator: 9,  denominator: 4 },   // 2¼
+  { type: 'train', numerator: 13, denominator: 4 },   // 3¼
+  { type: 'train', numerator: 6,  denominator: 5 },   // 1⅕
+  { type: 'train', numerator: 11, denominator: 5 },   // 2⅕
+  { type: 'train', numerator: 13, denominator: 5 },   // 2⅗
+
+  // --- rocket (improper → mixed number) ---
+  { type: 'rocket', numerator: 5,  denominator: 2 },   // 2½
+  { type: 'rocket', numerator: 7,  denominator: 2 },   // 3½
+  { type: 'rocket', numerator: 9,  denominator: 2 },   // 4½
+  { type: 'rocket', numerator: 7,  denominator: 3 },   // 2⅓
+  { type: 'rocket', numerator: 8,  denominator: 3 },   // 2⅔
+  { type: 'rocket', numerator: 10, denominator: 3 },   // 3⅓
+  { type: 'rocket', numerator: 7,  denominator: 4 },   // 1¾
+  { type: 'rocket', numerator: 9,  denominator: 4 },   // 2¼
+  { type: 'rocket', numerator: 11, denominator: 4 },   // 2¾
+  { type: 'rocket', numerator: 13, denominator: 4 },   // 3¼
+  { type: 'rocket', numerator: 6,  denominator: 5 },   // 1⅕
+  { type: 'rocket', numerator: 9,  denominator: 5 },   // 1⅘
+  { type: 'rocket', numerator: 11, denominator: 5 },   // 2⅕
+  { type: 'rocket', numerator: 13, denominator: 6 },   // 2⅙
+  { type: 'rocket', numerator: 17, denominator: 6 },   // 2⅚
+  { type: 'rocket', numerator: 11, denominator: 8 },   // 1⅜
+  { type: 'rocket', numerator: 15, denominator: 8 },   // 1⅞
+  { type: 'rocket', numerator: 19, denominator: 8 },   // 2⅜
+
+  // --- monster (tap the larger fraction) ---
+  // same denominator
+  { type: 'monster', numerator: 0, denominator: 1, left: { numerator: 3, denominator: 4 }, right: { numerator: 2, denominator: 4 } },  // 3/4 > 2/4
+  { type: 'monster', numerator: 0, denominator: 1, left: { numerator: 2, denominator: 5 }, right: { numerator: 4, denominator: 5 } },  // 4/5 > 2/5 (right)
+  { type: 'monster', numerator: 0, denominator: 1, left: { numerator: 5, denominator: 6 }, right: { numerator: 3, denominator: 6 } },  // 5/6 > 3/6
+  { type: 'monster', numerator: 0, denominator: 1, left: { numerator: 7, denominator: 8 }, right: { numerator: 5, denominator: 8 } },  // 7/8 > 5/8
+  { type: 'monster', numerator: 0, denominator: 1, left: { numerator: 1, denominator: 3 }, right: { numerator: 2, denominator: 3 } },  // 2/3 > 1/3 (right)
+  // different denominators
+  { type: 'monster', numerator: 0, denominator: 1, left: { numerator: 3, denominator: 4 }, right: { numerator: 2, denominator: 3 } },  // 3/4 > 2/3
+  { type: 'monster', numerator: 0, denominator: 1, left: { numerator: 5, denominator: 6 }, right: { numerator: 4, denominator: 5 } },  // 5/6 > 4/5
+  { type: 'monster', numerator: 0, denominator: 1, left: { numerator: 7, denominator: 10 }, right: { numerator: 3, denominator: 4 } }, // 3/4 > 7/10 (right)
+  { type: 'monster', numerator: 0, denominator: 1, left: { numerator: 2, denominator: 3 }, right: { numerator: 3, denominator: 5 } },  // 2/3 > 3/5
+  { type: 'monster', numerator: 0, denominator: 1, left: { numerator: 1, denominator: 2 }, right: { numerator: 3, denominator: 8 } },  // 1/2 > 3/8
+  // improper fractions
+  { type: 'monster', numerator: 0, denominator: 1, left: { numerator: 7, denominator: 4 }, right: { numerator: 6, denominator: 4 } },  // 7/4 > 6/4
+  { type: 'monster', numerator: 0, denominator: 1, left: { numerator: 9, denominator: 5 }, right: { numerator: 11, denominator: 5 } }, // 11/5 > 9/5 (right)
+  { type: 'monster', numerator: 0, denominator: 1, left: { numerator: 13, denominator: 6 }, right: { numerator: 11, denominator: 6 } },// 13/6 > 11/6
+  { type: 'monster', numerator: 0, denominator: 1, left: { numerator: 5, denominator: 3 }, right: { numerator: 4, denominator: 3 } },  // 5/3 > 4/3
+  { type: 'monster', numerator: 0, denominator: 1, left: { numerator: 8, denominator: 4 }, right: { numerator: 9, denominator: 4 } },  // 9/4 > 8/4 (right)
+
+  // --- detective (find the one wrong comparison) ---
+  // same denominator
+  { type: 'detective', numerator: 0, denominator: 1, detectives: [
+    { leftN: 5, leftD: 6, op: '>', rightN: 3, rightD: 6, isWrong: false },
+    { leftN: 3, leftD: 5, op: '>', rightN: 4, rightD: 5, isWrong: true  },  // 3/5 < 4/5
+    { leftN: 7, leftD: 8, op: '>', rightN: 5, rightD: 8, isWrong: false },
+  ] },
+  { type: 'detective', numerator: 0, denominator: 1, detectives: [
+    { leftN: 4, leftD: 7, op: '<', rightN: 6, rightD: 7, isWrong: false },
+    { leftN: 2, leftD: 4, op: '<', rightN: 1, rightD: 4, isWrong: true  },  // 2/4 > 1/4
+    { leftN: 1, leftD: 3, op: '<', rightN: 2, rightD: 3, isWrong: false },
+  ] },
+  { type: 'detective', numerator: 0, denominator: 1, detectives: [
+    { leftN: 5, leftD: 8, op: '>', rightN: 3, rightD: 8, isWrong: false },
+    { leftN: 4, leftD: 6, op: '<', rightN: 5, rightD: 6, isWrong: false },
+    { leftN: 3, leftD: 4, op: '<', rightN: 2, rightD: 4, isWrong: true  },  // 3/4 > 2/4
+  ] },
+  // different denominators
+  { type: 'detective', numerator: 0, denominator: 1, detectives: [
+    { leftN: 3, leftD: 4, op: '>', rightN: 2, rightD: 3, isWrong: false },  // 0.75 > 0.667
+    { leftN: 5, leftD: 6, op: '<', rightN: 4, rightD: 5, isWrong: true  },  // 5/6=0.833 > 4/5=0.8
+    { leftN: 1, leftD: 2, op: '<', rightN: 3, rightD: 5, isWrong: false },  // 0.5 < 0.6
+  ] },
+  { type: 'detective', numerator: 0, denominator: 1, detectives: [
+    { leftN: 7, leftD: 10, op: '<', rightN: 3, rightD: 4, isWrong: false }, // 0.7 < 0.75
+    { leftN: 2, leftD: 3,  op: '<', rightN: 3, rightD: 5, isWrong: true  }, // 2/3=0.667 > 3/5=0.6
+    { leftN: 1, leftD: 4,  op: '<', rightN: 1, rightD: 3, isWrong: false }, // 0.25 < 0.333
+  ] },
+  { type: 'detective', numerator: 0, denominator: 1, detectives: [
+    { leftN: 3, leftD: 5, op: '<', rightN: 2, rightD: 3, isWrong: false },  // 0.6 < 0.667
+    { leftN: 7, leftD: 8, op: '<', rightN: 5, rightD: 6, isWrong: true  },  // 7/8=0.875 > 5/6=0.833
+    { leftN: 1, leftD: 3, op: '<', rightN: 1, rightD: 2, isWrong: false },  // 0.333 < 0.5
+  ] },
+  // improper fractions
+  { type: 'detective', numerator: 0, denominator: 1, detectives: [
+    { leftN: 7,  leftD: 4, op: '>', rightN: 5,  rightD: 4, isWrong: false },
+    { leftN: 8,  leftD: 5, op: '<', rightN: 7,  rightD: 5, isWrong: true  }, // 8/5 > 7/5
+    { leftN: 11, leftD: 6, op: '>', rightN: 9,  rightD: 6, isWrong: false },
+  ] },
+  { type: 'detective', numerator: 0, denominator: 1, detectives: [
+    { leftN: 9,  leftD: 4, op: '>', rightN: 7,  rightD: 4, isWrong: false },
+    { leftN: 11, leftD: 5, op: '<', rightN: 13, rightD: 5, isWrong: false },
+    { leftN: 13, leftD: 6, op: '<', rightN: 11, rightD: 6, isWrong: true  }, // 13/6 > 11/6
+  ] },
+  { type: 'detective', numerator: 0, denominator: 1, detectives: [
+    { leftN: 7, leftD: 3, op: '>', rightN: 5, rightD: 3, isWrong: false },
+    { leftN: 9, leftD: 4, op: '<', rightN: 7, rightD: 4, isWrong: true  },  // 9/4 > 7/4
+    { leftN: 11, leftD: 5, op: '>', rightN: 9, rightD: 5, isWrong: false },
+  ] },
+  // improper vs whole number (d=1)
+  { type: 'detective', numerator: 0, denominator: 1, detectives: [
+    { leftN: 5, leftD: 2, op: '>', rightN: 3, rightD: 2, isWrong: false },  // 2.5 > 1.5
+    { leftN: 9, leftD: 4, op: '<', rightN: 2, rightD: 1, isWrong: true  },  // 9/4=2.25 > 2
+    { leftN: 7, leftD: 3, op: '>', rightN: 2, rightD: 1, isWrong: false },  // 7/3≈2.33 > 2
+  ] },
+  { type: 'detective', numerator: 0, denominator: 1, detectives: [
+    { leftN: 8, leftD: 3, op: '<', rightN: 2, rightD: 1, isWrong: true  },  // 8/3≈2.67 > 2
+    { leftN: 7, leftD: 4, op: '>', rightN: 1, rightD: 1, isWrong: false },  // 7/4=1.75 > 1
+    { leftN: 11, leftD: 5, op: '>', rightN: 2, rightD: 1, isWrong: false }, // 11/5=2.2 > 2
+  ] },
+  { type: 'detective', numerator: 0, denominator: 1, detectives: [
+    { leftN: 5,  leftD: 3, op: '>', rightN: 1, rightD: 1, isWrong: false }, // 5/3>1
+    { leftN: 7,  leftD: 4, op: '<', rightN: 3, rightD: 1, isWrong: false }, // 7/4=1.75<3
+    { leftN: 11, leftD: 4, op: '<', rightN: 2, rightD: 1, isWrong: true  }, // 11/4=2.75 > 2
+  ] },
+  { type: 'detective', numerator: 0, denominator: 1, detectives: [
+    { leftN: 9, leftD: 2, op: '>', rightN: 4, rightD: 1, isWrong: false }, // 4.5 > 4
+    { leftN: 7, leftD: 3, op: '>', rightN: 3, rightD: 1, isWrong: true  }, // 7/3≈2.33 < 3
+    { leftN: 5, leftD: 2, op: '>', rightN: 2, rightD: 1, isWrong: false }, // 2.5 > 2
+  ] },
+  { type: 'detective', numerator: 0, denominator: 1, detectives: [
+    { leftN: 5, leftD: 4, op: '>', rightN: 1, rightD: 1, isWrong: false }, // 1.25 > 1
+    { leftN: 7, leftD: 5, op: '<', rightN: 2, rightD: 1, isWrong: false }, // 1.4 < 2
+    { leftN: 9, leftD: 8, op: '<', rightN: 1, rightD: 1, isWrong: true  }, // 9/8=1.125 > 1
+  ] },
+  { type: 'detective', numerator: 0, denominator: 1, detectives: [
+    { leftN: 11, leftD: 4, op: '>', rightN: 2, rightD: 1, isWrong: false }, // 2.75 > 2
+    { leftN: 13, leftD: 5, op: '<', rightN: 3, rightD: 1, isWrong: false }, // 2.6 < 3
+    { leftN: 9,  leftD: 3, op: '<', rightN: 3, rightD: 1, isWrong: true  }, // 9/3=3, not <3
+  ] },
+
   // --- compare ---
   { type: 'compare', denominator: 4, numerator: 1, left: { numerator: 1, denominator: 2 }, right: { numerator: 1, denominator: 4 } },
   { type: 'compare', denominator: 4, numerator: 1, left: { numerator: 2, denominator: 6 }, right: { numerator: 1, denominator: 3 } },
@@ -460,6 +600,10 @@ function toExerciseType(type: ExerciseType): ExerciseResult['exerciseType'] {
   if (type === 'matching')          return 'matching'
   if (type === 'fraction-tower')    return 'fraction-tower'
   if (type === 'ice-cream')         return 'ice-cream'
+  if (type === 'train')             return 'train'
+  if (type === 'rocket')            return 'rocket'
+  if (type === 'monster')           return 'monster'
+  if (type === 'detective')         return 'detective'
   return 'pizza'
 }
 
@@ -604,6 +748,18 @@ export default function Fractions() {
       )}
       {current.type === 'ice-cream' && feedback === null && (
         <IceCreamShop key={index} numerator={current.numerator} denominator={current.denominator} onAnswer={handleAnswer} />
+      )}
+      {current.type === 'train' && feedback === null && (
+        <TrainBuilder key={index} numerator={current.numerator} denominator={current.denominator} onAnswer={handleAnswer} />
+      )}
+      {current.type === 'rocket' && feedback === null && (
+        <RocketLaunch key={index} numerator={current.numerator} denominator={current.denominator} onAnswer={handleAnswer} />
+      )}
+      {current.type === 'monster' && feedback === null && current.left && current.right && (
+        <MonsterBattle key={index} left={current.left} right={current.right} onAnswer={handleAnswer} />
+      )}
+      {current.type === 'detective' && feedback === null && current.detectives && (
+        <FractionDetective key={index} cards={current.detectives} onAnswer={handleAnswer} />
       )}
       {current.type === 'compare' && feedback === null && current.left && current.right && (
         <CompareFractions key={index} left={current.left} right={current.right} onAnswer={handleCompareAnswer} />

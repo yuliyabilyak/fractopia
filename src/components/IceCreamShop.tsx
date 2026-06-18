@@ -16,8 +16,8 @@ const WOBBLES = [-3, 4, -2, 5, -4, 2, -5, 3, -1, 4, -3, 2]
 // ── SVG layout constants ──────────────────────────────────────────────────────
 
 const CONE_CX      = 100   // horizontal centre of cone in viewBox
-const SCOOP_BASE_Y = 228   // cy of the bottom scoop
-const SCOOP_GAP    = 50    // vertical distance between consecutive scoop centres
+const SCOOP_BASE_Y = 210   // cy of the bottom scoop — sits above the rim (rim top = y=228)
+const SCOOP_GAP    = 42    // vertical distance between consecutive scoop centres
 
 // ── Web Audio helpers ─────────────────────────────────────────────────────────
 
@@ -64,24 +64,28 @@ function useScoopSound() {
 
 // Manages scoop count and phase for one puzzle instance.
 // Component is remounted per exercise (key={index} in Fractions.tsx), so no reset logic needed.
-type Phase = 'playing' | 'settling' | 'done'
+type Phase = 'playing' | 'settling' | 'done' | 'wrong'
 
 function useIceCreamPuzzle(targetResult: number) {
+  const maxScoops = targetResult + 3
   const [scoops, setScoops] = useState(0)
   const [phase,  setPhase]  = useState<Phase>('playing')
 
-  // Brief settling pause after the last scoop so the bounce animation completes
   useEffect(() => {
     if (phase !== 'settling') return
     const t = setTimeout(() => setPhase('done'), 420)
     return () => clearTimeout(t)
   }, [phase])
 
+  useEffect(() => {
+    if (phase !== 'wrong') return
+    const t = setTimeout(() => setPhase('playing'), 1400)
+    return () => clearTimeout(t)
+  }, [phase])
+
   function addScoop(): boolean {
-    if (phase !== 'playing' || scoops >= targetResult) return false
-    const next = scoops + 1
-    setScoops(next)
-    if (next === targetResult) setPhase('settling')
+    if (phase !== 'playing' || scoops >= maxScoops) return false
+    setScoops(s => s + 1)
     return true
   }
 
@@ -90,7 +94,13 @@ function useIceCreamPuzzle(targetResult: number) {
     setScoops(s => s - 1)
   }
 
-  return { scoops, phase, addScoop, removeScoop }
+  function submit() {
+    if (phase !== 'playing') return
+    if (scoops === targetResult) setPhase('settling')
+    else setPhase('wrong')
+  }
+
+  return { scoops, phase, maxScoops, addScoop, removeScoop, submit }
 }
 
 // ── FractionLabel ─────────────────────────────────────────────────────────────
@@ -124,7 +134,7 @@ function Scoop({ idx, cx, cy, fresh }: { idx: number; cx: number; cy: number; fr
 
 // ── IceCreamCone SVG ──────────────────────────────────────────────────────────
 
-// Renders the waffle cone with scoops stacked above it.
+// Flat 2D cone: simple triangle body + a rounded rim band.
 // Scoops are drawn before the cone so the rim naturally overlaps the bottom scoop.
 function IceCreamCone({ count, wiggle }: { count: number; wiggle: boolean }) {
   const [freshIdx, setFreshIdx] = useState<number | null>(null)
@@ -146,17 +156,7 @@ function IceCreamCone({ count, wiggle }: { count: number; wiggle: boolean }) {
       className={`ice-cone-svg${wiggle ? ' ice-cone--wiggle' : ''}`}
       aria-hidden
     >
-      <defs>
-        <pattern id="ice-waffle" x="0" y="0" width="14" height="14" patternUnits="userSpaceOnUse">
-          <line x1="0" y1="0" x2="14" y2="14" stroke="#996633" strokeWidth="0.85" opacity="0.5" />
-          <line x1="14" y1="0" x2="0" y2="14" stroke="#996633" strokeWidth="0.85" opacity="0.5" />
-        </pattern>
-        <clipPath id="ice-cone-clip">
-          <polygon points="100,372 30,240 170,240" />
-        </clipPath>
-      </defs>
-
-      {/* Scoops first so cone rim overlaps lowest scoop */}
+      {/* Scoops first so rim overlaps lowest scoop */}
       {Array.from({ length: count }, (_, i) => (
         <Scoop
           key={i}
@@ -167,12 +167,10 @@ function IceCreamCone({ count, wiggle }: { count: number; wiggle: boolean }) {
         />
       ))}
 
-      {/* Cone body */}
-      <polygon points="100,372 30,240 170,240" fill="#D4956A" />
-      <rect x="0" y="240" width="200" height="132" fill="url(#ice-waffle)" clipPath="url(#ice-cone-clip)" />
-      <polygon points="100,372 30,240 170,240" fill="none" stroke="#A0643A" strokeWidth="2" />
-      {/* Rim — sits on top, partially hiding the bottom scoop for a "sitting in cone" look */}
-      <ellipse cx="100" cy="240" rx="70" ry="12" fill="#E8A878" stroke="#A0643A" strokeWidth="2" />
+      {/* Flat cone body */}
+      <polygon points="100,368 34,244 166,244" fill="#E8A058" stroke="#B86820" strokeWidth="2.5" strokeLinejoin="round" />
+      {/* Flat rim band */}
+      <rect x="30" y="234" width="140" height="16" rx="6" fill="#F5C07C" stroke="#B86820" strokeWidth="2" />
     </svg>
   )
 }
@@ -259,7 +257,7 @@ interface Props {
 export default function IceCreamShop({ numerator, denominator, onAnswer }: Props) {
   const { t }    = useLang()
   const result   = numerator / denominator   // always a whole number for these puzzles
-  const { scoops, phase, addScoop, removeScoop } = useIceCreamPuzzle(result)
+  const { scoops, phase, maxScoops, addScoop, removeScoop, submit } = useIceCreamPuzzle(result)
   const sound    = useScoopSound()
 
   function handleAdd() {
@@ -291,19 +289,31 @@ export default function IceCreamShop({ numerator, denominator, onAnswer }: Props
           <button
             className="ice-btn-add"
             onClick={handleAdd}
-            disabled={scoops >= result || isSettling}
+            disabled={scoops >= maxScoops || isSettling}
             aria-label="Add one scoop of ice cream"
           >
             🍦 Add Scoop
           </button>
           {scoops > 0 && !isSettling && (
-            <button
-              className="ice-btn-remove"
-              onClick={handleRemove}
-              aria-label="Remove the top scoop"
-            >
-              ↩ Remove top scoop
-            </button>
+            <div className="ice-action-row">
+              <button
+                className="ice-btn-remove"
+                onClick={handleRemove}
+                aria-label="Remove the top scoop"
+              >
+                ↩ Remove
+              </button>
+              <button
+                className="ice-btn-submit"
+                onClick={submit}
+                aria-label="Submit your answer"
+              >
+                ✓ Done!
+              </button>
+            </div>
+          )}
+          {phase === 'wrong' && (
+            <p className="ice-wrong-hint">Needs {result} scoops — try again!</p>
           )}
         </div>
       ) : (
