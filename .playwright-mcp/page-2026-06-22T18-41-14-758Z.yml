@@ -1,0 +1,13 @@
+- generic [ref=e14]:
+  - generic [ref=e15]:
+    - button "← Back" [ref=e16] [cursor=pointer]
+    - heading "Training Centre" [level=1] [ref=e17]
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - button "🇬🇧 EN" [ref=e20] [cursor=pointer]
+        - button "🇺🇦 UA" [ref=e21] [cursor=pointer]
+        - button "🇨🇿 CS" [ref=e22] [cursor=pointer]
+      - button "Switch to animal mode" [ref=e23] [cursor=pointer]: ☀️
+  - generic [ref=e107]:
+    - generic [ref=e108]: 🎉 Correct! Well done!
+    - button "Next" [ref=e109] [cursor=pointer]

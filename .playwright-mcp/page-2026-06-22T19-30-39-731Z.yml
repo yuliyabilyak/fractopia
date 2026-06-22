@@ -1,0 +1,15 @@
+- generic [ref=e3]:
+  - generic [ref=e5]:
+    - button "← Back" [ref=e6] [cursor=pointer]
+    - paragraph [ref=e7]: "Exercise 1 / 12 · Score: 0"
+    - button "Switch to animal mode" [ref=e8] [cursor=pointer]: ☀️
+  - generic [ref=e9]:
+    - paragraph [ref=e10]: Which fraction is bigger?
+    - generic [ref=e11]:
+      - generic [ref=e15]: 2/9
+      - generic [ref=e16]: vs
+      - generic [ref=e20]: 2/3
+    - generic [ref=e21]:
+      - button "2/9 is bigger" [ref=e22] [cursor=pointer]
+      - button "They're equal" [ref=e23] [cursor=pointer]
+      - button "2/3 is bigger" [ref=e24] [cursor=pointer]

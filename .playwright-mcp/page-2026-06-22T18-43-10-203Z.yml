@@ -1,0 +1,11 @@
+- generic [ref=e202]:
+  - generic [ref=e203]:
+    - generic [ref=e204]:
+      - button "🇬🇧 EN" [ref=e205] [cursor=pointer]
+      - button "🇺🇦 UA" [ref=e206] [cursor=pointer]
+      - button "🇨🇿 CS" [ref=e207] [cursor=pointer]
+    - button "Switch to animal mode" [ref=e208] [cursor=pointer]: ☀️
+  - heading "🍕 Math with Fractions" [level=1] [ref=e209]
+  - paragraph [ref=e210]: Learn fractions with pizzas and bars!
+  - button "Start Learning" [ref=e211] [cursor=pointer]
+  - button "🏋️ Training Centre" [ref=e212] [cursor=pointer]

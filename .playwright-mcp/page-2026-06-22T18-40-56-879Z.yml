@@ -1,0 +1,84 @@
+- generic [ref=e14]:
+  - generic [ref=e15]:
+    - button "← Back" [ref=e16] [cursor=pointer]
+    - heading "Training Centre" [level=1] [ref=e17]
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - button "🇬🇧 EN" [ref=e20] [cursor=pointer]
+        - button "🇺🇦 UA" [ref=e21] [cursor=pointer]
+        - button "🇨🇿 CS" [ref=e22] [cursor=pointer]
+      - button "Switch to animal mode" [ref=e23] [cursor=pointer]: ☀️
+  - paragraph [ref=e24]: "Pick a topic to practice:"
+  - generic [ref=e25]:
+    - button "🍫 Bar" [ref=e26] [cursor=pointer]:
+      - generic [ref=e27]: 🍫
+      - generic [ref=e28]: Bar
+    - button "🍕 Pizza" [ref=e29] [cursor=pointer]:
+      - generic [ref=e30]: 🍕
+      - generic [ref=e31]: Pizza
+    - button "⬡ Hexagon" [ref=e32] [cursor=pointer]:
+      - generic [ref=e33]: ⬡
+      - generic [ref=e34]: Hexagon
+    - button "🔲 Grid" [ref=e35] [cursor=pointer]:
+      - generic [ref=e36]: 🔲
+      - generic [ref=e37]: Grid
+    - button "▲ Triangle" [ref=e38] [cursor=pointer]:
+      - generic [ref=e39]: ▲
+      - generic [ref=e40]: Triangle
+    - button "⭐ Star" [ref=e41] [cursor=pointer]:
+      - generic [ref=e42]: ⭐
+      - generic [ref=e43]: Star
+    - button "♦ Diamond" [ref=e44] [cursor=pointer]:
+      - generic [ref=e45]: ♦
+      - generic [ref=e46]: Diamond
+    - button "🔍 Identify" [ref=e47] [cursor=pointer]:
+      - generic [ref=e48]: 🔍
+      - generic [ref=e49]: Identify
+    - button "⚖️ Compare" [ref=e50] [cursor=pointer]:
+      - generic [ref=e51]: ⚖️
+      - generic [ref=e52]: Compare
+    - button "📏 Number Line" [ref=e53] [cursor=pointer]:
+      - generic [ref=e54]: 📏
+      - generic [ref=e55]: Number Line
+    - button "🔄 Equivalent" [ref=e56] [cursor=pointer]:
+      - generic [ref=e57]: 🔄
+      - generic [ref=e58]: Equivalent
+    - button "📊 Sort" [ref=e59] [cursor=pointer]:
+      - generic [ref=e60]: 📊
+      - generic [ref=e61]: Sort
+    - button "🎯 Hit Target" [ref=e62] [cursor=pointer]:
+      - generic [ref=e63]: 🎯
+      - generic [ref=e64]: Hit Target
+    - button "⏰ Time" [ref=e65] [cursor=pointer]:
+      - generic [ref=e66]: ⏰
+      - generic [ref=e67]: Time
+    - button "🧮 Time Math" [ref=e68] [cursor=pointer]:
+      - generic [ref=e69]: 🧮
+      - generic [ref=e70]: Time Math
+    - button "🔢 Quantity" [ref=e71] [cursor=pointer]:
+      - generic [ref=e72]: 🔢
+      - generic [ref=e73]: Quantity
+    - button "🃏 Matching" [ref=e74] [cursor=pointer]:
+      - generic [ref=e75]: 🃏
+      - generic [ref=e76]: Matching
+    - button "🏗️ Tower" [ref=e77] [cursor=pointer]:
+      - generic [ref=e78]: 🏗️
+      - generic [ref=e79]: Tower
+    - button "🍦 Ice Cream" [ref=e80] [cursor=pointer]:
+      - generic [ref=e81]: 🍦
+      - generic [ref=e82]: Ice Cream
+    - button "🚂 Train" [ref=e83] [cursor=pointer]:
+      - generic [ref=e84]: 🚂
+      - generic [ref=e85]: Train
+    - button "🚀 Rocket" [ref=e86] [cursor=pointer]:
+      - generic [ref=e87]: 🚀
+      - generic [ref=e88]: Rocket
+    - button "👾 Monster" [ref=e89] [cursor=pointer]:
+      - generic [ref=e90]: 👾
+      - generic [ref=e91]: Monster
+    - button "🔎 Detective" [ref=e92] [cursor=pointer]:
+      - generic [ref=e93]: 🔎
+      - generic [ref=e94]: Detective
+    - button "🪨 Balance" [ref=e95] [cursor=pointer]:
+      - generic [ref=e96]: 🪨
+      - generic [ref=e97]: Balance

@@ -1,0 +1,20 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - button "← Back" [ref=e5] [cursor=pointer]
+    - heading "Training Centre" [level=1] [ref=e6]
+    - generic [ref=e7]:
+      - generic [ref=e8]:
+        - button "🇬🇧 EN" [ref=e9] [cursor=pointer]
+        - button "🇺🇦 UA" [ref=e10] [cursor=pointer]
+        - button "🇨🇿 CS" [ref=e11] [cursor=pointer]
+      - button "Switch to animal mode" [ref=e12] [cursor=pointer]: ☀️
+  - generic [ref=e82]:
+    - paragraph [ref=e83]: Which fraction is bigger?
+    - generic [ref=e84]:
+      - generic [ref=e88]: 4/5
+      - generic [ref=e89]: vs
+      - generic [ref=e93]: 4/9
+    - generic [ref=e94]:
+      - button "4/5 is bigger" [ref=e95] [cursor=pointer]
+      - button "They're equal" [ref=e96] [cursor=pointer]
+      - button "4/9 is bigger" [ref=e97] [cursor=pointer]

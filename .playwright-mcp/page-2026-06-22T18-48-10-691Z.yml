@@ -1,0 +1,16 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - button "← Back" [ref=e5] [cursor=pointer]
+    - heading "Training Centre" [level=1] [ref=e6]
+    - generic [ref=e7]:
+      - generic [ref=e8]:
+        - button "🇬🇧 EN" [ref=e9] [cursor=pointer]
+        - button "🇺🇦 UA" [ref=e10] [cursor=pointer]
+        - button "🇨🇿 CS" [ref=e11] [cursor=pointer]
+      - button "Switch to animal mode" [ref=e12] [cursor=pointer]: ☀️
+  - generic [ref=e70]:
+    - paragraph [ref=e71]:
+      - text: Shade
+      - strong [ref=e72]: 2/5
+      - text: of the bar
+    - button "Check" [ref=e76] [cursor=pointer]

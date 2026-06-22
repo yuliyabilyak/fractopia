@@ -1,0 +1,78 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - button "← Back" [ref=e5] [cursor=pointer]
+    - heading "Training Centre" [level=1] [ref=e6]
+    - generic [ref=e7]:
+      - generic [ref=e8]:
+        - button "🇬🇧 EN" [ref=e9] [cursor=pointer]
+        - button "🇺🇦 UA" [ref=e10] [cursor=pointer]
+        - button "🇨🇿 CS" [ref=e11] [cursor=pointer]
+      - button "Switch to animal mode" [ref=e12] [cursor=pointer]: ☀️
+  - paragraph [ref=e13]: "Pick a topic to practice:"
+  - generic [ref=e14]:
+    - button "🎨 Colour Shapes" [ref=e15] [cursor=pointer]:
+      - generic [ref=e16]: 🎨
+      - generic [ref=e17]: Colour Shapes
+    - button "🔍 Identify" [ref=e18] [cursor=pointer]:
+      - generic [ref=e19]: 🔍
+      - generic [ref=e20]: Identify
+    - button "⚖️ Compare" [ref=e21] [cursor=pointer]:
+      - generic [ref=e22]: ⚖️
+      - generic [ref=e23]: Compare
+    - button "🟰 Same Denominator" [ref=e24] [cursor=pointer]:
+      - generic [ref=e25]: 🟰
+      - generic [ref=e26]: Same Denominator
+    - button "🔢 Same Numerator" [ref=e27] [cursor=pointer]:
+      - generic [ref=e28]: 🔢
+      - generic [ref=e29]: Same Numerator
+    - button "📏 Number Line" [ref=e30] [cursor=pointer]:
+      - generic [ref=e31]: 📏
+      - generic [ref=e32]: Number Line
+    - button "🔄 Equivalent" [ref=e33] [cursor=pointer]:
+      - generic [ref=e34]: 🔄
+      - generic [ref=e35]: Equivalent
+    - button "📊 Sort" [ref=e36] [cursor=pointer]:
+      - generic [ref=e37]: 📊
+      - generic [ref=e38]: Sort
+    - button "🎯 Hit Target" [ref=e39] [cursor=pointer]:
+      - generic [ref=e40]: 🎯
+      - generic [ref=e41]: Hit Target
+    - button "⏰ Time" [ref=e42] [cursor=pointer]:
+      - generic [ref=e43]: ⏰
+      - generic [ref=e44]: Time
+    - button "🧮 Time Math" [ref=e45] [cursor=pointer]:
+      - generic [ref=e46]: 🧮
+      - generic [ref=e47]: Time Math
+    - button "⏳ Time Quest" [ref=e48] [cursor=pointer]:
+      - generic [ref=e49]: ⏳
+      - generic [ref=e50]: Time Quest
+    - button "🕵️ Time Detective" [ref=e51] [cursor=pointer]:
+      - generic [ref=e52]: 🕵️
+      - generic [ref=e53]: Time Detective
+    - button "🔢 Quantity" [ref=e54] [cursor=pointer]:
+      - generic [ref=e55]: 🔢
+      - generic [ref=e56]: Quantity
+    - button "🃏 Matching" [ref=e57] [cursor=pointer]:
+      - generic [ref=e58]: 🃏
+      - generic [ref=e59]: Matching
+    - button "🏗️ Tower" [ref=e60] [cursor=pointer]:
+      - generic [ref=e61]: 🏗️
+      - generic [ref=e62]: Tower
+    - button "🍦 Ice Cream" [ref=e63] [cursor=pointer]:
+      - generic [ref=e64]: 🍦
+      - generic [ref=e65]: Ice Cream
+    - button "🚂 Train" [ref=e66] [cursor=pointer]:
+      - generic [ref=e67]: 🚂
+      - generic [ref=e68]: Train
+    - button "🚀 Rocket" [ref=e69] [cursor=pointer]:
+      - generic [ref=e70]: 🚀
+      - generic [ref=e71]: Rocket
+    - button "👾 Monster" [ref=e72] [cursor=pointer]:
+      - generic [ref=e73]: 👾
+      - generic [ref=e74]: Monster
+    - button "🔎 Detective" [ref=e75] [cursor=pointer]:
+      - generic [ref=e76]: 🔎
+      - generic [ref=e77]: Detective
+    - button "🪨 Balance" [ref=e78] [cursor=pointer]:
+      - generic [ref=e79]: 🪨
+      - generic [ref=e80]: Balance

@@ -1,0 +1,37 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - button "← Back" [ref=e5] [cursor=pointer]
+    - heading "Training Centre" [level=1] [ref=e6]
+    - generic [ref=e7]:
+      - generic [ref=e8]:
+        - button "🇬🇧 EN" [ref=e9] [cursor=pointer]
+        - button "🇺🇦 UA" [ref=e10] [cursor=pointer]
+        - button "🇨🇿 CS" [ref=e11] [cursor=pointer]
+      - button "Switch to animal mode" [ref=e12] [cursor=pointer]: ☀️
+  - generic [ref=e73]:
+    - paragraph [ref=e74]: How many energy crystals does your time machine need?
+    - generic [ref=e75]:
+      - generic [ref=e76]:
+        - generic [ref=e77]: 🏰
+        - generic [ref=e78]:
+          - generic [ref=e79]: Medieval Castle
+          - generic [ref=e80]: 3 years
+      - paragraph [ref=e81]: 1 ⚡ = 1 day · 1 Year = 365 days
+    - generic [ref=e82]:
+      - generic [ref=e83]:
+        - generic [ref=e84]: 📅 Year 1
+        - generic [ref=e85]: = 365 ⚡
+      - generic [ref=e86]:
+        - generic [ref=e87]: 📅 Year 2
+        - generic [ref=e88]: = 365 ⚡
+      - generic [ref=e89]:
+        - generic [ref=e90]: 📅 Year 3
+        - generic [ref=e91]: = 365 ⚡
+      - generic [ref=e92]:
+        - generic [ref=e93]: ⚡ Total?
+        - generic [ref=e94]: "? ⚡"
+    - generic [ref=e115]:
+      - button "1125 ⚡" [ref=e116] [cursor=pointer]
+      - button "1080 ⚡" [ref=e117] [cursor=pointer]
+      - button "1095 ⚡" [ref=e118] [cursor=pointer]
+      - button "1460 ⚡" [ref=e119] [cursor=pointer]
