@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Stage, Layer, Line } from 'react-konva'
 import { useLang } from '../i18n/LangContext'
 import { useContainerWidth } from '../hooks/useContainerWidth'
+import SpeakPrompt from './SpeakPrompt'
+import ShadeProgress from './ShadeProgress'
 
 interface Props {
   denominator: number
@@ -35,9 +37,12 @@ function perimeterPoints(N: number) {
 const FILLED_COLOR = '#dc2626'
 const EMPTY_COLOR  = '#fee2e2'
 const STROKE_COLOR = '#fca5a5'
+const REVEAL_COLOR = '#22c55e'
+const REVEAL_MS = 1400
 
 export default function TriangleFraction({ denominator, targetNumerator, onAnswer }: Props) {
   const [selected, setSelected] = useState<Set<number>>(new Set())
+  const [revealing, setRevealing] = useState(false)
   const { t } = useLang()
   const { ref, width: containerWidth } = useContainerWidth(BASE_SIZE)
 
@@ -46,6 +51,7 @@ export default function TriangleFraction({ denominator, targetNumerator, onAnswe
   const pts = perimeterPoints(denominator)
 
   const toggle = (i: number) => {
+    if (revealing) return
     setSelected(prev => {
       const next = new Set(prev)
       next.has(i) ? next.delete(i) : next.add(i)
@@ -53,25 +59,33 @@ export default function TriangleFraction({ denominator, targetNumerator, onAnswe
     })
   }
 
-  const check = () => onAnswer(selected.size === targetNumerator)
+  const check = () => {
+    if (revealing) return
+    const correct = selected.size === targetNumerator
+    if (correct) { onAnswer(true); return }
+    setRevealing(true)
+    setTimeout(() => onAnswer(false), REVEAL_MS)
+  }
+
+  const promptText = t('shadeTriangle', { n: targetNumerator, d: denominator })
+  const promptHtml = promptText.replace(/(\d+\/\d+)/, '<strong>$1</strong>')
 
   return (
     <div className="exercise-card">
-      <p className="exercise-prompt"
-        dangerouslySetInnerHTML={{ __html: t('shadeTriangle', { n: targetNumerator, d: denominator }).replace(/(\d+\/\d+)/, '<strong>$1</strong>') }}
-      />
+      <SpeakPrompt html={promptHtml} text={promptText} />
       <div ref={ref} style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         <Stage width={stageSize} height={stageSize}>
           <Layer scaleX={scale} scaleY={scale}>
             {Array.from({ length: denominator }, (_, i) => {
               const p1 = pts[i]
               const p2 = pts[(i + 1) % denominator]
+              const shaded = revealing ? i < targetNumerator : selected.has(i)
               return (
                 <Line
                   key={i}
                   points={[CX, CY, p1.x, p1.y, p2.x, p2.y]}
                   closed
-                  fill={selected.has(i) ? FILLED_COLOR : EMPTY_COLOR}
+                  fill={shaded ? (revealing ? REVEAL_COLOR : FILLED_COLOR) : EMPTY_COLOR}
                   stroke={STROKE_COLOR}
                   strokeWidth={2}
                   onClick={() => toggle(i)}
@@ -83,7 +97,8 @@ export default function TriangleFraction({ denominator, targetNumerator, onAnswe
           </Layer>
         </Stage>
       </div>
-      <button className="btn-check" onClick={check}>{t('check')}</button>
+      <ShadeProgress shaded={selected.size} total={denominator} />
+      <button className="btn-check" onClick={check} disabled={revealing}>{t('check')}</button>
     </div>
   )
 }

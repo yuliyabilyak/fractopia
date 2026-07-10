@@ -30,6 +30,7 @@ import FractionDetective from '../components/FractionDetective'
 import BalanceScale from '../components/BalanceScale'
 import TimeMachineQuest from '../components/TimeMachineQuest'
 import TimeDetective from '../components/TimeDetective'
+import FractionOperation from '../components/FractionOperation'
 import { ALL_EXERCISES, type Exercise, type ExerciseType } from '../data/exercises'
 
 interface Topic {
@@ -62,6 +63,7 @@ const TOPICS: Topic[] = [
   { id: 'monster',          emoji: '👾', label: 'Monster',          types: ['monster'] },
   { id: 'detective',        emoji: '🔎', label: 'Detective',        types: ['detective'] },
   { id: 'balance',          emoji: '🪨', label: 'Balance',          types: ['balance'] },
+  { id: 'fraction-operation', emoji: '➕', label: 'Adding & Subtracting', types: ['fraction-operation'] },
 ]
 
 function compareAnswer(ex: Exercise, answer: 'left' | 'right' | 'equal'): boolean {
@@ -237,6 +239,23 @@ export default function TrainingCentre() {
           )}
           {current.type === 'time-detective' && feedback === null && current.timeCards && (
             <TimeDetective key={exKey} cards={current.timeCards} onAnswer={handleAnswer} />
+          )}
+          {current.type === 'fraction-operation' && feedback === null
+            && (current.shape === 'bar' || current.shape === 'pizza')
+            && (current.operation === 'add' || current.operation === 'subtract')
+            && current.left && current.right && current.result && current.mode && (
+            <FractionOperation
+              key={exKey}
+              shape={current.shape}
+              operation={current.operation}
+              left={current.left}
+              right={current.right}
+              result={current.result}
+              mode={current.mode}
+              choices={current.choices}
+              correctIndex={current.correctIndex}
+              onAnswer={handleAnswer}
+            />
           )}
           {current.type === 'compare' && feedback === null && current.left && current.right && (
             <CompareFractions

@@ -2,7 +2,6 @@ export interface DecimalQuestion {
   numerator: number
   denominator: number
   answer: number
-  repeating?: boolean
 }
 
 export const DECIMAL_POOL: DecimalQuestion[] = [
@@ -43,12 +42,12 @@ export const DECIMAL_POOL: DecimalQuestion[] = [
   { numerator: 13, denominator: 5,  answer: 2.6 },
   { numerator: 17, denominator: 10, answer: 1.7 },
 
-  // --- Whirlpool: repeating decimals (rounded to 3 places) ---
-  { numerator: 1, denominator: 3, answer: 0.333, repeating: true },
-  { numerator: 2, denominator: 3, answer: 0.667, repeating: true },
-  { numerator: 1, denominator: 6, answer: 0.167, repeating: true },
-  { numerator: 5, denominator: 6, answer: 0.833, repeating: true },
-  { numerator: 1, denominator: 9, answer: 0.111, repeating: true },
-  { numerator: 2, denominator: 9, answer: 0.222, repeating: true },
-  { numerator: 4, denominator: 9, answer: 0.444, repeating: true },
+  // --- Overlook: sixteenths, twenty-fifths & fortieths (all terminate exactly) ---
+  { numerator: 1,  denominator: 16, answer: 0.0625 },
+  { numerator: 3,  denominator: 16, answer: 0.1875 },
+  { numerator: 7,  denominator: 16, answer: 0.4375 },
+  { numerator: 9,  denominator: 16, answer: 0.5625 },
+  { numerator: 1,  denominator: 25, answer: 0.04 },
+  { numerator: 7,  denominator: 25, answer: 0.28 },
+  { numerator: 1,  denominator: 40, answer: 0.025 },
 ]

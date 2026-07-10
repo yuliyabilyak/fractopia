@@ -70,7 +70,6 @@ export default function DecimalRace() {
           numerator={current.numerator}
           denominator={current.denominator}
           answer={current.answer}
-          repeating={current.repeating}
           onAnswer={handleAnswer}
         />
       )}

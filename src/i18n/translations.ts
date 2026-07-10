@@ -9,7 +9,10 @@ export const LANGS: { code: Lang; flag: string; label: string }[] = [
 type Keys =
   | 'homeTitle' | 'homeSubtitle' | 'start'
   | 'trainingCentre' | 'trainingTitle' | 'trainingBack' | 'trainingPick'
-  | 'raceMode' | 'raceTitle' | 'decimalPrompt' | 'decimalRepeatHint' | 'raceCounter' | 'raceDoneTitle' | 'raceScoreLabel'
+  | 'raceMode' | 'raceTitle' | 'decimalPrompt' | 'raceCounter' | 'raceDoneTitle' | 'raceScoreLabel'
+  | 'replayAria'
+  | 'foAddPrompt' | 'foSubtractPrompt' | 'foContinue' | 'foConvertCaption'
+  | 'foCombineAdd' | 'foCombineSubtract' | 'foQuestionAdd' | 'foQuestionSubtract'
   | 'shadeBar' | 'tapPizza' | 'tapHexagon' | 'tapGrid'
   | 'shadeTriangle' | 'tapStar' | 'shadeDiamond' | 'dragMarker' | 'matchEquivalent'
   | 'sortFractions' | 'smallest' | 'largest'
@@ -57,10 +60,18 @@ const T: Record<Lang, Record<Keys, string>> = {
     raceMode:       '🏁 Decimal Race',
     raceTitle:      'Decimal Race',
     decimalPrompt:  'Convert this fraction to a decimal',
-    decimalRepeatHint: '↻ This decimal repeats forever — round it to 3 places.',
     raceCounter:    'Waypoint {i} / {total} · Score: {score}',
     raceDoneTitle:  'Finish line! 🏁',
     raceScoreLabel: 'waypoints correct',
+    replayAria:  'Replay instructions',
+    foAddPrompt:      'Add these fractions',
+    foSubtractPrompt: 'Subtract these fractions',
+    foContinue:       'Continue',
+    foConvertCaption: '{n}/{d} is the same as {n2}/{d2}',
+    foCombineAdd:     "Now let's combine them",
+    foCombineSubtract: "Now let's see what's left",
+    foQuestionAdd:      "What's the total?",
+    foQuestionSubtract: "What's left?",
     shadeBar:    'Shade {n}/{d} of the bar',
     tapPizza:    'Tap {n}/{d} slices of the pizza',
     tapHexagon:  'Tap {n}/{d} parts of the hexagon',
@@ -183,10 +194,18 @@ const T: Record<Lang, Record<Keys, string>> = {
     raceMode:       '🏁 Дробові перегони',
     raceTitle:      'Дробові перегони',
     decimalPrompt:  'Перетвори цей дріб у десятковий дріб',
-    decimalRepeatHint: '↻ Цей десятковий дріб повторюється нескінченно — округли до 3 знаків.',
     raceCounter:    'Етап {i} / {total} · Рахунок: {score}',
     raceDoneTitle:  'Фініш! 🏁',
     raceScoreLabel: 'правильних етапів',
+    replayAria:  'Повторити інструкцію',
+    foAddPrompt:      'Додай ці дроби',
+    foSubtractPrompt: 'Відніми ці дроби',
+    foContinue:       'Далі',
+    foConvertCaption: '{n}/{d} це те саме, що {n2}/{d2}',
+    foCombineAdd:     'А тепер об’єднаємо їх',
+    foCombineSubtract: 'А тепер подивимось, що залишилось',
+    foQuestionAdd:      'Скільки всього?',
+    foQuestionSubtract: 'Скільки залишилось?',
     shadeBar:    'Зафарбуй {n}/{d} смужки',
     tapPizza:    'Натисни на {n}/{d} шматки піци',
     tapHexagon:  'Натисни на {n}/{d} частини шестикутника',
@@ -309,10 +328,18 @@ const T: Record<Lang, Record<Keys, string>> = {
     raceMode:       '🏁 Desetinné závody',
     raceTitle:      'Desetinné závody',
     decimalPrompt:  'Převeď tento zlomek na desetinné číslo',
-    decimalRepeatHint: '↻ Toto desetinné číslo se opakuje do nekonečna — zaokrouhli na 3 místa.',
     raceCounter:    'Stanoviště {i} / {total} · Skóre: {score}',
     raceDoneTitle:  'Cíl! 🏁',
     raceScoreLabel: 'správných stanovišť',
+    replayAria:  'Přehrát instrukce znovu',
+    foAddPrompt:      'Sečti tyto zlomky',
+    foSubtractPrompt: 'Odečti tyto zlomky',
+    foContinue:       'Pokračovat',
+    foConvertCaption: '{n}/{d} je totéž jako {n2}/{d2}',
+    foCombineAdd:     'A teď je spojíme',
+    foCombineSubtract: 'A teď se podíváme, co zbylo',
+    foQuestionAdd:      'Kolik je to celkem?',
+    foQuestionSubtract: 'Kolik zbylo?',
     shadeBar:    'Vybarvi {n}/{d} pruhu',
     tapPizza:    'Klepni na {n}/{d} kousky pizzy',
     tapHexagon:  'Klepni na {n}/{d} části šestiúhelníku',

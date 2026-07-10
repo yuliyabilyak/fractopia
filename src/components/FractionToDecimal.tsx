@@ -5,7 +5,6 @@ interface Props {
   numerator: number
   denominator: number
   answer: number
-  repeating?: boolean
   onAnswer: (correct: boolean) => void
 }
 
@@ -42,9 +41,9 @@ function buildChoices(answer: number, places: number): number[] {
   return values
 }
 
-export default function FractionToDecimal({ numerator, denominator, answer, repeating, onAnswer }: Props) {
+export default function FractionToDecimal({ numerator, denominator, answer, onAnswer }: Props) {
   const { t } = useLang()
-  const places = Math.max(repeating ? 3 : decimalPlacesOf(answer), 2)
+  const places = Math.max(decimalPlacesOf(answer), 2)
   const choices = useMemo(() => buildChoices(answer, places), [answer, places])
 
   return (
@@ -57,7 +56,6 @@ export default function FractionToDecimal({ numerator, denominator, answer, repe
           <span className="frac-d">{denominator}</span>
         </span>
       </div>
-      {repeating && <p className="decimal-hint">{t('decimalRepeatHint')}</p>}
       <div className="answer-choices">
         {choices.map((c, i) => (
           <button key={i} className="answer-choice-btn" onClick={() => onAnswer(c === answer)}>

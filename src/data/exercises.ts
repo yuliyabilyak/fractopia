@@ -6,7 +6,7 @@ import type { DetectiveCard } from '../components/FractionDetective'
 import type { TimeCard } from '../components/TimeDetective'
 import type { Fraction } from '../types'
 
-export type ExerciseType = 'bar' | 'pizza' | 'compare' | 'compare-same' | 'compare-same-num' | 'hexagon' | 'grid' | 'identify' | 'triangle' | 'star' | 'diamond' | 'number-line' | 'equivalent' | 'sort' | 'hit-target' | 'time-fraction' | 'fraction-quantity' | 'time-operation' | 'matching' | 'fraction-tower' | 'ice-cream' | 'train' | 'rocket' | 'monster' | 'detective' | 'balance' | 'time-machine' | 'time-detective'
+export type ExerciseType = 'bar' | 'pizza' | 'compare' | 'compare-same' | 'compare-same-num' | 'hexagon' | 'grid' | 'identify' | 'triangle' | 'star' | 'diamond' | 'number-line' | 'equivalent' | 'sort' | 'hit-target' | 'time-fraction' | 'fraction-quantity' | 'time-operation' | 'matching' | 'fraction-tower' | 'ice-cream' | 'train' | 'rocket' | 'monster' | 'detective' | 'balance' | 'time-machine' | 'time-detective' | 'fraction-operation'
 
 export interface Exercise {
   type: ExerciseType
@@ -38,6 +38,8 @@ export interface Exercise {
   towerTiles?: { n: number; d: number }[]
   detectives?: DetectiveCard[]
   timeCards?: TimeCard[]
+  mode?: 'select' | 'generate'
+  result?: Fraction
 }
 
 export function shuffle<T>(arr: T[]): T[] {
@@ -832,4 +834,51 @@ export const ALL_EXERCISES: Exercise[] = [
   { type: 'time-machine', denominator: 1, numerator: 20, answer: 7300,  emoji: '🏯' },
   { type: 'time-machine', denominator: 1, numerator: 25, answer: 9125,  emoji: '🎪' },
   { type: 'time-machine', denominator: 1, numerator: 30, answer: 10950, emoji: '👽' },
+
+  // --- fraction operation (add/subtract) ---
+  // Level 1: same denominator, no conversion needed
+  { type: 'fraction-operation', numerator: 3, denominator: 4, shape: 'bar', operation: 'add', mode: 'select',
+    left: { numerator: 1, denominator: 4 }, right: { numerator: 2, denominator: 4 }, result: { numerator: 3, denominator: 4 },
+    choices: [{ numerator: 3, denominator: 8 }, { numerator: 2, denominator: 4 }, { numerator: 3, denominator: 4 }, { numerator: 5, denominator: 4 }], correctIndex: 2 },
+  { type: 'fraction-operation', numerator: 2, denominator: 4, shape: 'pizza', operation: 'subtract', mode: 'select',
+    left: { numerator: 3, denominator: 4 }, right: { numerator: 1, denominator: 4 }, result: { numerator: 2, denominator: 4 },
+    choices: [{ numerator: 4, denominator: 4 }, { numerator: 2, denominator: 4 }, { numerator: 1, denominator: 4 }, { numerator: 2, denominator: 8 }], correctIndex: 1 },
+  { type: 'fraction-operation', numerator: 3, denominator: 6, shape: 'bar', operation: 'add', mode: 'generate',
+    left: { numerator: 1, denominator: 6 }, right: { numerator: 2, denominator: 6 }, result: { numerator: 3, denominator: 6 } },
+  { type: 'fraction-operation', numerator: 3, denominator: 6, shape: 'pizza', operation: 'subtract', mode: 'generate',
+    left: { numerator: 5, denominator: 6 }, right: { numerator: 2, denominator: 6 }, result: { numerator: 3, denominator: 6 } },
+  { type: 'fraction-operation', numerator: 3, denominator: 5, shape: 'bar', operation: 'add', mode: 'select',
+    left: { numerator: 2, denominator: 5 }, right: { numerator: 1, denominator: 5 }, result: { numerator: 3, denominator: 5 },
+    choices: [{ numerator: 3, denominator: 10 }, { numerator: 4, denominator: 5 }, { numerator: 3, denominator: 5 }, { numerator: 1, denominator: 5 }], correctIndex: 2 },
+  { type: 'fraction-operation', numerator: 4, denominator: 8, shape: 'pizza', operation: 'subtract', mode: 'generate',
+    left: { numerator: 7, denominator: 8 }, right: { numerator: 3, denominator: 8 }, result: { numerator: 4, denominator: 8 } },
+
+  // Level 2: one denominator divides the other
+  { type: 'fraction-operation', numerator: 3, denominator: 4, shape: 'bar', operation: 'add', mode: 'select',
+    left: { numerator: 1, denominator: 2 }, right: { numerator: 1, denominator: 4 }, result: { numerator: 3, denominator: 4 },
+    choices: [{ numerator: 2, denominator: 2 }, { numerator: 2, denominator: 4 }, { numerator: 3, denominator: 4 }, { numerator: 2, denominator: 6 }], correctIndex: 2 },
+  { type: 'fraction-operation', numerator: 1, denominator: 4, shape: 'pizza', operation: 'subtract', mode: 'select',
+    left: { numerator: 3, denominator: 4 }, right: { numerator: 1, denominator: 2 }, result: { numerator: 1, denominator: 4 },
+    choices: [{ numerator: 2, denominator: 4 }, { numerator: 2, denominator: 2 }, { numerator: 1, denominator: 6 }, { numerator: 1, denominator: 4 }], correctIndex: 3 },
+  { type: 'fraction-operation', numerator: 3, denominator: 6, shape: 'bar', operation: 'add', mode: 'generate',
+    left: { numerator: 1, denominator: 3 }, right: { numerator: 1, denominator: 6 }, result: { numerator: 3, denominator: 6 } },
+  { type: 'fraction-operation', numerator: 5, denominator: 8, shape: 'pizza', operation: 'subtract', mode: 'generate',
+    left: { numerator: 3, denominator: 4 }, right: { numerator: 1, denominator: 8 }, result: { numerator: 5, denominator: 8 } },
+  { type: 'fraction-operation', numerator: 7, denominator: 12, shape: 'bar', operation: 'add', mode: 'generate',
+    left: { numerator: 1, denominator: 6 }, right: { numerator: 5, denominator: 12 }, result: { numerator: 7, denominator: 12 } },
+  { type: 'fraction-operation', numerator: 5, denominator: 10, shape: 'pizza', operation: 'subtract', mode: 'select',
+    left: { numerator: 7, denominator: 10 }, right: { numerator: 1, denominator: 5 }, result: { numerator: 5, denominator: 10 },
+    choices: [{ numerator: 6, denominator: 10 }, { numerator: 6, denominator: 5 }, { numerator: 5, denominator: 10 }, { numerator: 6, denominator: 15 }], correctIndex: 2 },
+
+  // Level 3: full LCM required, both sides convert
+  { type: 'fraction-operation', numerator: 7, denominator: 12, shape: 'bar', operation: 'add', mode: 'select',
+    left: { numerator: 1, denominator: 3 }, right: { numerator: 1, denominator: 4 }, result: { numerator: 7, denominator: 12 },
+    choices: [{ numerator: 2, denominator: 3 }, { numerator: 2, denominator: 4 }, { numerator: 7, denominator: 12 }, { numerator: 2, denominator: 7 }], correctIndex: 2 },
+  { type: 'fraction-operation', numerator: 7, denominator: 12, shape: 'pizza', operation: 'subtract', mode: 'select',
+    left: { numerator: 5, denominator: 6 }, right: { numerator: 1, denominator: 4 }, result: { numerator: 7, denominator: 12 },
+    choices: [{ numerator: 4, denominator: 6 }, { numerator: 4, denominator: 4 }, { numerator: 7, denominator: 12 }, { numerator: 4, denominator: 2 }], correctIndex: 2 },
+  { type: 'fraction-operation', numerator: 11, denominator: 12, shape: 'bar', operation: 'add', mode: 'generate',
+    left: { numerator: 2, denominator: 3 }, right: { numerator: 1, denominator: 4 }, result: { numerator: 11, denominator: 12 } },
+  { type: 'fraction-operation', numerator: 13, denominator: 18, shape: 'pizza', operation: 'subtract', mode: 'generate',
+    left: { numerator: 5, denominator: 6 }, right: { numerator: 1, denominator: 9 }, result: { numerator: 13, denominator: 18 } },
 ]

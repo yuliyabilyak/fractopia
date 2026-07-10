@@ -30,6 +30,7 @@ import FractionDetective from '../components/FractionDetective'
 import BalanceScale from '../components/BalanceScale'
 import TimeMachineQuest from '../components/TimeMachineQuest'
 import TimeDetective from '../components/TimeDetective'
+import FractionOperation from '../components/FractionOperation'
 import FeedbackBanner from '../components/FeedbackBanner'
 import ThemeToggle from '../components/ThemeToggle'
 import type { ExerciseResult } from '../types'
@@ -87,6 +88,7 @@ function toExerciseType(type: ExerciseType): ExerciseResult['exerciseType'] {
   if (type === 'time-detective')    return 'time-detective'
   if (type === 'compare-same')      return 'compare-same'
   if (type === 'compare-same-num')  return 'compare-same-num'
+  if (type === 'fraction-operation') return 'fraction-operation'
   return 'pizza'
 }
 
@@ -135,6 +137,8 @@ export default function Fractions() {
         ? `matching ${current.pairs.map(p => `${p.left.n}/${p.left.d}`).join(' ')}`
         : current.type === 'fraction-tower' && current.towerTiles
         ? `fraction-tower ${current.towerTiles.map(t => `${t.n}/${t.d}`).join(' ')}`
+        : current.type === 'fraction-operation' && current.left && current.right
+        ? `fraction-operation ${current.left.numerator}/${current.left.denominator} ${current.operation} ${current.right.numerator}/${current.right.denominator}`
         : `${current.type} ${current.numerator}/${current.denominator}`,
     }
     saveResult(result)
@@ -272,6 +276,23 @@ export default function Fractions() {
       )}
       {current.type === 'time-detective' && feedback === null && current.timeCards && (
         <TimeDetective key={index} cards={current.timeCards} onAnswer={handleAnswer} />
+      )}
+      {current.type === 'fraction-operation' && feedback === null
+        && (current.shape === 'bar' || current.shape === 'pizza')
+        && (current.operation === 'add' || current.operation === 'subtract')
+        && current.left && current.right && current.result && current.mode && (
+        <FractionOperation
+          key={index}
+          shape={current.shape}
+          operation={current.operation}
+          left={current.left}
+          right={current.right}
+          result={current.result}
+          mode={current.mode}
+          choices={current.choices}
+          correctIndex={current.correctIndex}
+          onAnswer={handleAnswer}
+        />
       )}
 
       <FeedbackBanner correct={feedback} onNext={next} />
