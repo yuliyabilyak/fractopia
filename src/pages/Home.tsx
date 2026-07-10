@@ -30,6 +30,9 @@ export default function Home() {
       <button className="btn-training" onClick={() => navigate('/training')}>
         {t('trainingCentre')}
       </button>
+      <button className="btn-training" onClick={() => navigate('/race')}>
+        {t('raceMode')}
+      </button>
     </div>
   )
 }

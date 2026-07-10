@@ -9,6 +9,7 @@ export const LANGS: { code: Lang; flag: string; label: string }[] = [
 type Keys =
   | 'homeTitle' | 'homeSubtitle' | 'start'
   | 'trainingCentre' | 'trainingTitle' | 'trainingBack' | 'trainingPick'
+  | 'raceMode' | 'raceTitle' | 'decimalPrompt' | 'decimalRepeatHint' | 'raceCounter' | 'raceDoneTitle' | 'raceScoreLabel'
   | 'shadeBar' | 'tapPizza' | 'tapHexagon' | 'tapGrid'
   | 'shadeTriangle' | 'tapStar' | 'shadeDiamond' | 'dragMarker' | 'matchEquivalent'
   | 'sortFractions' | 'smallest' | 'largest'
@@ -53,6 +54,13 @@ const T: Record<Lang, Record<Keys, string>> = {
     trainingTitle:  'Training Centre',
     trainingBack:   'Back',
     trainingPick:   'Pick a topic to practice:',
+    raceMode:       '🏁 Decimal Race',
+    raceTitle:      'Decimal Race',
+    decimalPrompt:  'Convert this fraction to a decimal',
+    decimalRepeatHint: '↻ This decimal repeats forever — round it to 3 places.',
+    raceCounter:    'Waypoint {i} / {total} · Score: {score}',
+    raceDoneTitle:  'Finish line! 🏁',
+    raceScoreLabel: 'waypoints correct',
     shadeBar:    'Shade {n}/{d} of the bar',
     tapPizza:    'Tap {n}/{d} slices of the pizza',
     tapHexagon:  'Tap {n}/{d} parts of the hexagon',
@@ -172,6 +180,13 @@ const T: Record<Lang, Record<Keys, string>> = {
     trainingTitle:  'Тренувальний центр',
     trainingBack:   'Назад',
     trainingPick:   'Вибери тему для тренування:',
+    raceMode:       '🏁 Дробові перегони',
+    raceTitle:      'Дробові перегони',
+    decimalPrompt:  'Перетвори цей дріб у десятковий дріб',
+    decimalRepeatHint: '↻ Цей десятковий дріб повторюється нескінченно — округли до 3 знаків.',
+    raceCounter:    'Етап {i} / {total} · Рахунок: {score}',
+    raceDoneTitle:  'Фініш! 🏁',
+    raceScoreLabel: 'правильних етапів',
     shadeBar:    'Зафарбуй {n}/{d} смужки',
     tapPizza:    'Натисни на {n}/{d} шматки піци',
     tapHexagon:  'Натисни на {n}/{d} частини шестикутника',
@@ -291,6 +306,13 @@ const T: Record<Lang, Record<Keys, string>> = {
     trainingTitle:  'Tréninkové centrum',
     trainingBack:   'Zpět',
     trainingPick:   'Vyber téma k procvičení:',
+    raceMode:       '🏁 Desetinné závody',
+    raceTitle:      'Desetinné závody',
+    decimalPrompt:  'Převeď tento zlomek na desetinné číslo',
+    decimalRepeatHint: '↻ Toto desetinné číslo se opakuje do nekonečna — zaokrouhli na 3 místa.',
+    raceCounter:    'Stanoviště {i} / {total} · Skóre: {score}',
+    raceDoneTitle:  'Cíl! 🏁',
+    raceScoreLabel: 'správných stanovišť',
     shadeBar:    'Vybarvi {n}/{d} pruhu',
     tapPizza:    'Klepni na {n}/{d} kousky pizzy',
     tapHexagon:  'Klepni na {n}/{d} části šestiúhelníku',
