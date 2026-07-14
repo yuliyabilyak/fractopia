@@ -8,8 +8,15 @@ interface Props {
   onBack:      () => void
 }
 
+type BadgeKey =
+  | 'pyrBadgeTombExplorer'
+  | 'pyrBadgeScarabCollector'
+  | 'pyrBadgeMasterOfDecimals'
+  | 'pyrBadgeGuardian'
+  | 'pyrBadgeChampion'
+
 interface BadgeDef {
-  key:   string
+  key:   BadgeKey
   emoji: string
   earned: (mistakes: number, seconds: number) => boolean
 }
