@@ -32,6 +32,17 @@ export function playVictorySound() {
   }
 }
 
+export function playChimeSound() {
+  try {
+    const ctx = new AudioContext()
+    // Ancient bell-like chime, ascending fourth
+    tone(ctx, 698.46, 0,    0.35, 'triangle', 0.22)
+    tone(ctx, 932.33, 0.08, 0.5,  'triangle', 0.18)
+  } catch {
+    // AudioContext unavailable
+  }
+}
+
 export function playFeedbackSound(correct: boolean) {
   try {
     const ctx = new AudioContext()
