@@ -39,6 +39,9 @@ export default function Home() {
       <button className="btn-training" onClick={() => navigate('/pyramid')}>
         {t('pyrMode')}
       </button>
+      <button className="btn-training" onClick={() => navigate('/scarab')}>
+        {t('scarabMode')}
+      </button>
     </div>
   )
 }

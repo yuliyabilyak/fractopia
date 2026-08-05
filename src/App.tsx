@@ -5,6 +5,7 @@ import TrainingCentre from './pages/TrainingCentre'
 import DecimalRace from './pages/DecimalRace'
 import DecimalMaze from './pages/DecimalMaze'
 import PyramidClimb from './pages/PyramidClimb'
+import ScarabMatch from './pages/ScarabMatch'
 import { ThemeProvider } from './i18n/ThemeContext'
 import './App.css'
 
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/race" element={<DecimalRace />} />
           <Route path="/maze" element={<DecimalMaze />} />
           <Route path="/pyramid" element={<PyramidClimb />} />
+          <Route path="/scarab" element={<ScarabMatch />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
