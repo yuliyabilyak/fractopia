@@ -6,6 +6,7 @@ import DecimalRace from './pages/DecimalRace'
 import DecimalMaze from './pages/DecimalMaze'
 import PyramidClimb from './pages/PyramidClimb'
 import ScarabMatch from './pages/ScarabMatch'
+import FractionSnake from './pages/FractionSnake'
 import { ThemeProvider } from './i18n/ThemeContext'
 import './App.css'
 
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="/maze" element={<DecimalMaze />} />
           <Route path="/pyramid" element={<PyramidClimb />} />
           <Route path="/scarab" element={<ScarabMatch />} />
+          <Route path="/snake" element={<FractionSnake />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

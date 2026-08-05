@@ -64,8 +64,8 @@ export default function ScarabBoard({ target, options, onMistake, onComplete }: 
     <div className="exercise-card sm-board">
       <p className="exercise-prompt">{t('scarabPrompt')}</p>
 
-      <div className="sm-target-frame">
-        <span className="sm-target-label">{t('scarabTargetLabel')}</span>
+      <div className="frac-target-frame">
+        <span className="frac-target-label">{t('scarabTargetLabel')}</span>
         <span className="frac-display frac-display--large">
           <span className="frac-n">{target.numerator}</span>
           <span className="frac-bar-line" />
@@ -73,7 +73,7 @@ export default function ScarabBoard({ target, options, onMistake, onComplete }: 
         </span>
       </div>
 
-      <p className="sm-progress-label">{t('scarabFoundLabel', { n: found.size, total: totalEquivalents })}</p>
+      <p className="frac-progress-label">{t('scarabFoundLabel', { n: found.size, total: totalEquivalents })}</p>
 
       <div className="sm-scarabs-grid">
         {options.map(opt => (

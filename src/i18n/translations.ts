@@ -26,6 +26,9 @@ type Keys =
   | 'scarabHeartsLeftLabel' | 'scarabBestComboLabel'
   | 'scarabBadgeSeeker' | 'scarabBadgeSharpEye' | 'scarabBadgeFlawless'
   | 'scarabBadgeComboMaster' | 'scarabBadgeGuardian'
+  | 'snakeMode' | 'snakePrompt' | 'snakeCounter' | 'snakeJunctionLabel' | 'snakeWrongHint'
+  | 'snakeLevelClear' | 'snakeTreasureFound'
+  | 'snakeBadgeHatchling' | 'snakeBadgeSharpFang' | 'snakeBadgeGoldenCobra'
   | 'replayAria'
   | 'foAddPrompt' | 'foSubtractPrompt' | 'foContinue' | 'foConvertCaption'
   | 'foCombineAdd' | 'foCombineSubtract' | 'foQuestionAdd' | 'foQuestionSubtract'
@@ -131,6 +134,16 @@ const T: Record<Lang, Record<Keys, string>> = {
     scarabBadgeFlawless:        'Flawless Digger',
     scarabBadgeComboMaster:     'Combo Master',
     scarabBadgeGuardian:        'Temple Guardian',
+    snakeMode:                  '🐍 Fraction Snake',
+    snakePrompt:                'Guide the snake onto tiles equal to the target fraction!',
+    snakeCounter:               'Level {level} / {total}',
+    snakeJunctionLabel:         'Junction {i} / {total}',
+    snakeWrongHint:             'A trap! Not equivalent — try another path.',
+    snakeLevelClear:            'The path is clear! ✨',
+    snakeTreasureFound:         'Treasure Chamber Unlocked! 🐍',
+    snakeBadgeHatchling:        'Snake Hatchling',
+    snakeBadgeSharpFang:        'Sharp Fang',
+    snakeBadgeGoldenCobra:      'Golden Cobra',
     replayAria:  'Replay instructions',
     foAddPrompt:      'Add these fractions',
     foSubtractPrompt: 'Subtract these fractions',
@@ -317,6 +330,16 @@ const T: Record<Lang, Record<Keys, string>> = {
     scarabBadgeFlawless:        'Безпомилковий копач',
     scarabBadgeComboMaster:     'Майстер комбо',
     scarabBadgeGuardian:        'Страж храму',
+    snakeMode:                  '🐍 Дробова змія',
+    snakePrompt:                'Веди змію лише на плитки, що дорівнюють цільовому дробу!',
+    snakeCounter:               'Рівень {level} / {total}',
+    snakeJunctionLabel:         'Розвилка {i} / {total}',
+    snakeWrongHint:             'Пастка! Не рівний — спробуй інший шлях.',
+    snakeLevelClear:            'Шлях вільний! ✨',
+    snakeTreasureFound:         'Скарбницю відкрито! 🐍',
+    snakeBadgeHatchling:        'Змієня',
+    snakeBadgeSharpFang:        'Гостре Ікло',
+    snakeBadgeGoldenCobra:      'Золота Кобра',
     replayAria:  'Повторити інструкцію',
     foAddPrompt:      'Додай ці дроби',
     foSubtractPrompt: 'Відніми ці дроби',
@@ -503,6 +526,16 @@ const T: Record<Lang, Record<Keys, string>> = {
     scarabBadgeFlawless:        'Bezchybný kopáč',
     scarabBadgeComboMaster:     'Mistr kombo',
     scarabBadgeGuardian:        'Strážce chrámu',
+    snakeMode:                  '🐍 Zlomkový had',
+    snakePrompt:                'Veď hada jen na dlaždice rovné cílovému zlomku!',
+    snakeCounter:               'Úroveň {level} / {total}',
+    snakeJunctionLabel:         'Rozcestí {i} / {total}',
+    snakeWrongHint:             'Past! Není stejný — zkus jinou cestu.',
+    snakeLevelClear:            'Cesta je volná! ✨',
+    snakeTreasureFound:         'Pokladní komora odemčena! 🐍',
+    snakeBadgeHatchling:        'Hadí mládě',
+    snakeBadgeSharpFang:        'Ostrý tesák',
+    snakeBadgeGoldenCobra:      'Zlatá kobra',
     replayAria:  'Přehrát instrukce znovu',
     foAddPrompt:      'Sečti tyto zlomky',
     foSubtractPrompt: 'Odečti tyto zlomky',

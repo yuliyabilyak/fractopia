@@ -83,19 +83,19 @@ export default function ScarabMatch() {
         <ThemeToggle />
       </div>
 
-      <div className="sm-hud">
-        <span className="sm-hud-chip sm-hud-hearts" aria-label={t('scarabHeartsLabel')}>
+      <div className="game-hud">
+        <span className="game-hud-chip game-hud-hearts" aria-label={t('scarabHeartsLabel')}>
           {Array.from({ length: STARTING_HEARTS }, (_, i) => (i < hearts ? '❤️' : '🤍')).join('')}
         </span>
-        <span className="sm-hud-chip">
-          <span className="sm-hud-icon" aria-hidden="true">✨</span>{xp} {t('scarabXpLabel')}
+        <span className="game-hud-chip">
+          <span className="game-hud-icon" aria-hidden="true">✨</span>{xp} {t('scarabXpLabel')}
         </span>
-        <span className="sm-hud-chip">
-          <span className="sm-hud-icon" aria-hidden="true">🪙</span>{coins} {t('scarabCoinsLabel')}
+        <span className="game-hud-chip">
+          <span className="game-hud-icon" aria-hidden="true">🪙</span>{coins} {t('scarabCoinsLabel')}
         </span>
         {comboStreak > 0 && (
-          <span className="sm-hud-chip">
-            <span className="sm-hud-icon" aria-hidden="true">🔥</span>{t('scarabComboLabel')} x{comboStreak}
+          <span className="game-hud-chip">
+            <span className="game-hud-icon" aria-hidden="true">🔥</span>{t('scarabComboLabel')} x{comboStreak}
           </span>
         )}
       </div>

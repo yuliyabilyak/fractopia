@@ -1,11 +1,8 @@
 import { shuffle } from './exercises'
+import { gcd, randomInt, fracKey, isEquivalent, scaleFraction, type Fraction } from '../utils/fractionMath'
 
+export type { Fraction }
 export type Difficulty = 'easy' | 'medium' | 'hard'
-
-export interface Fraction {
-  numerator: number
-  denominator: number
-}
 
 export interface ScarabLevelConfig {
   difficulty: Difficulty
@@ -46,26 +43,6 @@ export const LEVELS: ScarabLevelConfig[] = [
 ]
 
 export const TOTAL_LEVELS = LEVELS.length
-
-function gcd(a: number, b: number): number {
-  return b === 0 ? a : gcd(b, a % b)
-}
-
-function randomInt(min: number, max: number): number {
-  return min + Math.floor(Math.random() * (max - min + 1))
-}
-
-function fracKey(f: Fraction): string {
-  return `${f.numerator}/${f.denominator}`
-}
-
-function isEquivalent(a: Fraction, b: Fraction): boolean {
-  return a.numerator * b.denominator === b.numerator * a.denominator
-}
-
-function scaleFraction(base: Fraction, factor: number): Fraction {
-  return { numerator: base.numerator * factor, denominator: base.denominator * factor }
-}
 
 // The starting point for a round: a fraction in lowest terms. Every equivalent
 // option and the target itself are just this fraction scaled by a factor.
