@@ -29,6 +29,9 @@ type Keys =
   | 'snakeMode' | 'snakePrompt' | 'snakeCounter' | 'snakeJunctionLabel' | 'snakeWrongHint'
   | 'snakeLevelClear' | 'snakeTreasureFound'
   | 'snakeBadgeHatchling' | 'snakeBadgeSharpFang' | 'snakeBadgeGoldenCobra'
+  | 'scrollMode' | 'scrollPrompt' | 'scrollWrongHint' | 'scrollHint' | 'scrollExplain'
+  | 'scrollTreasureFound' | 'scrollClear'
+  | 'scrollBadgeApprentice' | 'scrollBadgeScribe' | 'scrollBadgeSage'
   | 'replayAria'
   | 'foAddPrompt' | 'foSubtractPrompt' | 'foContinue' | 'foConvertCaption'
   | 'foCombineAdd' | 'foCombineSubtract' | 'foQuestionAdd' | 'foQuestionSubtract'
@@ -144,6 +147,16 @@ const T: Record<Lang, Record<Keys, string>> = {
     snakeBadgeHatchling:        'Snake Hatchling',
     snakeBadgeSharpFang:        'Sharp Fang',
     snakeBadgeGoldenCobra:      'Golden Cobra',
+    scrollMode:                 '📜 Lost Scroll',
+    scrollPrompt:               'Restore the missing number to complete the scroll!',
+    scrollWrongHint:            'The ink smudges — not quite. Try again!',
+    scrollHint:                 'Hint: both sides equal {p}/{q}.',
+    scrollExplain:              "Both sides equal {p}/{q} — that's why they match!",
+    scrollTreasureFound:        'Ancient Secrets Revealed! 📜',
+    scrollClear:                'Clear',
+    scrollBadgeApprentice:      'Scroll Apprentice',
+    scrollBadgeScribe:          'Careful Scribe',
+    scrollBadgeSage:            'Temple Sage',
     replayAria:  'Replay instructions',
     foAddPrompt:      'Add these fractions',
     foSubtractPrompt: 'Subtract these fractions',
@@ -340,6 +353,16 @@ const T: Record<Lang, Record<Keys, string>> = {
     snakeBadgeHatchling:        'Змієня',
     snakeBadgeSharpFang:        'Гостре Ікло',
     snakeBadgeGoldenCobra:      'Золота Кобра',
+    scrollMode:                 '📜 Загублений папірус',
+    scrollPrompt:               'Віднови пропущене число, щоб завершити папірус!',
+    scrollWrongHint:            'Чорнило розмазалось — не зовсім. Спробуй ще раз!',
+    scrollHint:                 'Підказка: обидві сторони рівні {p}/{q}.',
+    scrollExplain:              'Обидві сторони рівні {p}/{q} — тому вони збігаються!',
+    scrollTreasureFound:        'Стародавні таємниці розкрито! 📜',
+    scrollClear:                'Очистити',
+    scrollBadgeApprentice:      'Шукач папірусів',
+    scrollBadgeScribe:          'Уважний писар',
+    scrollBadgeSage:            'Мудрець храму',
     replayAria:  'Повторити інструкцію',
     foAddPrompt:      'Додай ці дроби',
     foSubtractPrompt: 'Відніми ці дроби',
@@ -536,6 +559,16 @@ const T: Record<Lang, Record<Keys, string>> = {
     snakeBadgeHatchling:        'Hadí mládě',
     snakeBadgeSharpFang:        'Ostrý tesák',
     snakeBadgeGoldenCobra:      'Zlatá kobra',
+    scrollMode:                 '📜 Ztracený svitek',
+    scrollPrompt:               'Doplň chybějící číslo a dokonči svitek!',
+    scrollWrongHint:            'Inkoust se rozmazal — není to tak. Zkus znovu!',
+    scrollHint:                 'Nápověda: obě strany se rovnají {p}/{q}.',
+    scrollExplain:              'Obě strany se rovnají {p}/{q} — proto se shodují!',
+    scrollTreasureFound:        'Starobylá tajemství odhalena! 📜',
+    scrollClear:                'Vymazat',
+    scrollBadgeApprentice:      'Učeň svitků',
+    scrollBadgeScribe:          'Pečlivý písař',
+    scrollBadgeSage:            'Chrámový mudrc',
     replayAria:  'Přehrát instrukce znovu',
     foAddPrompt:      'Sečti tyto zlomky',
     foSubtractPrompt: 'Odečti tyto zlomky',

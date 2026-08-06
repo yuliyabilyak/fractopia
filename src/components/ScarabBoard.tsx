@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLang } from '../i18n/LangContext'
 import { playFeedbackSound } from '../utils/sounds'
 import type { Fraction, ScarabOption } from '../data/scarabMatch'
@@ -24,6 +24,23 @@ export default function ScarabBoard({ target, options, onMistake, onComplete }: 
   const mistakesRef = useRef(0)
   const doneRef = useRef(false)
 
+  // wrong → auto-reset the shake after a beat. Scheduled in an effect (not the click
+  // handler) so an unmount before it fires cancels it, instead of leaving a stale timer.
+  useEffect(() => {
+    if (shakingId === null) return
+    const id = setTimeout(() => { setShakingId(null); setShowWrongHint(false) }, SHAKE_MS)
+    return () => clearTimeout(id)
+  }, [shakingId])
+
+  // all equivalents found → brief "flying to the chest" pulse before the parent advances
+  useEffect(() => {
+    if (!flying) return
+    const id = setTimeout(() => onComplete(mistakesRef.current), FLY_DELAY_MS)
+    return () => clearTimeout(id)
+  // onComplete is stable (defined fresh per round in the parent); only flying should retrigger this
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [flying])
+
   function handleTap(opt: ScarabOption) {
     if (doneRef.current || flying || found.has(opt.id) || shakingId === opt.id) return
 
@@ -35,7 +52,6 @@ export default function ScarabBoard({ target, options, onMistake, onComplete }: 
       if (next.size === totalEquivalents) {
         doneRef.current = true
         setFlying(true)
-        setTimeout(() => onComplete(mistakesRef.current), FLY_DELAY_MS)
       }
     } else {
       playFeedbackSound(false)
@@ -43,10 +59,6 @@ export default function ScarabBoard({ target, options, onMistake, onComplete }: 
       onMistake()
       setShakingId(opt.id)
       setShowWrongHint(true)
-      setTimeout(() => {
-        setShakingId(null)
-        setShowWrongHint(false)
-      }, SHAKE_MS)
     }
   }
 
