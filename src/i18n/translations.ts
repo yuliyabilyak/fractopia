@@ -32,6 +32,10 @@ type Keys =
   | 'scrollMode' | 'scrollPrompt' | 'scrollWrongHint' | 'scrollHint' | 'scrollExplain'
   | 'scrollTreasureFound' | 'scrollClear'
   | 'scrollBadgeApprentice' | 'scrollBadgeScribe' | 'scrollBadgeSage'
+  | 'anubisMode' | 'anubisPrompt' | 'anubisWrongDenom' | 'anubisSimplifyTitle'
+  | 'anubisNumeratorPrompt' | 'anubisBalanceBtn' | 'anubisWrongBalance' | 'anubisBalancedTitle'
+  | 'anubisTreasureFound'
+  | 'anubisBadgeInitiate' | 'anubisBadgeScaleKeeper' | 'anubisBadgeHighPriest' | 'anubisBadgeGuardian'
   | 'replayAria'
   | 'foAddPrompt' | 'foSubtractPrompt' | 'foContinue' | 'foConvertCaption'
   | 'foCombineAdd' | 'foCombineSubtract' | 'foQuestionAdd' | 'foQuestionSubtract'
@@ -157,6 +161,19 @@ const T: Record<Lang, Record<Keys, string>> = {
     scrollBadgeApprentice:      'Scroll Apprentice',
     scrollBadgeScribe:          'Careful Scribe',
     scrollBadgeSage:            'Temple Sage',
+    anubisMode:                 "⚖️ Anubis' Scales",
+    anubisPrompt:               'Choose the common denominator to balance the scales!',
+    anubisWrongDenom:           "The scales tip — that denominator won't balance them. Try again!",
+    anubisSimplifyTitle:        'Simplify first!',
+    anubisNumeratorPrompt:      'Fill in the missing numerators!',
+    anubisBalanceBtn:           'Balance the Scales',
+    anubisWrongBalance:         'Not quite balanced yet — check the highlighted numbers.',
+    anubisBalancedTitle:        'The Scales Are Balanced!',
+    anubisTreasureFound:        'Anubis Opens the Chamber! ⚖️',
+    anubisBadgeInitiate:        'Scale Initiate',
+    anubisBadgeScaleKeeper:     'Scale Keeper',
+    anubisBadgeHighPriest:      'High Priest',
+    anubisBadgeGuardian:        'Eternal Guardian',
     replayAria:  'Replay instructions',
     foAddPrompt:      'Add these fractions',
     foSubtractPrompt: 'Subtract these fractions',
@@ -363,6 +380,19 @@ const T: Record<Lang, Record<Keys, string>> = {
     scrollBadgeApprentice:      'Шукач папірусів',
     scrollBadgeScribe:          'Уважний писар',
     scrollBadgeSage:            'Мудрець храму',
+    anubisMode:                 '⚖️ Ваги Анубіса',
+    anubisPrompt:               'Обери спільний знаменник, щоб зрівноважити ваги!',
+    anubisWrongDenom:           'Ваги нахилилися — цей знаменник не підходить. Спробуй ще раз!',
+    anubisSimplifyTitle:        'Спочатку скороти!',
+    anubisNumeratorPrompt:      'Заповни пропущені чисельники!',
+    anubisBalanceBtn:           'Зрівноважити ваги',
+    anubisWrongBalance:         'Ваги ще не зрівноважені — перевір позначені числа.',
+    anubisBalancedTitle:        'Ваги зрівноважено!',
+    anubisTreasureFound:        'Анубіс відкриває залу! ⚖️',
+    anubisBadgeInitiate:        'Учень ваг',
+    anubisBadgeScaleKeeper:     'Хранитель ваг',
+    anubisBadgeHighPriest:      'Верховний жрець',
+    anubisBadgeGuardian:        'Вічний вартовий',
     replayAria:  'Повторити інструкцію',
     foAddPrompt:      'Додай ці дроби',
     foSubtractPrompt: 'Відніми ці дроби',
@@ -569,6 +599,19 @@ const T: Record<Lang, Record<Keys, string>> = {
     scrollBadgeApprentice:      'Učeň svitků',
     scrollBadgeScribe:          'Pečlivý písař',
     scrollBadgeSage:            'Chrámový mudrc',
+    anubisMode:                 '⚖️ Anubisovy váhy',
+    anubisPrompt:               'Vyber společného jmenovatele, aby se váhy vyrovnaly!',
+    anubisWrongDenom:           'Váhy se naklánějí — tento jmenovatel nesedí. Zkus znovu!',
+    anubisSimplifyTitle:        'Nejprve zkrať!',
+    anubisNumeratorPrompt:      'Doplň chybějící čitatele!',
+    anubisBalanceBtn:           'Vyrovnat váhy',
+    anubisWrongBalance:         'Váhy ještě nejsou vyrovnané — zkontroluj zvýrazněná čísla.',
+    anubisBalancedTitle:        'Váhy jsou vyrovnané!',
+    anubisTreasureFound:        'Anubis otevírá komoru! ⚖️',
+    anubisBadgeInitiate:        'Učeň vah',
+    anubisBadgeScaleKeeper:     'Strážce vah',
+    anubisBadgeHighPriest:      'Nejvyšší kněz',
+    anubisBadgeGuardian:        'Věčný strážce',
     replayAria:  'Přehrát instrukce znovu',
     foAddPrompt:      'Sečti tyto zlomky',
     foSubtractPrompt: 'Odečti tyto zlomky',

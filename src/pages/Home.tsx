@@ -48,6 +48,9 @@ export default function Home() {
       <button className="btn-training" onClick={() => navigate('/scroll')}>
         {t('scrollMode')}
       </button>
+      <button className="btn-training" onClick={() => navigate('/anubis')}>
+        {t('anubisMode')}
+      </button>
     </div>
   )
 }

@@ -8,6 +8,7 @@ import PyramidClimb from './pages/PyramidClimb'
 import ScarabMatch from './pages/ScarabMatch'
 import FractionSnake from './pages/FractionSnake'
 import LostScroll from './pages/LostScroll'
+import AnubisScales from './pages/AnubisScales'
 import { ThemeProvider } from './i18n/ThemeContext'
 import './App.css'
 
@@ -25,6 +26,7 @@ export default function App() {
           <Route path="/scarab" element={<ScarabMatch />} />
           <Route path="/snake" element={<FractionSnake />} />
           <Route path="/scroll" element={<LostScroll />} />
+          <Route path="/anubis" element={<AnubisScales />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
