@@ -51,6 +51,9 @@ export default function Home() {
       <button className="btn-training" onClick={() => navigate('/anubis')}>
         {t('anubisMode')}
       </button>
+      <button className="btn-training" onClick={() => navigate('/pizza')}>
+        {t('ptMode')}
+      </button>
     </div>
   )
 }

@@ -9,6 +9,7 @@ import ScarabMatch from './pages/ScarabMatch'
 import FractionSnake from './pages/FractionSnake'
 import LostScroll from './pages/LostScroll'
 import AnubisScales from './pages/AnubisScales'
+import PizzaTrade from './pages/PizzaTrade'
 import { ThemeProvider } from './i18n/ThemeContext'
 import './App.css'
 
@@ -27,6 +28,7 @@ export default function App() {
           <Route path="/snake" element={<FractionSnake />} />
           <Route path="/scroll" element={<LostScroll />} />
           <Route path="/anubis" element={<AnubisScales />} />
+          <Route path="/pizza" element={<PizzaTrade />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

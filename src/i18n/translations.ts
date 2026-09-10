@@ -6,7 +6,7 @@ export const LANGS: { code: Lang; flag: string; label: string }[] = [
   { code: 'cs', flag: '🇨🇿', label: 'CS' },
 ]
 
-type Keys =
+export type Keys =
   | 'homeTitle' | 'homeSubtitle' | 'start'
   | 'trainingCentre' | 'trainingTitle' | 'trainingBack' | 'trainingPick'
   | 'raceMode' | 'raceTitle' | 'decimalPrompt' | 'raceCounter' | 'raceDoneTitle' | 'raceScoreLabel'
@@ -73,6 +73,14 @@ type Keys =
   | 'counter' | 'correct' | 'wrong'
   | 'doneTitle' | 'doneScore'
   | 'perfectTitle' | 'yourSlice'
+  | 'ptMode' | 'ptCounter' | 'ptAddPrompt' | 'ptSubtractPrompt'
+  | 'ptQuestionSelect' | 'ptQuestionGenerate'
+  | 'ptRegroupAddCaption' | 'ptRegroupSubtractCaption' | 'ptContinue'
+  | 'ptToppingsLabel' | 'ptToppingLocked' | 'ptNeutralWrong'
+  | 'ptDoneTitle' | 'ptOrdersServedSummary' | 'ptBestStreakLabel' | 'ptToppingsThisSessionLabel'
+  | 'ptStreakLabel' | 'ptToppingTrayHint' | 'ptAddPizza' | 'ptRemovePizza'
+  | 'ptToppingCheese' | 'ptToppingMushroom' | 'ptToppingOlives' | 'ptToppingPineapple'
+  | 'ptToppingSausage' | 'ptToppingPepper' | 'ptToppingOnion' | 'ptToppingBasil' | 'ptToppingTomato'
 
 const T: Record<Lang, Record<Keys, string>> = {
   en: {
@@ -293,6 +301,35 @@ const T: Record<Lang, Record<Keys, string>> = {
     doneScore:    'You got {score}/{total} correct.',
     perfectTitle: 'Perfect score! 🌟',
     yourSlice:    'This slice is for you! 🍕',
+    ptMode:          '🍕 Pizza Trade',
+    ptCounter:       'Order {i} / {total}',
+    ptAddPrompt:     "I'd like {left} pizzas plus {right} more, please!",
+    ptSubtractPrompt: 'I ordered {left} pizzas, but please take back {right}!',
+    ptQuestionSelect:   'Which order is correct?',
+    ptQuestionGenerate: 'Build the order!',
+    ptRegroupAddCaption:      '{d} slices out of {d} make a whole new pizza — fresh from the oven! 🍕✨',
+    ptRegroupSubtractCaption: "Not enough slices! Let's cut a fresh pizza into {d} pieces. 🔪🍕",
+    ptContinue:      'Continue',
+    ptToppingsLabel: '{n}/{total} toppings',
+    ptToppingLocked: 'Locked topping',
+    ptNeutralWrong:  "😊 Here's the correct order!",
+    ptDoneTitle:     '🍕 Shop closed for the day!',
+    ptOrdersServedSummary:      'Orders served',
+    ptBestStreakLabel:          'Best streak',
+    ptToppingsThisSessionLabel: 'Toppings unlocked',
+    ptStreakLabel:     '{n} in a row!',
+    ptToppingTrayHint: 'Pick your topping!',
+    ptAddPizza:    'Add a pizza',
+    ptRemovePizza: 'Remove a pizza',
+    ptToppingCheese:    'Extra Cheese',
+    ptToppingMushroom:  'Mushroom',
+    ptToppingOlives:    'Olives',
+    ptToppingPineapple: 'Pineapple',
+    ptToppingSausage:   'Sausage',
+    ptToppingPepper:    'Bell Pepper',
+    ptToppingOnion:     'Onion',
+    ptToppingBasil:     'Basil',
+    ptToppingTomato:    'Tomato',
   },
   uk: {
     homeTitle:   '🍕 Математика з дробами',
@@ -512,6 +549,35 @@ const T: Record<Lang, Record<Keys, string>> = {
     doneScore:    'Правильних відповідей: {score}/{total}.',
     perfectTitle: 'Ідеальний результат! 🌟',
     yourSlice:    'Цей шматочок для тебе! 🍕',
+    ptMode:          '🍕 Піца-обмін',
+    ptCounter:       'Замовлення {i} / {total}',
+    ptAddPrompt:     'Будь ласка, {left} піци плюс ще {right}!',
+    ptSubtractPrompt: 'Я замовив {left} піци, але поверніть {right}!',
+    ptQuestionSelect:   'Яке замовлення правильне?',
+    ptQuestionGenerate: 'Збери замовлення!',
+    ptRegroupAddCaption:      '{d} шматочків із {d} — це ціла нова піца, щойно з печі! 🍕✨',
+    ptRegroupSubtractCaption: 'Шматочків не вистачає! Наріжмо свіжу піцу на {d} шматочків. 🔪🍕',
+    ptContinue:      'Далі',
+    ptToppingsLabel: '{n}/{total} начинок',
+    ptToppingLocked: 'Заблокована начинка',
+    ptNeutralWrong:  '😊 Ось правильне замовлення!',
+    ptDoneTitle:     '🍕 Піцерія закрита на сьогодні!',
+    ptOrdersServedSummary:      'Виконано замовлень',
+    ptBestStreakLabel:          'Найкраща серія',
+    ptToppingsThisSessionLabel: 'Відкрито начинок',
+    ptStreakLabel:     '{n} поспіль!',
+    ptToppingTrayHint: 'Обери начинку!',
+    ptAddPizza:    'Додати піцу',
+    ptRemovePizza: 'Прибрати піцу',
+    ptToppingCheese:    'Багато сиру',
+    ptToppingMushroom:  'Гриби',
+    ptToppingOlives:    'Оливки',
+    ptToppingPineapple: 'Ананас',
+    ptToppingSausage:   'Ковбаски',
+    ptToppingPepper:    'Перець',
+    ptToppingOnion:     'Цибуля',
+    ptToppingBasil:     'Базилік',
+    ptToppingTomato:    'Помідор',
   },
   cs: {
     homeTitle:   '🍕 Matematika se zlomky',
@@ -731,6 +797,35 @@ const T: Record<Lang, Record<Keys, string>> = {
     doneScore:    'Správných odpovědí: {score}/{total}.',
     perfectTitle: 'Perfektní skóre! 🌟',
     yourSlice:    'Tento kousek je pro tebe! 🍕',
+    ptMode:          '🍕 Pizza obchod',
+    ptCounter:       'Objednávka {i} / {total}',
+    ptAddPrompt:     'Chtěl bych {left} pizzy a ještě {right} navíc, prosím!',
+    ptSubtractPrompt: 'Objednal jsem {left} pizzy, ale vraťte {right}!',
+    ptQuestionSelect:   'Která objednávka je správná?',
+    ptQuestionGenerate: 'Sestav objednávku!',
+    ptRegroupAddCaption:      '{d} kousků z {d} tvoří celou novou pizzu — čerstvě z trouby! 🍕✨',
+    ptRegroupSubtractCaption: 'Nedostatek kousků! Nakrájíme čerstvou pizzu na {d} kousků. 🔪🍕',
+    ptContinue:      'Pokračovat',
+    ptToppingsLabel: '{n}/{total} ingrediencí',
+    ptToppingLocked: 'Zamčená ingredience',
+    ptNeutralWrong:  '😊 Tady je správná objednávka!',
+    ptDoneTitle:     '🍕 Pizzerie je dnes zavřená!',
+    ptOrdersServedSummary:      'Vyřízené objednávky',
+    ptBestStreakLabel:          'Nejlepší série',
+    ptToppingsThisSessionLabel: 'Odemčené ingredience',
+    ptStreakLabel:     '{n} za sebou!',
+    ptToppingTrayHint: 'Vyber si ingredienci!',
+    ptAddPizza:    'Přidat pizzu',
+    ptRemovePizza: 'Odebrat pizzu',
+    ptToppingCheese:    'Extra sýr',
+    ptToppingMushroom:  'Houby',
+    ptToppingOlives:    'Olivy',
+    ptToppingPineapple: 'Ananas',
+    ptToppingSausage:   'Klobása',
+    ptToppingPepper:    'Paprika',
+    ptToppingOnion:     'Cibule',
+    ptToppingBasil:     'Bazalka',
+    ptToppingTomato:    'Rajče',
   },
 }
 
