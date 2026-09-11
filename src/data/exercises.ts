@@ -6,7 +6,7 @@ import type { DetectiveCard } from '../components/FractionDetective'
 import type { TimeCard } from '../components/TimeDetective'
 import type { Fraction } from '../types'
 
-export type ExerciseType = 'bar' | 'pizza' | 'compare' | 'compare-same' | 'compare-same-num' | 'hexagon' | 'grid' | 'identify' | 'triangle' | 'star' | 'diamond' | 'number-line' | 'equivalent' | 'sort' | 'hit-target' | 'time-fraction' | 'fraction-quantity' | 'time-operation' | 'matching' | 'fraction-tower' | 'ice-cream' | 'train' | 'rocket' | 'monster' | 'detective' | 'balance' | 'time-machine' | 'time-detective' | 'fraction-operation'
+export type ExerciseType = 'bar' | 'pizza' | 'compare' | 'compare-same' | 'compare-same-num' | 'hexagon' | 'grid' | 'identify' | 'triangle' | 'star' | 'diamond' | 'number-line' | 'equivalent' | 'sort' | 'hit-target' | 'time-fraction' | 'fraction-quantity' | 'time-operation' | 'matching' | 'fraction-tower' | 'ice-cream' | 'train' | 'rocket' | 'monster' | 'detective' | 'balance' | 'time-machine' | 'time-detective' | 'fraction-operation' | 'fraction-divide'
 
 export interface Exercise {
   type: ExerciseType
@@ -40,6 +40,33 @@ export interface Exercise {
   timeCards?: TimeCard[]
   mode?: 'select' | 'generate'
   result?: Fraction
+  // --- fraction-divide ---
+  model?: 'measure' | 'partition' | 'grouping'
+  dividendWhole?: number
+  divisorD?: number
+  dividendN?: number
+  dividendD?: number
+  divisorN?: number
+  numChoices?: number[]
+}
+
+/**
+ * Narrowed view of the fraction-divide entries in ALL_EXERCISES.
+ *
+ *   measure    whole ÷ unit fraction   — dividendWhole ÷ 1/divisorD, whole-number `answer`
+ *   partition  fraction ÷ whole        — dividendN/dividendD ÷ divisor, fraction `result`
+ *   grouping   fraction ÷ fraction     — dividendN/dividendD ÷ divisorN/divisorD, whole-number `answer`
+ *
+ * Shared fields carry the same meaning as everywhere else in this file:
+ * `shape` picks the renderer, `mode` picks select vs generate, `choices` /
+ * `correctIndex` drive fraction choices and `numChoices` / `correctIndex`
+ * drive whole-number choices.
+ */
+export interface FractionDivideExercise extends Exercise {
+  type: 'fraction-divide'
+  model: 'measure' | 'partition' | 'grouping'
+  shape: 'bar' | 'pizza'
+  mode: 'select' | 'generate'
 }
 
 export function shuffle<T>(arr: T[]): T[] {
@@ -881,4 +908,61 @@ export const ALL_EXERCISES: Exercise[] = [
     left: { numerator: 2, denominator: 3 }, right: { numerator: 1, denominator: 4 }, result: { numerator: 11, denominator: 12 } },
   { type: 'fraction-operation', numerator: 13, denominator: 18, shape: 'pizza', operation: 'subtract', mode: 'generate',
     left: { numerator: 5, denominator: 6 }, right: { numerator: 1, denominator: 9 }, result: { numerator: 13, denominator: 18 } },
+  // --- fraction divide ---
+  // Level 1: whole ÷ unit fraction ("how many fit") — the answer is a WHOLE NUMBER,
+  // carried in `answer`, not in `result`.  numerator/denominator mirror the dividend.
+  { type: 'fraction-divide', model: 'measure', shape: 'bar', mode: 'select',
+    numerator: 3, denominator: 1, dividendWhole: 3, divisorD: 2, answer: 6,
+    numChoices: [3, 6, 2, 12], correctIndex: 1 },
+  { type: 'fraction-divide', model: 'measure', shape: 'pizza', mode: 'select',
+    numerator: 2, denominator: 1, dividendWhole: 2, divisorD: 4, answer: 8,
+    numChoices: [4, 6, 8, 16], correctIndex: 2 },
+  { type: 'fraction-divide', model: 'measure', shape: 'bar', mode: 'generate',
+    numerator: 4, denominator: 1, dividendWhole: 4, divisorD: 2, answer: 8 },
+  { type: 'fraction-divide', model: 'measure', shape: 'pizza', mode: 'generate',
+    numerator: 3, denominator: 1, dividendWhole: 3, divisorD: 3, answer: 9 },
+  { type: 'fraction-divide', model: 'measure', shape: 'bar', mode: 'select',
+    numerator: 5, denominator: 1, dividendWhole: 5, divisorD: 2, answer: 10,
+    numChoices: [5, 10, 7, 20], correctIndex: 1 },
+  { type: 'fraction-divide', model: 'measure', shape: 'pizza', mode: 'select',
+    numerator: 2, denominator: 1, dividendWhole: 2, divisorD: 6, answer: 12,
+    numChoices: [6, 8, 12, 24], correctIndex: 2 },
+  { type: 'fraction-divide', model: 'measure', shape: 'bar', mode: 'generate',
+    numerator: 3, denominator: 1, dividendWhole: 3, divisorD: 4, answer: 12 },
+  { type: 'fraction-divide', model: 'measure', shape: 'pizza', mode: 'generate',
+    numerator: 2, denominator: 1, dividendWhole: 2, divisorD: 3, answer: 6 },
+
+  // Level 2: fraction ÷ whole ("partition further") — the answer is a FRACTION,
+  // carried in `result`.  dividendD * divisor stays <= 20 so the shape stays readable.
+  { type: 'fraction-divide', model: 'partition', shape: 'bar', mode: 'select',
+    numerator: 1, denominator: 2, dividendN: 1, dividendD: 2, divisor: 4, result: { numerator: 1, denominator: 8 },
+    choices: [{ numerator: 1, denominator: 6 }, { numerator: 1, denominator: 8 }, { numerator: 2, denominator: 8 }, { numerator: 1, denominator: 4 }], correctIndex: 1 },
+  { type: 'fraction-divide', model: 'partition', shape: 'pizza', mode: 'select',
+    numerator: 2, denominator: 3, dividendN: 2, dividendD: 3, divisor: 2, result: { numerator: 2, denominator: 6 },
+    choices: [{ numerator: 1, denominator: 3 }, { numerator: 2, denominator: 6 }, { numerator: 2, denominator: 5 }, { numerator: 4, denominator: 6 }], correctIndex: 1 },
+  { type: 'fraction-divide', model: 'partition', shape: 'bar', mode: 'generate',
+    numerator: 1, denominator: 2, dividendN: 1, dividendD: 2, divisor: 3, result: { numerator: 1, denominator: 6 } },
+  { type: 'fraction-divide', model: 'partition', shape: 'pizza', mode: 'generate',
+    numerator: 3, denominator: 4, dividendN: 3, dividendD: 4, divisor: 2, result: { numerator: 3, denominator: 8 } },
+  { type: 'fraction-divide', model: 'partition', shape: 'bar', mode: 'select',
+    numerator: 1, denominator: 3, dividendN: 1, dividendD: 3, divisor: 4, result: { numerator: 1, denominator: 12 },
+    choices: [{ numerator: 1, denominator: 7 }, { numerator: 1, denominator: 12 }, { numerator: 2, denominator: 12 }, { numerator: 1, denominator: 4 }], correctIndex: 1 },
+  { type: 'fraction-divide', model: 'partition', shape: 'pizza', mode: 'select',
+    numerator: 2, denominator: 5, dividendN: 2, dividendD: 5, divisor: 2, result: { numerator: 2, denominator: 10 },
+    choices: [{ numerator: 1, denominator: 5 }, { numerator: 2, denominator: 10 }, { numerator: 2, denominator: 7 }, { numerator: 4, denominator: 10 }], correctIndex: 1 },
+  { type: 'fraction-divide', model: 'partition', shape: 'bar', mode: 'generate',
+    numerator: 3, denominator: 4, dividendN: 3, dividendD: 4, divisor: 4, result: { numerator: 3, denominator: 16 } },
+  { type: 'fraction-divide', model: 'partition', shape: 'pizza', mode: 'generate',
+    numerator: 1, denominator: 4, dividendN: 1, dividendD: 4, divisor: 4, result: { numerator: 1, denominator: 16 } },
+
+  // Level 3 (stretch): fraction ÷ fraction — past standard 5th-grade scope, so only
+  // a handful of entries.  Whole-number answer again, in `answer`.
+  { type: 'fraction-divide', model: 'grouping', shape: 'bar', mode: 'select',
+    numerator: 2, denominator: 3, dividendN: 2, dividendD: 3, divisorN: 1, divisorD: 6, answer: 4,
+    numChoices: [2, 4, 3, 8], correctIndex: 1 },
+  { type: 'fraction-divide', model: 'grouping', shape: 'pizza', mode: 'select',
+    numerator: 1, denominator: 2, dividendN: 1, dividendD: 2, divisorN: 1, divisorD: 4, answer: 2,
+    numChoices: [2, 4, 1, 8], correctIndex: 0 },
+  { type: 'fraction-divide', model: 'grouping', shape: 'bar', mode: 'generate',
+    numerator: 3, denominator: 4, dividendN: 3, dividendD: 4, divisorN: 1, divisorD: 8, answer: 6 },
 ]

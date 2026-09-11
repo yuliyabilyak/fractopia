@@ -31,6 +31,7 @@ import BalanceScale from '../components/BalanceScale'
 import TimeMachineQuest from '../components/TimeMachineQuest'
 import TimeDetective from '../components/TimeDetective'
 import FractionOperation from '../components/FractionOperation'
+import FractionDivide from '../components/FractionDivide'
 import { ALL_EXERCISES, type Exercise, type ExerciseType } from '../data/exercises'
 
 interface Topic {
@@ -64,6 +65,7 @@ const TOPICS: Topic[] = [
   { id: 'detective',        emoji: '🔎', label: 'Detective',        types: ['detective'] },
   { id: 'balance',          emoji: '🪨', label: 'Balance',          types: ['balance'] },
   { id: 'fraction-operation', emoji: '➕', label: 'Adding & Subtracting', types: ['fraction-operation'] },
+  { id: 'fraction-divide', emoji: '➗', label: 'Dividing Fractions', types: ['fraction-divide'] },
 ]
 
 function compareAnswer(ex: Exercise, answer: 'left' | 'right' | 'equal'): boolean {
@@ -252,6 +254,28 @@ export default function TrainingCentre() {
               right={current.right}
               result={current.result}
               mode={current.mode}
+              choices={current.choices}
+              correctIndex={current.correctIndex}
+              onAnswer={handleAnswer}
+            />
+          )}
+          {current.type === 'fraction-divide' && feedback === null
+            && (current.shape === 'bar' || current.shape === 'pizza')
+            && current.model && current.mode && (
+            <FractionDivide
+              key={exKey}
+              model={current.model}
+              shape={current.shape}
+              mode={current.mode}
+              dividendWhole={current.dividendWhole}
+              dividendN={current.dividendN}
+              dividendD={current.dividendD}
+              divisor={current.divisor}
+              divisorN={current.divisorN}
+              divisorD={current.divisorD}
+              answer={current.answer}
+              result={current.result}
+              numChoices={current.numChoices}
               choices={current.choices}
               correctIndex={current.correctIndex}
               onAnswer={handleAnswer}

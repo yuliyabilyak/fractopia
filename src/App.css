@@ -465,6 +465,142 @@ body {
   opacity: 1;
 }
 
+/* ---- Fraction divide (÷) ---- */
+@keyframes fd-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* the subdivide moment: pieces spread apart, then settle */
+@keyframes fd-split {
+  0%   { transform: scaleX(1);    opacity: 0.55; }
+  55%  { transform: scaleX(1.06); opacity: 1; }
+  100% { transform: scaleX(1);    opacity: 1; }
+}
+
+.fd-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  animation: fd-fade-in 0.35s ease;
+}
+
+.fd-split-anim {
+  animation: fd-split 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center;
+}
+
+.fd-shape-row,
+.fd-group-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100%;
+}
+
+.fd-caption {
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  margin: 0;
+  text-align: center;
+}
+
+/* Whole-number answer: big plain digits, never a numerator/denominator stack,
+   so "how many pieces" is never read as "what fraction". */
+.fd-count-display {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--orange-dark);
+  margin: 4px 0;
+}
+
+.fd-number-choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+}
+
+.fd-number-btn {
+  background: var(--surface);
+  border: 3px solid var(--orange-border);
+  border-radius: 16px;
+  padding: 14px;
+  min-height: 72px;
+  font-family: inherit;
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--text);
+  cursor: pointer;
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.12s, border-color 0.12s;
+}
+
+.fd-number-btn:hover:not(:disabled) {
+  background: var(--orange-surface);
+  border-color: var(--orange);
+  transform: scale(1.04);
+}
+
+.fd-number-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.fd-number-btn--correct,
+.fd-number-btn--correct:disabled {
+  border-color: #22c55e;
+  background: var(--correct-bg);
+  opacity: 1;
+}
+
+.fd-choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+}
+
+.fd-choice-btn {
+  background: var(--surface);
+  border: 3px solid var(--orange-border);
+  border-radius: 16px;
+  padding: 10px;
+  min-height: 72px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.12s, border-color 0.12s;
+}
+
+.fd-choice-btn:hover:not(:disabled) {
+  background: var(--orange-surface);
+  border-color: var(--orange);
+  transform: scale(1.04);
+}
+
+.fd-choice-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.fd-choice-btn--correct,
+.fd-choice-btn--correct:disabled {
+  border-color: #22c55e;
+  background: var(--correct-bg);
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fd-stage,
+  .fd-split-anim { animation: none; }
+}
+
 /* ---- Training Centre ---- */
 .training-page {
   min-height: 100svh;

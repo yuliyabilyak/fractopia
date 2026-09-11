@@ -21,15 +21,19 @@ An interactive fractions learning app for children with dyslexia. Two pages:
 
 ### Exercise system
 
-`Fractions.tsx` holds the `ALL_EXERCISES` array (400+ entries), shuffles 12 per session, and renders the matching component conditionally. Adding a new exercise type requires **seven coordinated changes**:
+`src/data/exercises.ts` holds the `ALL_EXERCISES` array (400+ entries) and the `Exercise` /
+`ExerciseType` types. `Fractions.tsx` shuffles 12 per session and renders the matching component
+conditionally; `TrainingCentre.tsx` renders the same components one topic at a time. Adding a new
+exercise type requires **eight coordinated changes**:
 
 1. **New component** in `src/components/` — receives `onAnswer: (correct: boolean) => void`, wraps content in `.exercise-card`
-2. **`ExerciseType` union** in `Fractions.tsx` — add the new string literal
-3. **`ALL_EXERCISES` array** — add puzzle entries
-4. **Conditional render** in the JSX — `{current.type === 'new-type' && feedback === null && (...)}`
+2. **`ExerciseType` union** in `src/data/exercises.ts` — add the new string literal (and any new optional fields on `Exercise`)
+3. **`ALL_EXERCISES` array** in `src/data/exercises.ts` — add puzzle entries
+4. **Conditional render** in `Fractions.tsx` JSX — `{current.type === 'new-type' && feedback === null && (...)}`
 5. **`toExerciseType()`** in `Fractions.tsx` — map the new type to the `ExerciseResult['exerciseType']` union
 6. **`src/types/index.ts`** — add the literal to `ExerciseResult['exerciseType']`
 7. **`src/i18n/translations.ts`** — add translation keys for all three languages (en / uk / cs)
+8. **`TrainingCentre.tsx`** — add the same conditional render *and* a `TOPICS` entry, or the type is unreachable from the Training Centre
 
 ### Canvas exercises vs CSS/HTML exercises
 

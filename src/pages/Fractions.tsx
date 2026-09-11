@@ -31,6 +31,7 @@ import BalanceScale from '../components/BalanceScale'
 import TimeMachineQuest from '../components/TimeMachineQuest'
 import TimeDetective from '../components/TimeDetective'
 import FractionOperation from '../components/FractionOperation'
+import FractionDivide from '../components/FractionDivide'
 import FeedbackBanner from '../components/FeedbackBanner'
 import ThemeToggle from '../components/ThemeToggle'
 import type { ExerciseResult } from '../types'
@@ -50,7 +51,7 @@ function compareAnswer(ex: Exercise, answer: 'left' | 'right' | 'equal'): boolea
 
 function exercisePoints(type: ExerciseType): number {
   if (['bar', 'pizza', 'hexagon', 'grid', 'triangle', 'star', 'diamond'].includes(type)) return 10
-  if (['time-operation', 'train', 'rocket', 'detective', 'balance'].includes(type)) return 20
+  if (['time-operation', 'train', 'rocket', 'detective', 'balance', 'fraction-divide'].includes(type)) return 20
   return 15
 }
 
@@ -89,6 +90,7 @@ function toExerciseType(type: ExerciseType): ExerciseResult['exerciseType'] {
   if (type === 'compare-same')      return 'compare-same'
   if (type === 'compare-same-num')  return 'compare-same-num'
   if (type === 'fraction-operation') return 'fraction-operation'
+  if (type === 'fraction-divide')    return 'fraction-divide'
   return 'pizza'
 }
 
@@ -139,6 +141,12 @@ export default function Fractions() {
         ? `fraction-tower ${current.towerTiles.map(t => `${t.n}/${t.d}`).join(' ')}`
         : current.type === 'fraction-operation' && current.left && current.right
         ? `fraction-operation ${current.left.numerator}/${current.left.denominator} ${current.operation} ${current.right.numerator}/${current.right.denominator}`
+        : current.type === 'fraction-divide'
+        ? current.model === 'measure'
+          ? `fraction-divide measure ${current.dividendWhole} / 1/${current.divisorD}`
+          : current.model === 'partition'
+          ? `fraction-divide partition ${current.dividendN}/${current.dividendD} / ${current.divisor}`
+          : `fraction-divide grouping ${current.dividendN}/${current.dividendD} / ${current.divisorN}/${current.divisorD}`
         : `${current.type} ${current.numerator}/${current.denominator}`,
     }
     saveResult(result)
@@ -289,6 +297,28 @@ export default function Fractions() {
           right={current.right}
           result={current.result}
           mode={current.mode}
+          choices={current.choices}
+          correctIndex={current.correctIndex}
+          onAnswer={handleAnswer}
+        />
+      )}
+      {current.type === 'fraction-divide' && feedback === null
+        && (current.shape === 'bar' || current.shape === 'pizza')
+        && current.model && current.mode && (
+        <FractionDivide
+          key={index}
+          model={current.model}
+          shape={current.shape}
+          mode={current.mode}
+          dividendWhole={current.dividendWhole}
+          dividendN={current.dividendN}
+          dividendD={current.dividendD}
+          divisor={current.divisor}
+          divisorN={current.divisorN}
+          divisorD={current.divisorD}
+          answer={current.answer}
+          result={current.result}
+          numChoices={current.numChoices}
           choices={current.choices}
           correctIndex={current.correctIndex}
           onAnswer={handleAnswer}
