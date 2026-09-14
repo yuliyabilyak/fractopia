@@ -54,6 +54,9 @@ export default function Home() {
       <button className="btn-training" onClick={() => navigate('/pizza')}>
         {t('ptMode')}
       </button>
+      <button className="btn-training" onClick={() => navigate('/scribe')}>
+        {t('scribeMode')}
+      </button>
     </div>
   )
 }

@@ -5476,3 +5476,298 @@ body {
   .pt-op-symbol   { font-size: 1.6rem; }
   .pt-choice-row  { grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); }
 }
+
+/* ---- Scribe's Pyramid ---- */
+
+.scb-board { gap: 16px; }
+
+.scb-caption {
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  margin: 0;
+  text-align: center;
+}
+
+.scb-hint {
+  font-size: 0.95rem;
+  text-align: center;
+  color: var(--wrong-text);
+  background: var(--wrong-bg);
+  border-radius: 10px;
+  padding: 8px 14px;
+  margin: 0;
+  width: 100%;
+}
+
+/* -- doubling table -- */
+
+.scb-doubling-table {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.scb-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 3px solid var(--orange-border);
+  border-radius: 14px;
+  padding: 10px 16px;
+  min-height: 52px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.12s, border-color 0.12s;
+}
+
+.scb-row:hover:not(:disabled) { border-color: var(--orange); transform: translateY(-1px); }
+
+.scb-row--selected {
+  background: var(--orange-surface-alt);
+  border-color: var(--orange);
+  transform: scale(1.02);
+}
+
+@keyframes scb-shake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-6px); }
+  50%      { transform: translateX(6px); }
+  80%      { transform: translateX(-3px); }
+}
+
+.scb-row--wrong {
+  animation: scb-shake 0.4s ease-in-out;
+  border-color: #dc2626 !important;
+  background: var(--wrong-bg) !important;
+}
+
+.scb-row-multiplier {
+  display: flex;
+  gap: 1px;
+  min-width: 52px;
+  font-size: 1rem;
+}
+
+.scb-row-label {
+  font-weight: 700;
+  color: var(--orange-dark);
+}
+
+.scb-running-total {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+  text-align: center;
+}
+
+.scb-reveal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  animation: dm-enter 0.4s ease-out;
+}
+
+.scb-reveal-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--orange-dark);
+  margin: 0;
+}
+
+/* -- Egyptian decomposition -- */
+
+.scb-decomp-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.scb-decomp-term {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scb-plus {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--orange-dark);
+}
+
+.scb-choice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.scb-choice-btn {
+  width: 100%;
+  min-height: 56px;
+}
+
+.scb-choice-btn--wrong {
+  animation: scb-shake 0.4s ease-in-out;
+  border-color: #dc2626 !important;
+  background: var(--wrong-bg) !important;
+}
+
+.scb-sack {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-height: 84px;
+  width: 100%;
+  max-width: 420px;
+  background: var(--surface-subtle);
+  border: 3px dashed var(--border-subtle);
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.scb-sack-empty {
+  font-size: 2rem;
+  opacity: 0.5;
+}
+
+.scb-jar-pool {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+
+.scb-jar {
+  min-width: 64px;
+  min-height: 52px;
+  padding: 8px 14px;
+  background: var(--orange-surface);
+  border: 3px solid var(--orange-border);
+  border-radius: 14px;
+  cursor: grab;
+  touch-action: manipulation;
+  transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.12s;
+}
+
+.scb-jar:hover  { border-color: var(--orange); }
+.scb-jar:active { cursor: grabbing; transform: scale(0.95); }
+
+.scb-jar--placed {
+  background: var(--correct-bg);
+  cursor: pointer;
+}
+
+/* -- pyramid scene -- */
+
+.scb-scene {
+  position: relative;
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #fde9c8 0%, #f3c987 45%, #d99a4e 100%);
+  box-shadow: 0 4px 24px var(--shadow);
+  padding: 14px 0 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+[data-theme="dark"] .scb-scene {
+  background: linear-gradient(180deg, #2a1a08 0%, #40260c 45%, #5c3813 100%);
+}
+
+.scb-sky {
+  position: relative;
+  width: 100%;
+  height: 44px;
+}
+
+.scb-decor { position: absolute; font-size: 1.5rem; }
+.scb-decor--sun        { top: 0; right: 22px; animation: pyr-sun-glow 3s ease-in-out infinite; }
+.scb-decor--palm-left  { bottom: -6px; left: 20px; font-size: 1.6rem; opacity: 0.85; }
+.scb-decor--palm-right { bottom: -6px; right: 20px; font-size: 1.6rem; opacity: 0.85; }
+.scb-decor--scribe     { top: 2px; left: 50%; transform: translateX(-50%); font-size: 1.7rem; }
+
+.scb-pyramid {
+  position: relative;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 8px 0 4px;
+}
+
+.scb-tier {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.scb-tier--0 { width: 96%; }
+.scb-tier--1 { width: 78%; }
+.scb-tier--2 { width: 60%; }
+.scb-tier--3 { width: 42%; }
+.scb-tier--4 { width: 24%; }
+
+.scb-stone {
+  flex: 1;
+  aspect-ratio: 1.6;
+  min-width: 20px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.25);
+  border: 1.5px solid rgba(153, 92, 27, 0.4);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.scb-stone--placed {
+  background: #d4a24c;
+  border-color: #92621f;
+  box-shadow: 0 0 6px 1px rgba(212, 162, 76, 0.7);
+}
+
+.scb-builder {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  font-size: 1.6rem;
+  transition: bottom 0.4s ease;
+}
+
+.scb-capstone-glow {
+  text-align: center;
+  font-size: 1.6rem;
+  animation: dm-enter 0.4s ease-out;
+}
+
+.scb-stone-pile {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+  max-width: 320px;
+}
+
+.scb-stone-pile .scb-stone {
+  flex: none;
+  width: 20px;
+  min-width: 0;
+}
+
+@media (max-width: 480px) {
+  .scb-row      { padding: 8px 12px; font-size: 0.95rem; }
+  .scb-jar      { min-width: 56px; padding: 6px 10px; }
+  .scb-sack     { min-height: 68px; }
+}
