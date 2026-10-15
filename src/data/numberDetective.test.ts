@@ -1,10 +1,11 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import {
-  DIVISORS, LEVELS, LEVEL_LENGTH, RULE_PAIRS,
+  DIVISORS, LEVELS, LEVEL_LENGTH, LEVEL1_INTRO, RULE_PAIRS,
   ruleSays, isDivisible, digitSum, lastDigits, explain, explainBoth,
   formatNumber, tokenizeNumber, isHighlighted, generateNumber, digitRange,
   yesNoChallenge, twoRulesChallenge, allDivisorsChallenge, generateLevel, generatePractice,
+  sevenRounds, alternatingDigits, maxDigitsFor,
   checkAnswer, challengeRules, addRuleResults, ruleStanding, rulesNeedingPractice, unlockedLevel,
   type Challenge, type Rng, type Step,
 } from './numberDetective.ts'
@@ -128,6 +129,66 @@ test('explanation verdicts always match arithmetic', () => {
   }
 })
 
+test('divisible by 25: the last two digits decide', () => {
+  const yes = explain(3_475, 25)
+  assert.deepEqual(kinds(yes.steps), ['rule', 'last-part', 'divide'])
+  assert.ok(yes.steps[1].kind === 'last-part' && yes.steps[1].part === '75')
+  assert.equal(yes.conclusion.ok, true)
+  assert.equal(explain(3_465, 25).conclusion.ok, false)
+  assert.equal(explain(1_200, 25).conclusion.ok, true)
+})
+
+test('divisible by 11: every other digit from the end, the rest, then the difference', () => {
+  // 918,082: every other digit from the end is 2, 0, 1; digits are listed left to right
+  assert.deepEqual(alternatingDigits(918_082), { odd: [1, 0, 2], even: [9, 8, 8] })
+  const ex = explain(918_082, 11)
+  assert.deepEqual(kinds(ex.steps), ['rule', 'alt-sum', 'alt-sum', 'difference', 'divide'])
+  assert.deepEqual(ex.steps.map(s => s.highlight), ['odd', 'odd', 'even', 'all', 'all'])
+  const diff = ex.steps[3]
+  assert.ok(diff.kind === 'difference')
+  assert.deepEqual([diff.big, diff.small, diff.result], [25, 3, 22])
+  assert.equal(ex.conclusion.ok, true) // 918,082 = 11 × 83,462
+
+  // difference 0 also counts: 121 → (1 + 1) − 2 = 0
+  const zero = explain(121, 11)
+  assert.ok(zero.steps[3].kind === 'difference' && zero.steps[3].result === 0)
+  assert.equal(zero.conclusion.ok, true)
+  assert.equal(explain(122, 11).conclusion.ok, false)
+})
+
+test('divisible by 7: double the last digit, take smaller from bigger, repeat', () => {
+  // 1,393 → 139 and 6 → 133 → 13 and 6 → 7 ✓
+  assert.deepEqual(sevenRounds(1_393), [
+    { from: 1_393, rest: 139, last: 3, doubled: 6, result: 133 },
+    { from: 133, rest: 13, last: 3, doubled: 6, result: 7 },
+  ])
+  const ex = explain(1_393, 7)
+  assert.deepEqual(kinds(ex.steps), ['rule', 'seven-round', 'seven-round', 'divide'])
+  assert.deepEqual(ex.steps.map(s => s.highlight), [1, 1, 0, 0])
+  assert.equal(ex.conclusion.ok, true)
+
+  // the doubled digit can be bigger than the rest: 108 → 16 − 10 = 6, never −6
+  const flipped = sevenRounds(108)[0]
+  assert.equal(flipped.result, 6)
+  const step = explain(108, 7).steps[1]
+  assert.ok(step.kind === 'seven-round' && step.big === 16 && step.small === 10)
+  assert.equal(explain(108, 7).conclusion.ok, false)
+})
+
+test('7 is only asked about numbers of up to 4 digits', () => {
+  assert.equal(maxDigitsFor(7), 4)
+  const rng = seeded(17)
+  for (let i = 0; i < 300; i++) {
+    const c = yesNoChallenge(rng, 7, 6, i % 2 === 0, true)
+    assert.ok(digitCount(c.n) <= 4)
+    assert.ok(sevenRounds(c.n).length <= 2, 'at most two rounds of working')
+  }
+  for (let i = 0; i < 500; i++) {
+    const c = allDivisorsChallenge(rng, 5 + (i % 2), 6)
+    assert.ok(c.kind === 'all-divisors' && !c.options.includes(7))
+  }
+})
+
 test('two-rule explanations group each rule and require both', () => {
   const ex = explainBoth(1_236, [3, 4])
   assert.deepEqual(ex.steps.map(s => s.group), [3, 3, 3, 4, 4, 4])
@@ -217,7 +278,7 @@ test('two-rule challenges hit each requested outcome', () => {
 test('all-divisors challenges are unambiguous: at least one right and one wrong option', () => {
   const rng = seeded(9)
   for (let i = 0; i < 2_000; i++) {
-    const optionCount = 5 + (i % 4) // 5–8
+    const optionCount = 5 + (i % 4) // 5–8, out of up to 11 candidates
     const c = allDivisorsChallenge(rng, 3 + (i % 4), optionCount)
     assert.ok(c.kind === 'all-divisors')
     assert.equal(c.options.length, optionCount)
@@ -246,13 +307,15 @@ test('levels follow the progression and never repeat a number', () => {
       if (level === 1) {
         assert.ok(challenges.every(c => c.kind === 'yes-no' && c.divisor !== 8))
         assert.ok(lengths.every(l => l === 3))
-        // the single rules are introduced one by one, in a fixed order
-        assert.deepEqual(challenges.slice(0, 7).map(c => c.kind === 'yes-no' && c.divisor), [10, 2, 5, 3, 9, 4, 6])
+        // every rule except 8 is introduced once, in a fixed order
+        assert.deepEqual(challenges.map(c => c.kind === 'yes-no' && c.divisor), LEVEL1_INTRO)
+        assert.deepEqual(new Set([...LEVEL1_INTRO, 8]), new Set(DIVISORS))
       }
       if (level === 2) {
         assert.ok(challenges.every(c => c.kind === 'yes-no'))
-        assert.ok(lengths.every(l => l >= 4 && l <= 6))
-        assert.deepEqual(new Set(challenges.map(c => c.kind === 'yes-no' && c.divisor)), new Set(DIVISORS))
+        assert.ok(challenges.some(c => c.kind === 'yes-no' && c.divisor === 8), 'level 2 brings in 8')
+        assert.equal(new Set(challenges.map(c => c.kind === 'yes-no' && c.divisor)).size, challenges.length, 'no rule twice')
+        assert.ok(challenges.every(c => c.kind === 'yes-no' && digitCount(c.n) >= 4 && digitCount(c.n) <= maxDigitsFor(c.divisor)))
       }
       if (level === 3) assert.ok(challenges.every(c => c.kind === 'two-rules'))
       if (level === 4) assert.ok(challenges.every(c => c.kind === 'all-divisors'))
@@ -263,6 +326,10 @@ test('levels follow the progression and never repeat a number', () => {
       if (level <= 2) {
         const yes = challenges.filter(c => c.kind === 'yes-no' && c.answer).length
         assert.equal(yes, challenges.length / 2, 'yes/no answers are balanced')
+      }
+      for (const c of challenges) {
+        const rules = c.kind === 'yes-no' ? [c.divisor] : c.kind === 'two-rules' ? c.divisors : c.options
+        assert.ok(rules.every(d => digitCount(c.n) <= maxDigitsFor(d)), `${c.n} too long for ${rules}`)
       }
     }
   }

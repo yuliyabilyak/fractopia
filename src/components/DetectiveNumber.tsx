@@ -8,13 +8,16 @@ interface Props {
 }
 
 const LAST_KEY: Record<number, Keys> = { 1: 'ndHlLast1', 2: 'ndHlLast2', 3: 'ndHlLast3' }
+const HIGHLIGHT_KEY: Record<'all' | 'odd' | 'even', Keys> = { all: 'ndHlAll', odd: 'ndHlOdd', even: 'ndHlEven' }
 
 /** The target number, one tile per digit so the digits a rule looks at can be
  * boxed, underlined and labelled — never marked by colour alone. */
 export default function DetectiveNumber({ n, highlight }: Props) {
   const { t, lang } = useLang()
   const formatted = formatNumber(n, LOCALES[lang])
-  const label = highlight === 'all' ? t('ndHlAll') : highlight > 0 ? t(LAST_KEY[highlight]) : null
+  const label = typeof highlight === 'number'
+    ? (highlight > 0 ? t(LAST_KEY[highlight]) : null)
+    : t(HIGHLIGHT_KEY[highlight])
 
   return (
     <div className="nd-number-frame">

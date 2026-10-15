@@ -11,23 +11,24 @@
 // (so the unit tests can be deterministic). This module deliberately has no
 // runtime imports so `node --test` can load it directly.
 
-export type Divisor = 2 | 3 | 4 | 5 | 6 | 8 | 9 | 10
+export type Divisor = 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 25
 export type LevelId = 1 | 2 | 3 | 4 | 5
 export type Rng = () => number
 
-export const DIVISORS: Divisor[] = [2, 3, 4, 5, 6, 8, 9, 10]
+export const DIVISORS: Divisor[] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 25]
 export const LEVELS: LevelId[] = [1, 2, 3, 4, 5]
 
 // ── rule definitions ─────────────────────────────────────────────────────────
-// 7 and 11 aren't part of the app's curriculum, so they're left out of the
-// playable set. Adding one means a new Divisor literal, a RULES entry (a new
-// RuleDef kind if none of these fit) and its translation key.
+// Adding a divisor means a new Divisor literal, a RULES entry (a new RuleDef
+// kind if none of these fit) and its ndRule* translation key.
 
 export type RuleDef =
   | { kind: 'last-digit'; allowed: number[] }      // 2, 5, 10
-  | { kind: 'last-part'; count: 2 | 3 }            // 4, 8
+  | { kind: 'last-part'; count: 2 | 3 }            // 4, 8, 25
   | { kind: 'digit-sum' }                          // 3, 9
   | { kind: 'all-of'; parts: Divisor[] }           // 6
+  | { kind: 'double-last' }                        // 7
+  | { kind: 'alternating-sum' }                    // 11
 
 export const RULES: Record<Divisor, RuleDef> = {
   2:  { kind: 'last-digit', allowed: [0, 2, 4, 6, 8] },
@@ -35,9 +36,20 @@ export const RULES: Record<Divisor, RuleDef> = {
   4:  { kind: 'last-part', count: 2 },
   5:  { kind: 'last-digit', allowed: [0, 5] },
   6:  { kind: 'all-of', parts: [2, 3] },
+  7:  { kind: 'double-last' },
   8:  { kind: 'last-part', count: 3 },
   9:  { kind: 'digit-sum' },
   10: { kind: 'last-digit', allowed: [0] },
+  11: { kind: 'alternating-sum' },
+  25: { kind: 'last-part', count: 2 },
+}
+
+/** Longest numbers a rule is asked about. The 7 rule needs one round of
+ * working per extra digit, so it stays on short numbers. */
+const MAX_DIGITS: Partial<Record<Divisor, number>> = { 7: 4 }
+
+export function maxDigitsFor(divisor: Divisor): number {
+  return MAX_DIGITS[divisor] ?? Infinity
 }
 
 export function digitsOf(n: number): number[] {
@@ -53,6 +65,43 @@ export function lastDigits(n: number, count: number): string {
   return String(n).slice(-count)
 }
 
+/** Sum of every other digit counting from the last one ('odd' places from the
+ * right), and of the remaining digits ('even' places) — each listed left to right. */
+export function alternatingDigits(n: number): { odd: number[]; even: number[] } {
+  const digits = digitsOf(n)
+  const odd: number[] = []
+  const even: number[] = []
+  digits.forEach((d, i) => ((digits.length - i) % 2 === 1 ? odd : even).push(d))
+  return { odd, even }
+}
+
+const sumOf = (xs: number[]) => xs.reduce((a, b) => a + b, 0)
+
+export interface SevenRound {
+  from: number
+  rest: number
+  last: number
+  doubled: number
+  result: number
+}
+
+/** The 7 rule: split off the last digit, double it, take the smaller number
+ * from the bigger (so a child never meets a negative), repeat until fewer than
+ * three digits remain. Works because 10a + b = 10(a − 2b) + 21b. */
+export function sevenRounds(n: number): SevenRound[] {
+  const rounds: SevenRound[] = []
+  let m = n
+  while (m >= 100) {
+    const rest = Math.floor(m / 10)
+    const last = m % 10
+    const doubled = last * 2
+    const result = Math.abs(rest - doubled)
+    rounds.push({ from: m, rest, last, doubled, result })
+    m = result
+  }
+  return rounds
+}
+
 /** Decide divisibility *using the rule*, never `n % divisor` on the whole
  * number — the tests check this agrees with plain arithmetic. */
 export function ruleSays(n: number, divisor: Divisor): boolean {
@@ -62,6 +111,14 @@ export function ruleSays(n: number, divisor: Divisor): boolean {
     case 'last-part':  return Number(lastDigits(n, rule.count)) % divisor === 0
     case 'digit-sum':  return digitSum(n) % divisor === 0
     case 'all-of':     return rule.parts.every(p => ruleSays(n, p))
+    case 'double-last': {
+      const rounds = sevenRounds(n)
+      return (rounds.length ? rounds[rounds.length - 1].result : n) % 7 === 0
+    }
+    case 'alternating-sum': {
+      const { odd, even } = alternatingDigits(n)
+      return Math.abs(sumOf(odd) - sumOf(even)) % 11 === 0
+    }
   }
 }
 
@@ -69,16 +126,21 @@ export function isDivisible(n: number, divisor: number): boolean {
   return n % divisor === 0
 }
 
-/** Digits (from the right) a rule looks at; 'all' for digit-sum rules, 0 for
- * rules with no single focus (6 = two separate checks). */
-export type Highlight = number | 'all'
+/** Digits a rule looks at: how many from the right, 'all', every other digit
+ * from the last ('odd') or the ones in between ('even'); 0 for rules with no
+ * single focus (6 = two separate checks). */
+export type Highlight = number | 'all' | 'odd' | 'even'
 
 export function ruleFocus(divisor: Divisor): Highlight {
   const rule = RULES[divisor]
-  if (rule.kind === 'last-digit') return 1
-  if (rule.kind === 'last-part') return rule.count
-  if (rule.kind === 'digit-sum') return 'all'
-  return 0
+  switch (rule.kind) {
+    case 'last-digit':      return 1
+    case 'last-part':       return rule.count
+    case 'digit-sum':       return 'all'
+    case 'double-last':     return 1
+    case 'alternating-sum': return 'odd'
+    case 'all-of':          return 0
+  }
 }
 
 // ── explanations ─────────────────────────────────────────────────────────────
@@ -97,6 +159,9 @@ export type Step =
   | StepBase & { kind: 'last-part'; count: 2 | 3; part: string }
   | StepBase & { kind: 'digit-sum'; digits: number[]; sum: number }
   | StepBase & { kind: 'divide'; dividend: number; divisor: number; quotient: number; remainder: number; ok: boolean }
+  | StepBase & { kind: 'seven-round'; from: number; rest: number; last: number; doubled: number; big: number; small: number; result: number }
+  | StepBase & { kind: 'alt-sum'; which: 'odd' | 'even'; digits: number[]; sum: number }
+  | StepBase & { kind: 'difference'; big: number; small: number; result: number }
 
 export interface ConclusionPart {
   divisor: Divisor
@@ -151,6 +216,30 @@ function ruleSteps(n: number, divisor: Divisor, group?: Divisor): Step[] {
     }
     case 'all-of':
       return rule.parts.flatMap(p => ruleSteps(n, p, p))
+    case 'double-last': {
+      const rounds = sevenRounds(n)
+      const final = rounds.length ? rounds[rounds.length - 1].result : n
+      return [
+        ...rounds.map((r, i): Step => ({
+          kind: 'seven-round', ...r,
+          big: Math.max(r.rest, r.doubled), small: Math.min(r.rest, r.doubled),
+          // only the first round works on the digits on screen
+          highlight: i === 0 ? 1 : 0, group,
+        })),
+        divideStep(final, divisor, 0, group),
+      ]
+    }
+    case 'alternating-sum': {
+      const { odd, even } = alternatingDigits(n)
+      const [a, b] = [sumOf(odd), sumOf(even)]
+      const big = Math.max(a, b), small = Math.min(a, b)
+      return [
+        { kind: 'alt-sum', which: 'odd', digits: odd, sum: a, highlight: 'odd', group },
+        { kind: 'alt-sum', which: 'even', digits: even, sum: b, highlight: 'even', group },
+        { kind: 'difference', big, small, result: big - small, highlight: 'all', group },
+        divideStep(big - small, divisor, 'all', group),
+      ]
+    }
   }
 }
 
@@ -197,7 +286,10 @@ export function tokenizeNumber(formatted: string): NumberToken[] {
 }
 
 export function isHighlighted(fromRight: number, highlight: Highlight): boolean {
-  return highlight === 'all' || fromRight <= highlight
+  if (highlight === 'all') return true
+  if (highlight === 'odd') return fromRight % 2 === 1
+  if (highlight === 'even') return fromRight % 2 === 0
+  return fromRight <= highlight
 }
 
 // ── number generation ────────────────────────────────────────────────────────
@@ -268,6 +360,7 @@ const NEAR_MISS: Partial<Record<Divisor, (n: number) => boolean>> = {
   9:  n => n % 3 === 0,
   6:  n => (n % 2 === 0) !== (n % 3 === 0),
   10: n => n % 5 === 0 || n % 2 === 0,
+  25: n => n % 5 === 0, // ends in 0 or 5, but not 00, 25, 50 or 75
 }
 
 const NEAR_MISS_CHANCE = 0.6
@@ -289,14 +382,15 @@ export type Challenge =
 export function yesNoChallenge(
   rng: Rng, divisor: Divisor, digits: number, answer: boolean, showFocus: boolean, avoid: ReadonlySet<number> = new Set(),
 ): Challenge {
-  const n = numberFor(rng, digits, divisor, answer, avoid)
+  const n = numberFor(rng, Math.min(digits, maxDigitsFor(divisor)), divisor, answer, avoid)
   return { kind: 'yes-no', n, divisor, answer: isDivisible(n, divisor), focus: showFocus ? ruleFocus(divisor) : 0 }
 }
 
-/** Pairs where neither rule implies the other (no 2 & 4, 3 & 9, 5 & 10 …), so
+/** Pairs where neither rule implies the other (no 2 & 4, 3 & 9, 5 & 25 …), so
  * both checks genuinely matter. 6 is left out — it's already a combined rule. */
 export const RULE_PAIRS: [Divisor, Divisor][] = [
   [2, 3], [2, 5], [2, 9], [3, 4], [3, 5], [3, 8], [3, 10], [4, 5], [4, 9], [5, 9], [8, 9], [9, 10],
+  [2, 7], [3, 7], [5, 7], [2, 11], [3, 11], [5, 11], [7, 11], [3, 25], [4, 25], [9, 25],
 ]
 
 export type PairOutcome = 'both' | 'first' | 'second' | 'neither'
@@ -305,6 +399,7 @@ export function twoRulesChallenge(
   rng: Rng, pair: [Divisor, Divisor], digits: number, outcome: PairOutcome, avoid: ReadonlySet<number> = new Set(),
 ): Challenge {
   const [a, b] = pair
+  digits = Math.min(digits, maxDigitsFor(a), maxDigitsFor(b))
   let n: number
   if (outcome === 'both') n = generateNumber(rng, digits, lcm(a, b), () => true, avoid)
   else if (outcome === 'first') n = generateNumber(rng, digits, a, x => x % b !== 0, avoid)
@@ -315,7 +410,7 @@ export function twoRulesChallenge(
 
 /** Multiples of these make richer "find all divisors" numbers than plain
  * random ones (which are mostly divisible by nothing on the list). */
-const ALL_DIVISORS_STEPS = [1, 2, 3, 4, 5, 6, 9, 10, 12, 18, 20, 36]
+const ALL_DIVISORS_STEPS = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 14, 18, 20, 22, 25, 36, 50]
 
 export function divisorsOf(n: number, candidates: readonly Divisor[] = DIVISORS): Divisor[] {
   return candidates.filter(d => isDivisible(n, d))
@@ -324,13 +419,15 @@ export function divisorsOf(n: number, candidates: readonly Divisor[] = DIVISORS)
 export function allDivisorsChallenge(
   rng: Rng, digits: number, optionCount: number, avoid: ReadonlySet<number> = new Set(),
 ): Challenge {
+  // rules capped below this length (7) aren't offered as options
+  const pool = DIVISORS.filter(d => digits <= maxDigitsFor(d))
   const n = generateNumber(rng, digits, pick(rng, ALL_DIVISORS_STEPS), x => {
-    const count = divisorsOf(x).length
-    return count >= 2 && count <= DIVISORS.length - 2
+    const count = divisorsOf(x, pool).length
+    return count >= 2 && count <= pool.length - 2
   }, avoid)
 
-  const yes = shuffled(rng, divisorsOf(n))
-  const no = shuffled(rng, DIVISORS.filter(d => !isDivisible(n, d)))
+  const yes = shuffled(rng, divisorsOf(n, pool))
+  const no = shuffled(rng, pool.filter(d => !isDivisible(n, d)))
   // roughly half right, half wrong — but always at least one of each, and
   // never more wrong options than exist
   const target = randInt(rng, Math.floor(optionCount / 2), Math.ceil(optionCount / 2))
@@ -346,10 +443,12 @@ function balancedAnswers(rng: Rng, count: number): boolean[] {
   return shuffled(rng, Array.from({ length: count }, (_, i) => i % 2 === 0))
 }
 
-const LEVEL1_INTRO: Divisor[] = [10, 2, 5, 3, 9, 4, 6] // 8 waits for level 2 — on a 3-digit number its "last three digits" is the whole number
+// Each rule introduced once, easiest first, on 3-digit numbers. 8 waits for
+// level 2 — on a 3-digit number its "last three digits" is the whole number.
+export const LEVEL1_INTRO: Divisor[] = [10, 2, 5, 3, 9, 4, 25, 6, 11, 7]
 const PRACTICE_LENGTH = 6
 
-export const LEVEL_LENGTH: Record<LevelId, number> = { 1: 8, 2: 8, 3: 6, 4: 5, 5: 8 }
+export const LEVEL_LENGTH: Record<LevelId, number> = { 1: LEVEL1_INTRO.length, 2: 8, 3: 6, 4: 5, 5: 8 }
 
 /**
  * The challenges for one play-through of a level. Single rules come first
@@ -361,13 +460,15 @@ export function generateLevel(level: LevelId, rng: Rng = Math.random): Challenge
   const track = (c: Challenge) => { used.add(c.n); return c }
 
   if (level === 1) {
-    const divisors = [...LEVEL1_INTRO, pick(rng, LEVEL1_INTRO)]
+    const divisors = LEVEL1_INTRO
     const answers = balancedAnswers(rng, divisors.length)
     return divisors.map((d, i) => track(yesNoChallenge(rng, d, 3, answers[i], true, used)))
   }
 
   if (level === 2) {
-    const divisors = shuffled(rng, DIVISORS).slice(0, LEVEL_LENGTH[2])
+    // 8 meets its first real numbers here; the rest is a random review
+    const review = shuffled(rng, DIVISORS.filter(d => d !== 8)).slice(0, LEVEL_LENGTH[2] - 1)
+    const divisors = shuffled(rng, [8, ...review] as Divisor[])
     const answers = balancedAnswers(rng, divisors.length)
     return divisors.map((d, i) => track(yesNoChallenge(rng, d, randInt(rng, 4, 6), answers[i], true, used)))
   }

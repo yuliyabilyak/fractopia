@@ -65,11 +65,12 @@ export type Keys =
   | 'ndQuestionYesNo' | 'ndQuestionTwo' | 'ndQuestionAll' | 'ndPickAll'
   | 'ndYes' | 'ndNo' | 'ndCheck' | 'ndCorrect' | 'ndNotQuite' | 'ndNextCase'
   | 'ndHintBtn' | 'ndNextHintBtn' | 'ndCluesTitle' | 'ndShowRules' | 'ndHideRules' | 'ndWhy'
-  | 'ndHlLast1' | 'ndHlLast2' | 'ndHlLast3' | 'ndHlAll'
-  | 'ndRule2' | 'ndRule3' | 'ndRule4' | 'ndRule5' | 'ndRule6' | 'ndRule8' | 'ndRule9' | 'ndRule10'
+  | 'ndHlLast1' | 'ndHlLast2' | 'ndHlLast3' | 'ndHlAll' | 'ndHlOdd' | 'ndHlEven'
+  | 'ndRule2' | 'ndRule3' | 'ndRule4' | 'ndRule5' | 'ndRule6' | 'ndRule7' | 'ndRule8' | 'ndRule9' | 'ndRule10'
+  | 'ndRule11' | 'ndRule25'
   | 'ndRuleFor' | 'ndCheckFor'
   | 'ndStepDigitYes' | 'ndStepDigitNo' | 'ndStepLast2' | 'ndStepLast3' | 'ndStepSum'
-  | 'ndStepDivideYes' | 'ndStepDivideNo'
+  | 'ndStepDivideYes' | 'ndStepDivideNo' | 'ndStepSeven' | 'ndStepAltOdd' | 'ndStepAltEven' | 'ndStepDiff'
   | 'ndConclYes' | 'ndConclNo' | 'ndConclBothYes' | 'ndConclBothNo' | 'ndPartYes' | 'ndPartNo'
   | 'ndMissing' | 'ndAllFound'
   | 'ndCaseClosed' | 'ndLevelDone' | 'ndPracticeDone' | 'ndNewLevel' | 'ndMasterMsg'
@@ -459,14 +460,19 @@ const T: Record<Lang, Record<Keys, string>> = {
     ndHlLast2:       'Last two digits',
     ndHlLast3:       'Last three digits',
     ndHlAll:         'All digits',
+    ndHlOdd:         'Every other digit',
+    ndHlEven:        'The other digits',
     ndRule2:         'Look at the last digit. It must be 0, 2, 4, 6, or 8.',
     ndRule3:         'Add up all the digits. The sum must be divisible by 3.',
     ndRule4:         'Look at the last two digits. They must make a number divisible by 4.',
     ndRule5:         'Look at the last digit. It must be 0 or 5.',
     ndRule6:         'The number must be divisible by 2 and by 3.',
+    ndRule7:         'Cut off the last digit and double it. Take the smaller number from the bigger one. Repeat until the number is small. It must be divisible by 7.',
     ndRule8:         'Look at the last three digits. They must make a number divisible by 8.',
     ndRule9:         'Add up all the digits. The sum must be divisible by 9.',
     ndRule10:        'Look at the last digit. It must be 0.',
+    ndRule11:        'Add every other digit, starting from the last one. Add the other digits too. The difference must be 0 or divisible by 11.',
+    ndRule25:        'Look at the last two digits. They must be 00, 25, 50, or 75.',
     ndRuleFor:       'Rule for {d}',
     ndCheckFor:      'Check {d}',
     ndStepDigitYes:  'The last digit is {digit}. It fits the rule: {allowed}.',
@@ -476,6 +482,10 @@ const T: Record<Lang, Record<Keys, string>> = {
     ndStepSum:       'Add the digits: {expr} = {sum}.',
     ndStepDivideYes: '{a} ÷ {d} = {q}. No remainder.',
     ndStepDivideNo:  '{a} ÷ {d} = {q}, remainder {r}.',
+    ndStepSeven:     'Split {from} into {rest} and {last}. Double {last}: {doubled}. Then {big} − {small} = {result}.',
+    ndStepAltOdd:    'Every other digit, from the last one: {expr}.',
+    ndStepAltEven:   'The other digits: {expr}.',
+    ndStepDiff:      'The difference: {big} − {small} = {result}.',
     ndConclYes:      'So {n} is divisible by {d}.',
     ndConclNo:       'So {n} is not divisible by {d}.',
     ndConclBothYes:  'So {n} is divisible by {a} and by {b}.',
@@ -835,14 +845,19 @@ const T: Record<Lang, Record<Keys, string>> = {
     ndHlLast2:       'Дві останні цифри',
     ndHlLast3:       'Три останні цифри',
     ndHlAll:         'Усі цифри',
+    ndHlOdd:         'Кожна друга цифра',
+    ndHlEven:        'Решта цифр',
     ndRule2:         'Подивись на останню цифру. Це має бути 0, 2, 4, 6 або 8.',
     ndRule3:         'Додай усі цифри. Сума має ділитися на 3.',
     ndRule4:         'Подивись на дві останні цифри. Вони мають утворювати число, яке ділиться на 4.',
     ndRule5:         'Подивись на останню цифру. Це має бути 0 або 5.',
     ndRule6:         'Число має ділитися і на 2, і на 3.',
+    ndRule7:         'Відокрем останню цифру й подвой її. Відніми менше число від більшого. Повторюй, доки число не стане малим. Воно має ділитися на 7.',
     ndRule8:         'Подивись на три останні цифри. Вони мають утворювати число, яке ділиться на 8.',
     ndRule9:         'Додай усі цифри. Сума має ділитися на 9.',
     ndRule10:        'Подивись на останню цифру. Це має бути 0.',
+    ndRule11:        'Додай кожну другу цифру, починаючи з останньої. Додай і решту цифр. Різниця сум має дорівнювати 0 або ділитися на 11.',
+    ndRule25:        'Подивись на дві останні цифри. Це має бути 00, 25, 50 або 75.',
     ndRuleFor:       'Правило для {d}',
     ndCheckFor:      'Перевірка на {d}',
     ndStepDigitYes:  'Остання цифра — {digit}. Вона підходить: {allowed}.',
@@ -852,6 +867,10 @@ const T: Record<Lang, Record<Keys, string>> = {
     ndStepSum:       'Додай цифри: {expr} = {sum}.',
     ndStepDivideYes: '{a} : {d} = {q}. Без остачі.',
     ndStepDivideNo:  '{a} : {d} = {q}, остача {r}.',
+    ndStepSeven:     'Розділи {from} на {rest} і {last}. Подвой {last}: {doubled}. Тоді {big} − {small} = {result}.',
+    ndStepAltOdd:    'Кожна друга цифра з кінця: {expr}.',
+    ndStepAltEven:   'Решта цифр: {expr}.',
+    ndStepDiff:      'Різниця: {big} − {small} = {result}.',
     ndConclYes:      'Отже, {n} ділиться на {d}.',
     ndConclNo:       'Отже, {n} не ділиться на {d}.',
     ndConclBothYes:  'Отже, {n} ділиться і на {a}, і на {b}.',
@@ -1211,14 +1230,19 @@ const T: Record<Lang, Record<Keys, string>> = {
     ndHlLast2:       'Poslední dvě číslice',
     ndHlLast3:       'Poslední tři číslice',
     ndHlAll:         'Všechny číslice',
+    ndHlOdd:         'Každá druhá číslice',
+    ndHlEven:        'Ostatní číslice',
     ndRule2:         'Podívej se na poslední číslici. Musí to být 0, 2, 4, 6 nebo 8.',
     ndRule3:         'Sečti všechny číslice. Součet musí být dělitelný 3.',
     ndRule4:         'Podívej se na poslední dvě číslice. Musí tvořit číslo dělitelné 4.',
     ndRule5:         'Podívej se na poslední číslici. Musí to být 0 nebo 5.',
     ndRule6:         'Číslo musí být dělitelné 2 i 3.',
+    ndRule7:         'Odděl poslední číslici a zdvojnásob ji. Odečti menší číslo od většího. Opakuj, dokud není číslo malé. Musí být dělitelné 7.',
     ndRule8:         'Podívej se na poslední tři číslice. Musí tvořit číslo dělitelné 8.',
     ndRule9:         'Sečti všechny číslice. Součet musí být dělitelný 9.',
     ndRule10:        'Podívej se na poslední číslici. Musí to být 0.',
+    ndRule11:        'Sečti každou druhou číslici od konce. Sečti i ostatní číslice. Rozdíl součtů musí být 0 nebo dělitelný 11.',
+    ndRule25:        'Podívej se na poslední dvě číslice. Musí to být 00, 25, 50 nebo 75.',
     ndRuleFor:       'Pravidlo pro {d}',
     ndCheckFor:      'Kontrola {d}',
     ndStepDigitYes:  'Poslední číslice je {digit}. Pravidlu odpovídá: {allowed}.',
@@ -1228,6 +1252,10 @@ const T: Record<Lang, Record<Keys, string>> = {
     ndStepSum:       'Sečti číslice: {expr} = {sum}.',
     ndStepDivideYes: '{a} : {d} = {q}. Beze zbytku.',
     ndStepDivideNo:  '{a} : {d} = {q}, zbytek {r}.',
+    ndStepSeven:     'Rozděl {from} na {rest} a {last}. Zdvojnásob {last}: {doubled}. Pak {big} − {small} = {result}.',
+    ndStepAltOdd:    'Každá druhá číslice od konce: {expr}.',
+    ndStepAltEven:   'Ostatní číslice: {expr}.',
+    ndStepDiff:      'Rozdíl: {big} − {small} = {result}.',
     ndConclYes:      'Takže {n} je dělitelné {d}.',
     ndConclNo:       'Takže {n} není dělitelné {d}.',
     ndConclBothYes:  'Takže {n} je dělitelné {a} i {b}.',

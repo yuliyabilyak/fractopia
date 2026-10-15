@@ -6,8 +6,8 @@ import {
 } from '../data/numberDetective'
 
 export const RULE_KEY: Record<Divisor, Keys> = {
-  2: 'ndRule2', 3: 'ndRule3', 4: 'ndRule4', 5: 'ndRule5',
-  6: 'ndRule6', 8: 'ndRule8', 9: 'ndRule9', 10: 'ndRule10',
+  2: 'ndRule2', 3: 'ndRule3', 4: 'ndRule4', 5: 'ndRule5', 6: 'ndRule6', 7: 'ndRule7',
+  8: 'ndRule8', 9: 'ndRule9', 10: 'ndRule10', 11: 'ndRule11', 25: 'ndRule25',
 }
 
 export const LEVEL_NAME_KEY: Record<LevelId, Keys> = {
@@ -23,6 +23,8 @@ export function useDetectiveText() {
 
   const num = (n: number) => formatNumber(n, locale)
   const orList = (items: number[]) => new Intl.ListFormat(locale, { type: 'disjunction' }).format(items.map(String))
+  /** "1 + 0 + 2 = 3", or just "3" when there's a single digit to add */
+  const addUp = (digits: number[], sum: number) => digits.length > 1 ? `${digits.join(' + ')} = ${sum}` : String(sum)
 
   function question(c: Challenge): string {
     if (c.kind === 'yes-no') return t('ndQuestionYesNo', { n: num(c.n), d: c.divisor })
@@ -41,6 +43,10 @@ export function useDetectiveText() {
       case 'last-part':  return t(s.count === 2 ? 'ndStepLast2' : 'ndStepLast3', { part: s.part })
       case 'digit-sum':  return t('ndStepSum', { expr: s.digits.join(' + '), sum: s.sum })
       case 'divide':     return t(s.ok ? 'ndStepDivideYes' : 'ndStepDivideNo', { a: num(s.dividend), d: s.divisor, q: num(s.quotient), r: s.remainder })
+      case 'seven-round':
+        return t('ndStepSeven', { from: num(s.from), rest: num(s.rest), last: s.last, doubled: s.doubled, big: num(s.big), small: num(s.small), result: num(s.result) })
+      case 'alt-sum':    return t(s.which === 'odd' ? 'ndStepAltOdd' : 'ndStepAltEven', { expr: addUp(s.digits, s.sum) })
+      case 'difference': return t('ndStepDiff', { big: s.big, small: s.small, result: s.result })
     }
   }
 
