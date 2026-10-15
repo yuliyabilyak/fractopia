@@ -8,10 +8,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run dev        # start dev server (Vite HMR)
 npm run build      # tsc type-check + Vite production build
 npm run lint       # ESLint
-npx tsc --noEmit   # type-check only, no output
+npx tsc -b         # type-check (bare `tsc --noEmit` checks nothing — root tsconfig has no files)
+npm test           # node --test on src/**/*.test.ts (Node's built-in runner + native TS, no deps)
 ```
 
-There are no tests.
+Tests cover pure data modules only (e.g. `src/data/numberDetective.test.ts`). Keep a tested module
+free of extensionless runtime imports so Node can load it directly; test files are type-checked by
+`tsconfig.node.json`, not `tsconfig.app.json`.
 
 ## Architecture
 

@@ -57,6 +57,9 @@ export default function Home() {
       <button className="btn-training" onClick={() => navigate('/scribe')}>
         {t('scribeMode')}
       </button>
+      <button className="btn-training" onClick={() => navigate('/detective')}>
+        {t('ndMode')}
+      </button>
     </div>
   )
 }

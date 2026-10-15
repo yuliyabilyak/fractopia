@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "mcp__playwright__browser_run_code_unsafe"
+      "mcp__playwright__browser_run_code_unsafe",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }
