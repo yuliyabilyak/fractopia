@@ -1,6 +1,7 @@
 import { useLang } from '../i18n/LangContext'
-import { LOCALES, type Keys } from '../i18n/translations'
-import { formatNumber, isHighlighted, tokenizeNumber, type Highlight } from '../data/numberDetective'
+import type { Keys } from '../i18n/translations'
+import type { Highlight } from '../data/numberDetective'
+import HighlightedNumber from './HighlightedNumber'
 
 interface Props {
   n: number
@@ -13,24 +14,14 @@ const HIGHLIGHT_KEY: Record<'all' | 'odd' | 'even', Keys> = { all: 'ndHlAll', od
 /** The target number, one tile per digit so the digits a rule looks at can be
  * boxed, underlined and labelled — never marked by colour alone. */
 export default function DetectiveNumber({ n, highlight }: Props) {
-  const { t, lang } = useLang()
-  const formatted = formatNumber(n, LOCALES[lang])
+  const { t } = useLang()
   const label = typeof highlight === 'number'
     ? (highlight > 0 ? t(LAST_KEY[highlight]) : null)
     : t(HIGHLIGHT_KEY[highlight])
 
   return (
     <div className="nd-number-frame">
-      <p className="nd-number">
-        <span className="nd-sr-only">{formatted}</span>
-        <span className="nd-number-digits" aria-hidden="true">
-          {tokenizeNumber(formatted).map((tok, i) =>
-            tok.type === 'sep'
-              ? <span key={i} className="nd-sep">{/\s/.test(tok.char) ? '' : tok.char}</span>
-              : <span key={i} className={`nd-digit${isHighlighted(tok.fromRight, highlight) ? ' nd-digit--hl' : ''}`}>{tok.char}</span>,
-          )}
-        </span>
-      </p>
+      <p className="nd-number"><HighlightedNumber n={n} highlight={highlight} /></p>
       <p className="nd-hl-label">{label && <><span aria-hidden="true">▲ </span>{label}</>}</p>
     </div>
   )

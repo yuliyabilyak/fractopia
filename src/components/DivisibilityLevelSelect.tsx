@@ -1,21 +1,36 @@
 import { useLang } from '../i18n/LangContext'
-import { LEVEL_NAME_KEY } from '../hooks/useDetectiveText'
 import type { Keys } from '../i18n/translations'
 import {
-  DIVISORS, LEVELS, ruleStanding, rulesNeedingPractice, unlockedLevel,
+  LEVELS, ruleStanding, rulesNeedingPractice, unlockedLevel,
   type Divisor, type LevelId, type RuleStanding, type RuleStats,
 } from '../data/numberDetective'
 
+/** What differs between the divisibility games (Number Detective, Number
+ * Bridges); everything else on the level and end screens is shared. */
+export interface DivisibilityGameConfig {
+  icon: string
+  titleKey: Keys
+  introKey: Keys
+  pointsKey: Keys
+  pointsEarnedKey: Keys
+  levelNameKeys: Record<LevelId, Keys>
+  levelDescKeys: Record<LevelId, Keys>
+  /** rules shown in the notebook, in order */
+  divisors: Divisor[]
+  /** level-complete screen */
+  badge: string
+  doneTitleKey: Keys
+  solvedKey: Keys
+  masterKey: Keys
+}
+
 interface Props {
+  game: DivisibilityGameConfig
   completedLevels: LevelId[]
-  clues: number
+  points: number
   ruleStats: RuleStats
   onPlay: (level: LevelId) => void
   onPractice: (rules: Divisor[]) => void
-}
-
-const LEVEL_DESC_KEY: Record<LevelId, Keys> = {
-  1: 'ndLevel1Desc', 2: 'ndLevel2Desc', 3: 'ndLevel3Desc', 4: 'ndLevel4Desc', 5: 'ndLevel5Desc',
 }
 
 const STANDING: Record<RuleStanding, { icon: string; key: Keys }> = {
@@ -24,19 +39,19 @@ const STANDING: Record<RuleStanding, { icon: string; key: Keys }> = {
   good:     { icon: '⭐', key: 'ndStandingGood' },
 }
 
-export default function DetectiveLevelSelect({ completedLevels, clues, ruleStats, onPlay, onPractice }: Props) {
+export default function DivisibilityLevelSelect({ game, completedLevels, points, ruleStats, onPlay, onPractice }: Props) {
   const { t } = useLang()
   const unlocked = unlockedLevel(completedLevels)
-  const practiceRules = rulesNeedingPractice(ruleStats)
+  const practiceRules = rulesNeedingPractice(ruleStats).filter(d => game.divisors.includes(d))
 
   return (
     <>
-      <h1 className="nd-title"><span aria-hidden="true">🔍</span> {t('ndTitle')}</h1>
-      <p className="nd-intro">{t('ndIntro')}</p>
+      <h1 className="nd-title"><span aria-hidden="true">{game.icon}</span> {t(game.titleKey)}</h1>
+      <p className="nd-intro">{t(game.introKey)}</p>
 
       <div className="game-hud">
         <span className="game-hud-chip">
-          <span className="game-hud-icon" aria-hidden="true">🔍</span>{t('ndCluesLabel')}: {clues}
+          <span className="game-hud-icon" aria-hidden="true">{game.icon}</span>{t(game.pointsKey)}: {points}
         </span>
       </div>
 
@@ -58,9 +73,9 @@ export default function DetectiveLevelSelect({ completedLevels, clues, ruleStats
               >
                 <span className="nd-level-num" aria-hidden="true">{level}</span>
                 <span className="nd-level-text">
-                  <span className="nd-level-name">{t('ndLevelLabel', { n: level })}: {t(LEVEL_NAME_KEY[level])}</span>
+                  <span className="nd-level-name">{t('ndLevelLabel', { n: level })}: {t(game.levelNameKeys[level])}</span>
                   <span className="nd-level-desc">
-                    {locked ? t('ndLockedHint', { n: level - 1 }) : t(LEVEL_DESC_KEY[level])}
+                    {locked ? t('ndLockedHint', { n: level - 1 }) : t(game.levelDescKeys[level])}
                   </span>
                 </span>
                 <span className="nd-level-status">
@@ -74,7 +89,7 @@ export default function DetectiveLevelSelect({ completedLevels, clues, ruleStats
 
       <h2 className="nd-section-title">{t('ndNotebookTitle')}</h2>
       <ul className="nd-notebook">
-        {DIVISORS.map(d => {
+        {game.divisors.map(d => {
           const stat = ruleStats[d]
           const standing = STANDING[ruleStanding(stat)]
           const correct = stat?.correct ?? 0

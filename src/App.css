@@ -6331,3 +6331,186 @@ body {
   .nd-answer-btn   { min-height: 64px; font-size: 1.35rem; }
   .nd-level-status { font-size: 0.85rem; }
 }
+
+/* ---- Number Bridges ----
+   Builds on the Number Detective (.nd-) styles: same calm card, digit tiles
+   and focus rings. The river is a flat, quiet band — no moving water. */
+
+.nb-scene {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.nb-bank {
+  margin: 0;
+  padding: 10px 16px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--surface-subtle);
+}
+
+.nb-bank--goal { text-align: right; }
+
+.nb-river {
+  --nb-water: #e3f1fb;
+  --nb-water-edge: #9cc7e4;
+  padding: 16px 12px;
+  background: var(--nb-water);
+  border-top: 3px solid var(--nb-water-edge);
+  border-bottom: 3px solid var(--nb-water-edge);
+}
+
+[data-theme="dark"] .nb-river,
+[data-theme="evil"] .nb-river {
+  --nb-water: #12263a;
+  --nb-water-edge: #2c4f6e;
+}
+
+[data-theme="funny"] .nb-river {
+  --nb-water: #e0f2f1;
+  --nb-water-edge: #80cbc4;
+}
+
+.nb-stones {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  gap: 14px;
+}
+
+.nb-stone {
+  position: relative;
+  min-height: 92px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 6px;
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 3px solid var(--border-subtle);
+  border-radius: 18px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.nb-stone:hover:not([aria-disabled="true"]) { border-color: var(--orange); }
+
+.nb-stone[aria-disabled="true"] { cursor: default; }
+
+.nb-stone-mark {
+  position: absolute;
+  top: 6px;
+  left: 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.nb-stone-number {
+  font-size: clamp(1.25rem, 5vw, 1.6rem);
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.nb-stone-number .nd-number-digits { gap: 0.06em; }
+.nb-stone-number .nd-digit { border-width: 2px; border-radius: 6px; padding: 0 0.04em 0.04em; }
+
+.nb-stone-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* chosen: thick solid border + ☑ */
+.nb-stone--selected {
+  border-color: var(--orange);
+  background: var(--orange-surface);
+}
+
+/* on the path: double border + ✓ + "On the path" */
+.nb-stone--placed {
+  border: 5px double var(--correct-text);
+  background: var(--correct-bg);
+  color: var(--correct-text);
+}
+
+/* look again: dashed border + ✗ + "Look again" — calm, not red */
+.nb-stone--wrong {
+  border-style: dashed;
+  border-color: var(--text-muted);
+  background: var(--surface);
+}
+
+.nb-bridge {
+  margin: 0 0 12px;
+  padding: 6px 12px;
+  text-align: center;
+  font-weight: 700;
+  color: var(--text);
+  background: repeating-linear-gradient(90deg, #c9a46a 0 22px, #b88f55 22px 26px);
+  border: 2px solid #8a6a3a;
+  border-radius: 10px;
+  transform-origin: left center;
+  animation: nb-bridge-build 0.6s ease-out both;
+}
+
+[data-theme="dark"] .nb-bridge,
+[data-theme="evil"] .nb-bridge { color: #1f1408; }
+
+@keyframes nb-bridge-build {
+  from { transform: scaleX(0); opacity: 0.4; }
+  to   { transform: scaleX(1); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nb-bridge { animation: none; }
+}
+
+.nb-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.nb-check-btn { min-height: 52px; }
+
+.nb-feedback-line { margin: 0; }
+.nb-feedback-sub  { margin-top: 6px; font-weight: 400; }
+
+.nb-why-list {
+  margin: 4px 0 6px;
+  padding: 0;
+  list-style: none;
+  font-weight: 400;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nb-hint-line {
+  margin: 10px 0 0;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--text-body);
+}
+
+.nb-worked {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 2px dashed var(--border);
+}
+
+@media (max-width: 480px) {
+  .nb-stones { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .nb-stone  { min-height: 84px; }
+}

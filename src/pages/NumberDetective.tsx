@@ -2,15 +2,15 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLang } from '../i18n/LangContext'
 import { useAuth } from '../hooks/useAuth'
-import { useNumberDetectiveProgress } from '../hooks/useNumberDetectiveProgress'
+import { useDivisibilityProgress, type ProgressFields } from '../hooks/useDivisibilityProgress'
 import { LEVEL_NAME_KEY } from '../hooks/useDetectiveText'
 import ThemeToggle from '../components/ThemeToggle'
-import DetectiveLevelSelect from '../components/DetectiveLevelSelect'
+import DivisibilityLevelSelect, { type DivisibilityGameConfig } from '../components/DivisibilityLevelSelect'
 import DetectiveYesNo from '../components/DetectiveYesNo'
 import DetectiveAllDivisors from '../components/DetectiveAllDivisors'
-import DetectiveCaseClosed from '../components/DetectiveCaseClosed'
+import DivisibilityLevelComplete from '../components/DivisibilityLevelComplete'
 import {
-  LEVELS, generateLevel, generatePractice, rulesNeedingPractice, unlockedLevel, addRuleResults,
+  DIVISORS, LEVELS, generateLevel, generatePractice, rulesNeedingPractice, unlockedLevel, addRuleResults,
   type Challenge, type Divisor, type LevelId, type RuleResult, type RuleStats,
 } from '../data/numberDetective'
 import { playChimeSound } from '../utils/sounds'
@@ -20,6 +20,23 @@ type Mode = { kind: 'level'; level: LevelId } | { kind: 'practice'; rules: Divis
 
 // Every solved case earns the same reward — no deductions for mistakes or hints.
 const CLUES_PER_CASE = 1
+
+const PROGRESS_FIELDS: ProgressFields = { completedLevels: 'ndCompletedLevels', points: 'ndClues', ruleStats: 'ndRuleStats' }
+
+const GAME: DivisibilityGameConfig = {
+  icon: '🔍',
+  titleKey: 'ndTitle',
+  introKey: 'ndIntro',
+  pointsKey: 'ndCluesLabel',
+  pointsEarnedKey: 'ndCluesEarned',
+  levelNameKeys: LEVEL_NAME_KEY,
+  levelDescKeys: { 1: 'ndLevel1Desc', 2: 'ndLevel2Desc', 3: 'ndLevel3Desc', 4: 'ndLevel4Desc', 5: 'ndLevel5Desc' },
+  divisors: DIVISORS,
+  badge: '🕵️',
+  doneTitleKey: 'ndCaseClosed',
+  solvedKey: 'ndCasesSolved',
+  masterKey: 'ndMasterMsg',
+}
 
 interface RoundStats {
   solved: number
@@ -37,7 +54,7 @@ export default function NumberDetective() {
   const navigate = useNavigate()
   const { t } = useLang()
   const { user, loading: authLoading, loginAnonymously } = useAuth()
-  const { completedLevels, clues, ruleStats, loading: progressLoading, recordCase, completeLevel } = useNumberDetectiveProgress(user?.uid)
+  const { completedLevels, points: clues, ruleStats, loading: progressLoading, recordChallenge, completeLevel } = useDivisibilityProgress(user?.uid, PROGRESS_FIELDS)
 
   useEffect(() => {
     if (!authLoading && !user) loginAnonymously()
@@ -62,7 +79,7 @@ export default function NumberDetective() {
   }
 
   function handleDone(firstAttempt: RuleResult[]) {
-    recordCase(firstAttempt, CLUES_PER_CASE)
+    recordChallenge(firstAttempt, CLUES_PER_CASE)
     setRound(r => ({
       solved: r.solved + 1,
       firstTry: r.firstTry + (firstAttempt.every(x => x.correct) ? 1 : 0),
@@ -95,9 +112,10 @@ export default function NumberDetective() {
           <button type="button" className="training-back-btn" onClick={() => navigate('/')}>← {t('trainingBack')}</button>
           <ThemeToggle />
         </div>
-        <DetectiveLevelSelect
+        <DivisibilityLevelSelect
+          game={GAME}
           completedLevels={completedLevels}
-          clues={clues}
+          points={clues}
           ruleStats={ruleStats}
           onPlay={level => start({ kind: 'level', level })}
           onPractice={rules => start({ kind: 'practice', rules })}
@@ -115,11 +133,12 @@ export default function NumberDetective() {
       : rulesNeedingPractice(ruleStats)
     return (
       <div className="fractions-page nd-page">
-        <DetectiveCaseClosed
+        <DivisibilityLevelComplete
+          game={GAME}
           level={level}
           solved={round.solved}
           firstTry={round.firstTry}
-          cluesEarned={round.solved * CLUES_PER_CASE}
+          pointsEarned={round.solved * CLUES_PER_CASE}
           newLevel={newLevel}
           allLevelsDone={level === LEVELS.length}
           practiceRules={practiceRules}

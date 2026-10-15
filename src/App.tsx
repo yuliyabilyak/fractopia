@@ -12,6 +12,7 @@ import AnubisScales from './pages/AnubisScales'
 import PizzaTrade from './pages/PizzaTrade'
 import ScribePyramid from './pages/ScribePyramid'
 import NumberDetective from './pages/NumberDetective'
+import NumberBridges from './pages/NumberBridges'
 import { ThemeProvider } from './i18n/ThemeContext'
 import './App.css'
 
@@ -33,6 +34,7 @@ export default function App() {
           <Route path="/pizza" element={<PizzaTrade />} />
           <Route path="/scribe" element={<ScribePyramid />} />
           <Route path="/detective" element={<NumberDetective />} />
+          <Route path="/bridges" element={<NumberBridges />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

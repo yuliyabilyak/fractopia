@@ -1,14 +1,15 @@
 import { useEffect, useRef } from 'react'
 import { useLang } from '../i18n/LangContext'
 import type { Divisor, LevelId } from '../data/numberDetective'
-import { LEVEL_NAME_KEY } from '../hooks/useDetectiveText'
+import type { DivisibilityGameConfig } from './DivisibilityLevelSelect'
 
 interface Props {
+  game: DivisibilityGameConfig
   /** null for a practice round */
   level: LevelId | null
   solved: number
   firstTry: number
-  cluesEarned: number
+  pointsEarned: number
   newLevel: LevelId | null
   allLevelsDone: boolean
   practiceRules: Divisor[]
@@ -19,8 +20,8 @@ interface Props {
 }
 
 /** End of a level: a calm badge and a few numbers — no ranks, no timers. */
-export default function DetectiveCaseClosed({
-  level, solved, firstTry, cluesEarned, newLevel, allLevelsDone, practiceRules,
+export default function DivisibilityLevelComplete({
+  game, level, solved, firstTry, pointsEarned, newLevel, allLevelsDone, practiceRules,
   onNextLevel, onReplay, onPractice, onLevels,
 }: Props) {
   const { t } = useLang()
@@ -30,24 +31,24 @@ export default function DetectiveCaseClosed({
 
   return (
     <div className="se-wrapper">
-      <div className="nd-badge" aria-hidden="true">🕵️</div>
-      <h2 className="se-done-title" tabIndex={-1} ref={titleRef}>{t('ndCaseClosed')}</h2>
+      <div className="nd-badge" aria-hidden="true">{game.badge}</div>
+      <h2 className="se-done-title" tabIndex={-1} ref={titleRef}>{t(game.doneTitleKey)}</h2>
       <p className="nd-intro">
-        {level !== null ? t('ndLevelDone', { n: level, name: t(LEVEL_NAME_KEY[level]) }) : t('ndPracticeDone')}
+        {level !== null ? t('ndLevelDone', { n: level, name: t(game.levelNameKeys[level]) }) : t('ndPracticeDone')}
       </p>
 
       <div className="dm-stats-grid">
         <div className="dm-stat">
           <p className="dm-stat-value">{solved}</p>
-          <p className="dm-stat-label">{t('ndCasesSolved')}</p>
+          <p className="dm-stat-label">{t(game.solvedKey)}</p>
         </div>
         <div className="dm-stat">
           <p className="dm-stat-value">{firstTry}</p>
           <p className="dm-stat-label">{t('ndFirstTry')}</p>
         </div>
         <div className="dm-stat">
-          <p className="dm-stat-value">{cluesEarned}</p>
-          <p className="dm-stat-label">{t('ndCluesEarned')}</p>
+          <p className="dm-stat-value">{pointsEarned}</p>
+          <p className="dm-stat-label">{t(game.pointsEarnedKey)}</p>
         </div>
       </div>
 
@@ -55,11 +56,11 @@ export default function DetectiveCaseClosed({
         <div className="pyr-badges">
           <div className="pyr-badge">
             <span className="pyr-badge-emoji" aria-hidden="true">🔓</span>
-            <span className="pyr-badge-label">{t('ndNewLevel', { name: t(LEVEL_NAME_KEY[newLevel]) })}</span>
+            <span className="pyr-badge-label">{t('ndNewLevel', { name: t(game.levelNameKeys[newLevel]) })}</span>
           </div>
         </div>
       )}
-      {allLevelsDone && <p className="nd-intro"><span aria-hidden="true">🏅</span> {t('ndMasterMsg')}</p>}
+      {allLevelsDone && <p className="nd-intro"><span aria-hidden="true">🏅</span> {t(game.masterKey)}</p>}
 
       {practiceRules.length > 0 && <p className="nd-intro">{t('ndPracticeTip', { rules: practiceRules.join(', ') })}</p>}
 

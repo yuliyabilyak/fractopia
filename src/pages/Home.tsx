@@ -60,6 +60,9 @@ export default function Home() {
       <button className="btn-training" onClick={() => navigate('/detective')}>
         {t('ndMode')}
       </button>
+      <button className="btn-training" onClick={() => navigate('/bridges')}>
+        {t('nbMode')}
+      </button>
     </div>
   )
 }
