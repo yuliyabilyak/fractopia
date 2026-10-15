@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { isDivisible, ruleSays, type Divisor, type LevelId, type Rng } from './numberDetective.ts'
 import {
   BRIDGE_DIVISORS, INITIAL_BRIDGE_STATE, LEVEL_CROSSINGS, MAX_HINT, NEW_RULES,
-  bridgeReducer, crossingResults, explainTile, failingFocus, failingStep, fitsRule, generateChallenge,
+  bridgeReducer, canCheck, crossingResults, explainTile, failingFocus, failingReason, failingStep, fitsRule, generateChallenge,
   planLevel, planPractice, ruleDivisors, rulesUpTo, stonesStillNeeded, tileFocus, workedExampleTile,
   type BridgeChallenge, type BridgeRule, type BridgeState,
 } from './numberBridges.ts'
@@ -66,6 +66,45 @@ test('hints explain the applicable rule with the digits that matter', () => {
   const both: BridgeRule = { kind: 'both', divisors: [4, 9] }
   assert.equal(failingFocus(1_236, both), 'all', '1,236 passes 4 but fails 9')
   assert.equal(explainTile(1_236, both).conclusion.ok, false)
+})
+
+test('7, 11 and 25: stones are judged and explained by their own rules', () => {
+  assert.ok(BRIDGE_DIVISORS.includes(7) && BRIDGE_DIVISORS.includes(11) && BRIDGE_DIVISORS.includes(25))
+  const seven = { kind: 'single', divisor: 7 } as const
+  const eleven = { kind: 'single', divisor: 11 } as const
+  const quarter = { kind: 'single', divisor: 25 } as const
+
+  assert.equal(tileFocus(seven), 1)
+  assert.equal(tileFocus(eleven), 'odd')
+  assert.equal(tileFocus(quarter), 2)
+
+  // 533 → 53 − 6 = 47, and 47 isn't a multiple of 7: the reason shows both steps
+  const why7 = failingReason(explainTile(533, seven))
+  assert.deepEqual(why7.map(s => s.kind), ['seven-round', 'divide'])
+  assert.ok(why7[0].kind === 'seven-round' && why7[0].result === 47)
+  assert.ok(why7[1].kind === 'divide' && why7[1].dividend === 47 && why7[1].remainder === 5)
+
+  // 1,234 → (4 + 2) − (3 + 1) = 2: the difference, then the division
+  const why11 = failingReason(explainTile(1_234, eleven))
+  assert.deepEqual(why11.map(s => s.kind), ['difference', 'divide'])
+  assert.ok(why11[0].kind === 'difference' && why11[0].result === 2)
+
+  // 1,260 → only 60 matters, 60 ÷ 25 leaves 10
+  const why25 = failingReason(explainTile(1_260, quarter))
+  assert.deepEqual(why25.map(s => s.kind), ['last-part', 'divide'])
+  assert.equal(failingFocus(1_260, quarter), 2)
+
+  assert.deepEqual(failingReason(explainTile(1_275, quarter)), [], 'a fitting stone has no reason')
+})
+
+test('the reason for a digit-sum rule includes the sum it divides', () => {
+  const why = failingReason(explainTile(4_822, { kind: 'single', divisor: 3 }))
+  assert.deepEqual(why.map(s => s.kind), ['digit-sum', 'divide'])
+  // a last-digit rule needs nothing before its one step
+  assert.deepEqual(failingReason(explainTile(587, { kind: 'single', divisor: 2 })).map(s => s.kind), ['last-digit'])
+  // the 6 rule: the failing 3 check brings its own digit sum, not the 2 check
+  const why6 = failingReason(explainTile(1_238, { kind: 'single', divisor: 6 }))
+  assert.deepEqual(why6.map(s => [s.kind, s.group]), [['digit-sum', 3], ['divide', 3]])
 })
 
 // ── generation ───────────────────────────────────────────────────────────────
@@ -178,6 +217,28 @@ test('a wrong stone is flagged, right ones stay placed, and the player retries',
   assert.deepEqual(s.placed, [0, 2, 4])
   assert.equal(s.firstCheckCorrect, false, 'accuracy remembers the first check')
   assert.deepEqual(crossingResults({ kind: 'both', divisors: [4, 9] }, false), [{ divisor: 4, correct: false }, { divisor: 9, correct: false }])
+})
+
+test('removing the only wrong stone still lets the player finish', () => {
+  // every right stone plus one wrong one: the right ones go on the path…
+  let s = play(INITIAL_BRIDGE_STATE, toggle(0), toggle(2), toggle(4), toggle(5), check)
+  assert.deepEqual([s.status, s.placed, s.wrong], ['retry', [0, 2, 4], [5]])
+  // …the wrong one is taken away, leaving nothing selected
+  s = bridgeReducer(s, toggle(5))
+  assert.deepEqual(s.selected, [])
+  assert.equal(canCheck(s), true, 'Check path must stay available')
+  s = bridgeReducer(s, check)
+  assert.equal(s.status, 'complete')
+  assert.equal(s.firstCheckCorrect, false)
+})
+
+test('re-checking a partial path without new stones just reports what is missing', () => {
+  let s = play(INITIAL_BRIDGE_STATE, toggle(0), check)
+  assert.deepEqual([s.status, s.placed, s.selected], ['retry', [0], []])
+  s = bridgeReducer(s, check)
+  assert.equal(s.status, 'retry')
+  assert.equal(stonesStillNeeded(s, EXAMPLE), 2)
+  assert.equal(canCheck(INITIAL_BRIDGE_STATE), false, 'nothing to check at the start')
 })
 
 test('try again clears the crossing but keeps hints and the first-check record', () => {

@@ -243,6 +243,8 @@ body {
   justify-content: center;
   min-height: 100svh;
   gap: 16px;
+  padding: 24px 16px;
+  text-align: center;
 }
 
 .home-page h1 {
@@ -6514,3 +6516,45 @@ body {
   .nb-stones { grid-template-columns: 1fr 1fr; gap: 10px; }
   .nb-stone  { min-height: 84px; }
 }
+
+/* ---- Landing: the two topics ---- */
+
+.landing-topics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  width: min(560px, calc(100% - 32px));
+}
+
+.landing-topic-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-height: 170px;
+  padding: 20px 16px;
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 3px solid var(--orange-border);
+  border-radius: 20px;
+  box-shadow: 0 4px 24px var(--shadow);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.landing-topic-card:hover {
+  border-color: var(--orange);
+  background: var(--orange-hover-surface);
+}
+
+.landing-topic-card:focus-visible {
+  outline: 3px solid var(--text);
+  outline-offset: 3px;
+}
+
+.landing-topic-icon  { font-size: 2.6rem; line-height: 1.2; }
+.landing-topic-title { font-size: 1.3rem; font-weight: 700; line-height: 1.4; }
+.landing-topic-desc  { font-size: 0.95rem; line-height: 1.5; color: var(--text-muted); }
+
+.topic-back-btn { align-self: flex-start; }

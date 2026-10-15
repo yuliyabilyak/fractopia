@@ -11,9 +11,9 @@ import {
   type Divisor, type Explanation, type Highlight, type LevelId, type Rng, type RuleResult, type Step,
 } from './numberDetective.ts'
 
-/** The rules this game teaches. 7, 11 and 25 already exist in the shared rule
- * system — adding them here is enough to make them playable. */
-export const BRIDGE_DIVISORS: Divisor[] = [2, 3, 4, 5, 6, 8, 9, 10]
+/** The rules this game teaches — any rule from the shared rule system can be
+ * added here, as long as NEW_RULES introduces it in some level. */
+export const BRIDGE_DIVISORS: Divisor[] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 25]
 
 export type BridgeRule =
   | { kind: 'single'; divisor: Divisor }
@@ -41,6 +41,20 @@ export function explainTile(n: number, rule: BridgeRule): Explanation {
 /** The step that shows why a number doesn't fit — the first check that fails. */
 export function failingStep(explanation: Explanation): Step | null {
   return explanation.steps.find(s => 'ok' in s && s.ok === false) ?? null
+}
+
+/** A short "why not" for a stone: the failing step, and — when that step
+ * divides a number worked out just before (a digit sum, the last digits, the
+ * 11 difference, the last 7 round) — that step too, so the number isn't a
+ * mystery. */
+export function failingReason(explanation: Explanation): Step[] {
+  const { steps } = explanation
+  const i = steps.findIndex(s => 'ok' in s && s.ok === false)
+  if (i === -1) return []
+  const step = steps[i]
+  const before = steps[i - 1]
+  if (step.kind === 'divide' && before && before.kind !== 'rule' && before.group === step.group) return [before, step]
+  return [step]
 }
 
 /** Digits to highlight on every stone when the "look here" hint is on. Two-rule
@@ -103,9 +117,9 @@ const single = (divisor: Divisor): BridgeRule => ({ kind: 'single', divisor })
 
 /** Rules each level brings in; a level only uses its own and earlier ones. */
 export const NEW_RULES: Record<LevelId, Divisor[]> = {
-  1: [2, 5, 10],
-  2: [3, 9, 4],
-  3: [6, 8],
+  1: [2, 5, 10],      // the last digit
+  2: [3, 9, 4, 25],   // digit sums, then the last two digits
+  3: [6, 8, 11, 7],   // combined and multi-step rules
   4: [],
   5: [],
 }
@@ -178,6 +192,12 @@ export type BridgeAction =
   | { type: 'hint' }
   | { type: 'reset' }
 
+/** Check is possible once anything is chosen or already on the path — the
+ * latter so that removing the last wrong stone still lets the player finish. */
+export function canCheck(state: BridgeState): boolean {
+  return state.status !== 'complete' && (state.selected.length > 0 || state.placed.length > 0)
+}
+
 export const INITIAL_BRIDGE_STATE: BridgeState = {
   selected: [], placed: [], wrong: [], status: 'choosing', hintLevel: 0, firstCheckCorrect: null,
 }
@@ -197,7 +217,7 @@ export function bridgeReducer(state: BridgeState, action: BridgeAction): BridgeS
       }
     }
     case 'check': {
-      if (state.status === 'complete' || state.selected.length === 0) return state
+      if (!canCheck(state)) return state
       const { correct } = action.challenge
       const right = state.selected.filter(i => correct.includes(i))
       const wrong = state.selected.filter(i => !correct.includes(i))

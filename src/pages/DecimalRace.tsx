@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { TOPIC_PATH } from '../data/topics'
 import { useLang } from '../i18n/LangContext'
 import ThemeToggle from '../components/ThemeToggle'
 import FeedbackBanner from '../components/FeedbackBanner'
@@ -47,7 +48,7 @@ export default function DecimalRace() {
             <p className="se-pts-label">{t('raceScoreLabel')}</p>
           </div>
           <button className="btn-start" onClick={playAgain}>{t('playAgain')}</button>
-          <button className="training-back-btn" onClick={() => navigate('/')}>← {t('trainingBack')}</button>
+          <button className="training-back-btn" onClick={() => navigate(TOPIC_PATH.fractions)}>← {t('trainingBack')}</button>
         </div>
       </div>
     )
@@ -59,7 +60,7 @@ export default function DecimalRace() {
         <div className="progress-bar-fill" style={{ width: `${(index / session.length) * 100}%` }} />
       </div>
       <div className="fractions-header">
-        <button className="training-back-btn" onClick={() => navigate('/')}>← {t('trainingBack')}</button>
+        <button className="training-back-btn" onClick={() => navigate(TOPIC_PATH.fractions)}>← {t('trainingBack')}</button>
         <p className="exercise-counter">{t('raceCounter', { i: index + 1, total: session.length, score: correctCount })}</p>
         <ThemeToggle />
       </div>

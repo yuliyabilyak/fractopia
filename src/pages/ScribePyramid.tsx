@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { TOPIC_PATH } from '../data/topics'
 import { useLang } from '../i18n/LangContext'
 import ThemeToggle from '../components/ThemeToggle'
 import ScribeDoublingTable from '../components/ScribeDoublingTable'
@@ -100,7 +101,7 @@ export default function ScribePyramid() {
           totalStones={TOTAL_STEPS}
           mistakes={mistakes}
           onPlayAgain={playAgain}
-          onBack={() => navigate('/')}
+          onBack={() => navigate(TOPIC_PATH.fractions)}
         />
       </div>
     )
@@ -111,7 +112,7 @@ export default function ScribePyramid() {
   return (
     <div className="fractions-page">
       <div className="fractions-header">
-        <button className="training-back-btn" onClick={() => navigate('/')}>← {t('trainingBack')}</button>
+        <button className="training-back-btn" onClick={() => navigate(TOPIC_PATH.fractions)}>← {t('trainingBack')}</button>
         <p className="exercise-counter">{t('scribeCounter', { i: stepIndex + 1, total: TOTAL_STEPS })}</p>
         <ThemeToggle />
       </div>

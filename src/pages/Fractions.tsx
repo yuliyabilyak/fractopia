@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { TOPIC_PATH } from '../data/topics'
 import { useAuth } from '../hooks/useAuth'
 import { useLang } from '../i18n/LangContext'
 import { useProgress } from '../hooks/useProgress'
@@ -186,7 +187,7 @@ export default function Fractions() {
         <div className="progress-bar-fill" style={{ width: `${(index / session.length) * 100}%` }} />
       </div>
       <div className="fractions-header">
-        <button className="training-back-btn" onClick={() => navigate('/')}>← {t('trainingBack')}</button>
+        <button className="training-back-btn" onClick={() => navigate(TOPIC_PATH.fractions)}>← {t('trainingBack')}</button>
         <p className="exercise-counter">{t('counter', { i: index + 1, total: session.length, score })}</p>
         <ThemeToggle />
       </div>

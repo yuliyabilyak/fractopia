@@ -13,6 +13,8 @@ import PizzaTrade from './pages/PizzaTrade'
 import ScribePyramid from './pages/ScribePyramid'
 import NumberDetective from './pages/NumberDetective'
 import NumberBridges from './pages/NumberBridges'
+import TopicPage from './pages/TopicPage'
+import { TOPIC_PATH } from './data/topics'
 import { ThemeProvider } from './i18n/ThemeContext'
 import './App.css'
 
@@ -22,6 +24,8 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path={TOPIC_PATH.fractions} element={<TopicPage topic="fractions" />} />
+          <Route path={TOPIC_PATH.divisibility} element={<TopicPage topic="divisibility" />} />
           <Route path="/fractions" element={<Fractions />} />
           <Route path="/training" element={<TrainingCentre />} />
           <Route path="/race" element={<DecimalRace />} />

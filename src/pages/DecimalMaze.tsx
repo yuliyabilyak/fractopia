@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { TOPIC_PATH } from '../data/topics'
 import { useLang } from '../i18n/LangContext'
 import ThemeToggle from '../components/ThemeToggle'
 import MazeIntersection from '../components/MazeIntersection'
@@ -73,7 +74,7 @@ export default function DecimalMaze() {
     return (
       <div className="fractions-page">
         <div className="fractions-header">
-          <button className="training-back-btn" onClick={() => navigate('/')}>← {t('trainingBack')}</button>
+          <button className="training-back-btn" onClick={() => navigate(TOPIC_PATH.fractions)}>← {t('trainingBack')}</button>
           <ThemeToggle />
         </div>
         <h2 className="dm-select-title">{t('mazeDifficultyPrompt')}</h2>
@@ -113,7 +114,7 @@ export default function DecimalMaze() {
         <div className="progress-bar-fill" style={{ width: `${(index / session.length) * 100}%` }} />
       </div>
       <div className="fractions-header">
-        <button className="training-back-btn" onClick={() => navigate('/')}>← {t('trainingBack')}</button>
+        <button className="training-back-btn" onClick={() => navigate(TOPIC_PATH.fractions)}>← {t('trainingBack')}</button>
         <p className="exercise-counter">{t('mazeCounter', { i: index + 1, total: session.length, stars })}</p>
         <ThemeToggle />
       </div>

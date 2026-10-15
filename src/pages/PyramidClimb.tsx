@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { TOPIC_PATH } from '../data/topics'
 import { useLang } from '../i18n/LangContext'
 import ThemeToggle from '../components/ThemeToggle'
 import PyramidScene from '../components/PyramidScene'
@@ -76,7 +77,7 @@ export default function PyramidClimb() {
           mistakes={mistakes}
           seconds={elapsed}
           onPlayAgain={playAgain}
-          onBack={() => navigate('/')}
+          onBack={() => navigate(TOPIC_PATH.fractions)}
         />
       </div>
     )
@@ -85,7 +86,7 @@ export default function PyramidClimb() {
   return (
     <div className="fractions-page">
       <div className="fractions-header">
-        <button className="training-back-btn" onClick={() => navigate('/')}>← {t('trainingBack')}</button>
+        <button className="training-back-btn" onClick={() => navigate(TOPIC_PATH.fractions)}>← {t('trainingBack')}</button>
         <p className="exercise-counter">{t('pyrCounter', { level, total: TOTAL_STEPS })}</p>
         <ThemeToggle />
       </div>

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { TOPIC_PATH } from '../data/topics'
 import { useLang } from '../i18n/LangContext'
 import ThemeToggle from '../components/ThemeToggle'
 import ScarabTemple from '../components/ScarabTemple'
@@ -69,7 +70,7 @@ export default function ScarabMatch() {
           bestCombo={bestCombo}
           mistakes={totalMistakes}
           onPlayAgain={playAgain}
-          onBack={() => navigate('/')}
+          onBack={() => navigate(TOPIC_PATH.fractions)}
         />
       </div>
     )
@@ -78,7 +79,7 @@ export default function ScarabMatch() {
   return (
     <div className="fractions-page">
       <div className="fractions-header">
-        <button className="training-back-btn" onClick={() => navigate('/')}>← {t('trainingBack')}</button>
+        <button className="training-back-btn" onClick={() => navigate(TOPIC_PATH.fractions)}>← {t('trainingBack')}</button>
         <p className="exercise-counter">{t('scarabCounter', { level: levelIndex + 1, total: TOTAL_LEVELS })}</p>
         <ThemeToggle />
       </div>

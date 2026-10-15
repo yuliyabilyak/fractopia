@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { TOPIC_PATH } from '../data/topics'
 import { useLang } from '../i18n/LangContext'
 import { useAuth } from '../hooks/useAuth'
 import { useDivisibilityProgress, type ProgressFields } from '../hooks/useDivisibilityProgress'
@@ -109,7 +110,7 @@ export default function NumberDetective() {
     return (
       <div className="fractions-page nd-page">
         <div className="fractions-header">
-          <button type="button" className="training-back-btn" onClick={() => navigate('/')}>← {t('trainingBack')}</button>
+          <button type="button" className="training-back-btn" onClick={() => navigate(TOPIC_PATH.divisibility)}>← {t('trainingBack')}</button>
           <ThemeToggle />
         </div>
         <DivisibilityLevelSelect

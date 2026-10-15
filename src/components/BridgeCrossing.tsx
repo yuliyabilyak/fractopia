@@ -7,7 +7,7 @@ import BridgeFeedback from './BridgeFeedback'
 import BridgeHints from './BridgeHints'
 import type { RuleResult } from '../data/numberDetective'
 import {
-  INITIAL_BRIDGE_STATE, MAX_HINT, bridgeReducer, crossingResults, failingFocus, tileFocus,
+  INITIAL_BRIDGE_STATE, MAX_HINT, bridgeReducer, canCheck, crossingResults, failingFocus, tileFocus,
   type BridgeAction, type BridgeChallenge,
 } from '../data/numberBridges'
 
@@ -34,7 +34,7 @@ export default function BridgeCrossing({ challenge, isLast, onDone }: Props) {
     : t('nbSelectAllBoth', { a: rule.divisors[0], b: rule.divisors[1] })
 
   function act(action: BridgeAction) {
-    if (action.type === 'check' && state.selected.length > 0) {
+    if (action.type === 'check' && canCheck(state)) {
       playFeedbackSound(bridgeReducer(state, action).status === 'complete')
     }
     dispatch(action)
@@ -91,7 +91,7 @@ export default function BridgeCrossing({ challenge, isLast, onDone }: Props) {
           <button
             type="button"
             className="btn-start nb-check-btn"
-            disabled={state.selected.length === 0}
+            disabled={!canCheck(state)}
             onClick={() => act({ type: 'check', challenge })}
           >
             {t('nbCheck')}

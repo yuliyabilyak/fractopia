@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { TOPIC_PATH } from '../data/topics'
 import { useLang } from '../i18n/LangContext'
 import LangSwitcher from '../components/LangSwitcher'
 import ThemeToggle from '../components/ThemeToggle'
@@ -127,7 +128,7 @@ export default function TrainingCentre() {
   return (
     <div className="training-page">
       <div className="training-header">
-        <button className="training-back-btn" onClick={selectedTopic ? handleBack : () => navigate('/')}>
+        <button className="training-back-btn" onClick={selectedTopic ? handleBack : () => navigate(TOPIC_PATH.fractions)}>
           ← {t('trainingBack')}
         </button>
         <h1 className="training-title">{t('trainingTitle')}</h1>

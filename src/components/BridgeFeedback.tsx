@@ -1,7 +1,7 @@
 import { useLang } from '../i18n/LangContext'
 import { useDetectiveText } from '../hooks/useDetectiveText'
 import {
-  explainTile, failingStep, stonesStillNeeded,
+  explainTile, failingReason, stonesStillNeeded,
   type BridgeChallenge, type BridgeState,
 } from '../data/numberBridges'
 
@@ -11,7 +11,7 @@ interface Props {
 }
 
 /** What the last "Check path" found: a short supportive line, and for every
- * stone that doesn't fit, the one step of the rule that it fails. */
+ * stone that doesn't fit, the step of the rule that it fails. */
 export default function BridgeFeedback({ challenge, state }: Props) {
   const { t } = useLang()
   const text = useDetectiveText()
@@ -31,11 +31,11 @@ export default function BridgeFeedback({ challenge, state }: Props) {
               <ul className="nb-why-list">
                 {state.wrong.map(i => {
                   const n = challenge.tiles[i]
-                  const step = failingStep(explainTile(n, challenge.rule))
+                  const reason = failingReason(explainTile(n, challenge.rule))
                   return (
                     <li key={i}>
                       <span aria-hidden="true">✗ </span>
-                      <strong>{text.num(n)}</strong> — {step ? text.step(step) : ''}
+                      <strong>{text.num(n)}</strong> — {reason.map(text.step).join(' ')}
                     </li>
                   )
                 })}
