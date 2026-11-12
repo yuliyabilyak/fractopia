@@ -13,6 +13,7 @@ import PizzaTrade from './pages/PizzaTrade'
 import ScribePyramid from './pages/ScribePyramid'
 import NumberDetective from './pages/NumberDetective'
 import NumberBridges from './pages/NumberBridges'
+import NumberWorkshopPage from './pages/NumberWorkshopPage'
 import TopicPage from './pages/TopicPage'
 import { TOPIC_PATH } from './data/topics'
 import { ThemeProvider } from './i18n/ThemeContext'
@@ -39,6 +40,7 @@ export default function App() {
           <Route path="/scribe" element={<ScribePyramid />} />
           <Route path="/detective" element={<NumberDetective />} />
           <Route path="/bridges" element={<NumberBridges />} />
+          <Route path="/workshop" element={<NumberWorkshopPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

@@ -27,6 +27,7 @@ export const TOPIC_GAMES: Record<TopicId, TopicGame[]> = {
     { path: '/anubis', labelKey: 'anubisMode' },
     { path: '/pizza', labelKey: 'ptMode' },
     { path: '/scribe', labelKey: 'scribeMode' },
+    { path: '/workshop', labelKey: 'wsMode' },
   ],
   divisibility: [
     { path: '/detective', labelKey: 'ndMode' },

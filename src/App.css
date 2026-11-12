@@ -6558,3 +6558,1022 @@ body {
 .landing-topic-desc  { font-size: 0.95rem; line-height: 1.5; color: var(--text-muted); }
 
 .topic-back-btn { align-self: flex-start; }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   Number Workshop (ws-) — robot-builder game: decomposing numbers into multipliers.
+   Products only, so no + glyph appears anywhere in this mode. The × sign is
+   drawn large with wide spacing so it can't pass for the letter x.
+   Wrong answers never use red: the "hmm" state is neutral.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --ws-times:           #c2410c;
+  --ws-node:            #fff7ed;
+  --ws-node-border:     #fdba74;
+  --ws-branch:          #a8a29e;
+  --ws-prime:           #fde68a;
+  --ws-prime-border:    #d97706;
+  --ws-prime-text:      #78350f;
+  --ws-card:            #e0f2fe;
+  --ws-card-border:     #0369a1;
+  --ws-card-text:       #0c4a6e;
+
+  --ws-steel:           #cbd5e1;
+  --ws-steel-dark:      #64748b;
+  --ws-robot-eye:       #1e293b;
+  --ws-ghost:           #94a3b8;
+  --ws-gold:            #f59e0b;
+  --ws-gold-light:      #fde68a;
+  --ws-gold-text:       #78350f;
+  --ws-charge:          #22c55e;
+  --ws-tile:            #f97316;
+}
+
+[data-theme="dark"],
+[data-theme="evil"] {
+  --ws-times:           #fdba74;
+  --ws-node:            #1e293b;
+  --ws-node-border:     #9a3412;
+  --ws-branch:          #64748b;
+  --ws-prime:           #78350f;
+  --ws-prime-border:    #fbbf24;
+  --ws-prime-text:      #fef3c7;
+  --ws-card:            #0c4a6e;
+  --ws-card-border:     #7dd3fc;
+  --ws-card-text:       #e0f2fe;
+
+  --ws-steel:           #64748b;
+  --ws-steel-dark:      #cbd5e1;
+  --ws-ghost:           #64748b;
+  --ws-tile:            #fb923c;
+}
+
+.ws-page .btn-check {
+  min-height: 48px;
+  font-size: 1.1rem;
+}
+
+.ws-page button:focus-visible {
+  outline: 3px solid var(--text);
+  outline-offset: 3px;
+}
+
+.ws-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Values: ×, =, products, fractions ──────────────────────────────────── */
+
+/* big and well spaced, so × never reads as the letter x. OpenDyslexic's ×
+   is small and x-like, so the sign alone uses the system font's clear glyph. */
+.ws-times {
+  display: inline-block;
+  margin: 0 0.35em;
+  font-family: system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  font-size: 1.35em;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ws-times);
+  vertical-align: middle;
+}
+
+.ws-equals {
+  display: inline-block;
+  margin: 0 0.4em;
+  font-weight: 700;
+  color: var(--text-dim);
+  vertical-align: middle;
+}
+
+.ws-product {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  row-gap: 6px;
+}
+
+.ws-factor { display: inline-flex; align-items: center; }
+
+.ws-value { font-weight: 700; }
+
+.ws-frac {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.15;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+.ws-frac-num { padding: 0 6px 2px; }
+
+.ws-frac-den {
+  padding: 2px 6px 0;
+  border-top: 3px solid currentColor;
+}
+
+.ws-big-value {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.ws-answer-mark {
+  padding: 0 8px;
+  border-radius: 8px;
+  box-shadow: 0 0 0 3px var(--orange);
+}
+
+.ws-note {
+  margin: 0;
+  padding: 8px 14px;
+  border-radius: 12px;
+  background: var(--ws-prime);
+  color: var(--ws-prime-text);
+  font-weight: 700;
+  text-align: center;
+}
+
+/* ── Prompt & cards ─────────────────────────────────────────────────────── */
+
+.ws-station-card { padding: 24px 12px; }
+
+.ws-prompt { font-size: 1.3rem; }
+
+.ws-prompt-value {
+  display: inline-flex;
+  vertical-align: middle;
+  margin: 0 6px;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--orange-dark);
+}
+
+.ws-answer-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.ws-answer-cards--wide { grid-template-columns: 1fr; }
+
+.ws-answer-card {
+  min-height: 88px;
+  padding: 12px;
+  border-radius: 16px;
+  border: 3px solid var(--orange-border);
+  background: var(--surface);
+  color: var(--text-body);
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+}
+
+.ws-answer-card .ws-big-value { font-size: 1.6rem; }
+
+.ws-answer-card:hover {
+  background: var(--orange-hover-surface);
+  border-color: var(--orange);
+}
+
+.ws-answer-card:active { transform: scale(0.97); }
+
+/* ── Building: equations, gaps, cards, steppers ─────────────────────────── */
+
+.ws-equation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.ws-slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 64px;
+  min-height: 64px;
+  padding: 4px;
+  border-radius: 12px;
+  border: 3px dashed var(--ws-card-border);
+  transition: background 0.15s;
+}
+
+.ws-slot--question { color: var(--text-faint); }
+.ws-slot--over { background: var(--ws-card); }
+.ws-slot--filled { border-style: solid; }
+
+.ws-slot-btn {
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-faint);
+  font-family: inherit;
+  font-size: 1.6rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ws-slot-btn--ready {
+  color: var(--ws-card-border);
+  animation: ws-selected 1.4s ease-in-out infinite;
+}
+
+.ws-slot-btn:disabled { cursor: default; }
+
+.ws-number-card {
+  min-width: 64px;
+  min-height: 56px;
+  padding: 6px 14px;
+  border-radius: 12px;
+  border: 3px solid var(--ws-card-border);
+  background: var(--ws-card);
+  color: var(--ws-card-text);
+  font-family: inherit;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.ws-number-card--placed {
+  cursor: pointer;
+  animation: ws-pop 0.25s ease-out;
+}
+
+.ws-palette {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.ws-piece {
+  cursor: grab;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.ws-piece:active { cursor: grabbing; }
+
+.ws-piece--selected {
+  transform: translateY(-4px);
+  box-shadow: 0 0 0 4px var(--orange);
+  animation: ws-selected 1.4s ease-in-out infinite;
+}
+
+.ws-build-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.ws-build-label {
+  min-width: 5ch;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-sub);
+}
+
+.ws-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ws-stepper-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--orange-border);
+  background: var(--orange-surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ws-stepper-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.ws-stepper-value {
+  min-width: 2ch;
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.ws-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.ws-secondary-btn {
+  min-height: 48px;
+  padding: 10px 22px;
+  border-radius: 10px;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  color: var(--text-body);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ws-secondary-btn:disabled { opacity: 0.38; cursor: not-allowed; }
+
+/* ── Factor Tree ────────────────────────────────────────────────────────── */
+
+.ws-tree {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.ws-tree-branch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ws-tree-kids { display: flex; }
+
+/* each child draws its own branch: a stem up, and half the bar toward its sibling */
+.ws-tree-kids > .ws-tree-branch {
+  position: relative;
+  padding: 22px 4px 0;
+}
+
+.ws-tree-kids > .ws-tree-branch::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: calc(50% - 1.5px);
+  width: 3px;
+  height: 22px;
+  background: var(--ws-branch);
+}
+
+.ws-tree-kids > .ws-tree-branch::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  height: 3px;
+  background: var(--ws-branch);
+}
+
+.ws-tree-kids > .ws-tree-branch:first-child::after { left: 50%; right: 0; }
+.ws-tree-kids > .ws-tree-branch:last-child::after  { left: 0; right: 50%; }
+
+.ws-tree-node {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+  min-height: 52px;
+  padding: 0 8px;
+  border-radius: 50%;
+  border: 3px solid var(--ws-node-border);
+  background: var(--ws-node);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.ws-tree-node--open {
+  cursor: pointer;
+  border-style: dashed;
+}
+
+.ws-tree-node--open:hover { border-color: var(--orange); }
+
+.ws-tree-node--selected {
+  border-style: solid;
+  border-color: var(--orange);
+  box-shadow: 0 0 0 4px var(--orange-border);
+}
+
+/* prime leaves: gold *and* a ✓ badge, never colour alone */
+.ws-tree-node--prime {
+  border-color: var(--ws-prime-border);
+  background: var(--ws-prime);
+  color: var(--ws-prime-text);
+  animation: ws-pop 0.3s ease-out;
+}
+
+.ws-prime-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--ws-prime-border);
+  color: var(--surface);
+  font-size: 0.8rem;
+  line-height: 22px;
+  text-align: center;
+}
+
+.ws-split-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 14px;
+  background: var(--orange-surface);
+}
+
+.ws-split-title {
+  margin: 0;
+  font-weight: 700;
+  color: var(--text-sub);
+}
+
+.ws-split-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.ws-split-btn {
+  min-height: 56px;
+  padding: 6px 14px;
+  border-radius: 12px;
+  border: 3px solid var(--orange-border);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 1.3rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ws-split-btn:hover { border-color: var(--orange); }
+
+/* ── Fraction Cancel ────────────────────────────────────────────────────── */
+
+.ws-cancel-fraction .ws-frac-num,
+.ws-cancel-fraction .ws-frac-den { padding: 6px 6px; }
+
+.ws-cancel-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+  min-height: 52px;
+  padding: 0 8px;
+  border-radius: 12px;
+  border: 3px solid var(--ws-card-border);
+  background: var(--ws-card);
+  color: var(--ws-card-text);
+  font-family: inherit;
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+span.ws-cancel-chip { cursor: default; min-width: 40px; min-height: 40px; }
+
+/* cancelled: a diagonal slash drawn across the chip */
+.ws-cancel-chip--on::after {
+  content: '';
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 50%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--orange);
+  transform: rotate(-35deg);
+  animation: ws-slash 0.3s ease-out both;
+}
+
+.ws-cancel-chip--on { opacity: 0.7; }
+
+/* ── Tile Press ─────────────────────────────────────────────────────────── */
+
+.ws-tile-grid {
+  display: inline-grid;
+  grid-template-columns: repeat(var(--ws-cols, 1), 22px);
+  gap: 3px;
+}
+
+.ws-tile {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: var(--ws-tile);
+}
+
+/* ── HUD: stars & battery ───────────────────────────────────────────────── */
+
+.ws-star-meter { display: inline-flex; gap: 2px; }
+
+.ws-star {
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--text-slot);
+}
+
+.ws-star--on { color: var(--ws-gold); }
+
+.ws-battery { display: inline-flex; align-items: center; gap: 6px; }
+
+.ws-battery-body {
+  position: relative;
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border: 2px solid var(--text-dim);
+  border-radius: 5px;
+}
+
+.ws-battery-body::after {
+  content: '';
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  width: 4px;
+  height: 8px;
+  transform: translateY(-50%);
+  border-radius: 0 2px 2px 0;
+  background: var(--text-dim);
+}
+
+.ws-battery-cell {
+  width: 10px;
+  height: 16px;
+  border-radius: 2px;
+  background: transparent;
+  transition: background 0.2s;
+}
+
+.ws-battery-cell--on { background: var(--ws-charge); }
+.ws-battery--full .ws-battery-body { animation: ws-glow 1s ease-in-out 2; }
+
+/* ── Robot (drawn in CSS; positions are % of the robot box) ─────────────── */
+
+.ws-robot {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.ws-robot--lg { width: 220px; height: 260px; }
+.ws-robot--sm { width: 132px; height: 156px; }
+
+.ws-rp {
+  position: absolute;
+  box-sizing: border-box;
+  border: 3px solid var(--ws-steel-dark);
+  background: var(--ws-steel);
+}
+
+.ws-rp::before,
+.ws-rp::after { box-sizing: border-box; }
+
+.ws-rp--jetpack {
+  left: 20%; top: 40%; width: 60%; height: 30%;
+  border-radius: 12px;
+  background: var(--ws-steel-dark);
+  z-index: 0;
+}
+
+.ws-rp--jetpack::after {
+  content: '';
+  position: absolute;
+  left: 8%; right: 8%; bottom: -36%;
+  height: 34%;
+  border-radius: 0 0 50% 50%;
+  background: linear-gradient(#f97316, #fde047);
+}
+
+.ws-rp--body {
+  left: 28%; top: 38%; width: 44%; height: 34%;
+  border-radius: 14px;
+  z-index: 2;
+}
+
+.ws-rp--head {
+  left: 31%; top: 13%; width: 38%; height: 24%;
+  border-radius: 16px;
+  z-index: 3;
+}
+
+.ws-rp--eyes {
+  left: 38%; top: 18%; width: 24%; height: 9%;
+  border: none;
+  background: transparent;
+  z-index: 4;
+}
+
+.ws-rp--eyes::before,
+.ws-rp--eyes::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 34%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid var(--ws-robot-eye);
+  background: var(--ws-robot-eye);
+}
+
+.ws-rp--eyes::before { left: 0; }
+.ws-rp--eyes::after  { right: 0; }
+
+.ws-rp--smile {
+  left: 42%; top: 28%; width: 16%; height: 5%;
+  border: none;
+  border-bottom: 4px solid var(--ws-robot-eye);
+  border-radius: 0 0 50% 50%;
+  background: transparent;
+  z-index: 4;
+}
+
+.ws-rp--ear-bolts {
+  left: 25%; top: 20%; width: 50%; height: 9%;
+  border: none;
+  background: transparent;
+  z-index: 2;
+}
+
+.ws-rp--ear-bolts::before,
+.ws-rp--ear-bolts::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 14%;
+  height: 100%;
+  border-radius: 4px;
+  border: 3px solid var(--ws-steel-dark);
+  background: var(--ws-steel-dark);
+}
+
+.ws-rp--ear-bolts::before { left: 0; }
+.ws-rp--ear-bolts::after  { right: 0; }
+
+.ws-rp--antenna {
+  left: 48.5%; top: 3%; width: 3%; height: 11%;
+  border: none;
+  background: var(--ws-steel-dark);
+  z-index: 2;
+}
+
+.ws-rp--antenna::after {
+  content: '';
+  position: absolute;
+  left: 50%; top: -12px;
+  width: 16px; height: 16px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  border: 3px solid var(--ws-steel-dark);
+  background: var(--orange);
+}
+
+.ws-rp--left-arm,
+.ws-rp--right-arm {
+  top: 42%; width: 16%; height: 9%;
+  border-radius: 8px;
+  z-index: 1;
+}
+
+.ws-rp--left-arm  { left: 13%; }
+.ws-rp--right-arm { left: 71%; }
+
+.ws-rp--chest-light {
+  left: 43%; top: 47%; width: 14%; height: 12%;
+  border-radius: 50%;
+  background: #facc15;
+  box-shadow: 0 0 12px #facc15;
+  z-index: 3;
+}
+
+.ws-rp--left-wheel,
+.ws-rp--right-wheel {
+  top: 71%; width: 18%; height: 15%;
+  border-radius: 50%;
+  border-width: 5px;
+  background: var(--ws-steel-dark);
+  z-index: 3;
+}
+
+.ws-rp--left-wheel  { left: 28%; }
+.ws-rp--right-wheel { left: 54%; }
+
+/* not built yet: a dashed outline of where it goes */
+.ws-rp--off,
+.ws-rp--off::before,
+.ws-rp--off::after {
+  background: transparent;
+  border-color: var(--ws-ghost);
+  border-style: dashed;
+  box-shadow: none;
+}
+
+.ws-rp--off { border-width: 2px; z-index: 0; }
+.ws-rp--smile.ws-rp--off { border-bottom-width: 2px; }
+.ws-rp--antenna.ws-rp--off { border: 2px dashed var(--ws-ghost); }
+.ws-rp--jetpack.ws-rp--off::after { display: none; }
+
+/* a full battery's reward */
+.ws-rp--gold,
+.ws-rp--gold.ws-rp--eyes::before,
+.ws-rp--gold.ws-rp--eyes::after,
+.ws-rp--gold.ws-rp--ear-bolts::before,
+.ws-rp--gold.ws-rp--ear-bolts::after,
+.ws-rp--gold.ws-rp--antenna::after {
+  background: linear-gradient(135deg, var(--ws-gold-light), var(--ws-gold));
+  border-color: #b45309;
+}
+
+.ws-rp--gold.ws-rp--smile { background: transparent; border-bottom-color: var(--ws-gold); }
+.ws-rp--gold.ws-rp--eyes { background: transparent; }
+
+.ws-rp--fresh { animation: ws-snap 0.8s cubic-bezier(0.3, 1.6, 0.5, 1) both; }
+
+/* ── Parts tray ─────────────────────────────────────────────────────────── */
+
+.ws-tray {
+  width: 100%;
+  padding: 12px 16px 16px;
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 4px 24px var(--shadow);
+}
+
+.ws-tray-title {
+  margin: 0 0 10px;
+  font-size: 1rem;
+  color: var(--text-sub);
+  text-align: center;
+}
+
+.ws-tray-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ws-tray-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-height: 64px;
+  padding: 8px 4px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--surface-subtle);
+  font-size: 0.75rem;
+  text-align: center;
+  color: var(--text-body);
+}
+
+.ws-tray-icon { font-size: 1.5rem; }
+.ws-tray-slot--off { opacity: 0.5; border-style: dashed; }
+
+.ws-tray-slot--gold {
+  border-color: var(--ws-gold);
+  background: var(--ws-gold-light);
+  color: var(--ws-gold-text);
+}
+
+.ws-tray-slot--fresh { animation: ws-pop 0.6s ease-out; border-color: var(--orange); }
+
+/* ── Feedback ───────────────────────────────────────────────────────────── */
+
+.ws-feedback-title {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text);
+}
+
+.ws-feedback-star {
+  font-size: 4rem;
+  line-height: 1;
+  color: var(--ws-gold);
+  animation: ws-star-pop 0.6s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+
+.ws-feedback-hmm {
+  font-size: 3.5rem;
+  line-height: 1;
+  animation: ws-hmm 1.2s ease-in-out;
+}
+
+.ws-feedback-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.ws-feedback-chips:empty { display: none; }
+
+.ws-chip {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 2px solid var(--orange-border);
+  background: var(--orange-surface);
+  color: var(--text-body);
+  font-weight: 700;
+}
+
+.ws-chip--gold {
+  border-color: var(--ws-gold);
+  background: var(--ws-gold-light);
+  color: var(--ws-gold-text);
+}
+
+.ws-solution {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* ── Hub, play header, unlock screen ────────────────────────────────────── */
+
+.ws-hub,
+.ws-unlocked {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.ws-hub-title,
+.ws-unlocked-title {
+  margin: 0;
+  font-size: 1.7rem;
+  text-align: center;
+}
+
+.ws-hub-intro,
+.ws-unlocked-sub {
+  margin: 0;
+  font-size: 1.1rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.ws-hub-robot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.ws-stations {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.ws-station-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-height: 150px;
+  padding: 16px 10px;
+  border-radius: 18px;
+  border: 3px solid var(--orange-border);
+  background: var(--surface);
+  box-shadow: 0 4px 16px var(--shadow);
+  color: var(--text-body);
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.12s, border-color 0.12s;
+}
+
+.ws-station-btn:hover { border-color: var(--orange); transform: translateY(-2px); }
+
+.ws-station-icon  { font-size: 2.2rem; }
+.ws-station-name  { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+.ws-station-desc  { font-size: 0.85rem; color: var(--text-muted); text-align: center; }
+
+.ws-station-level {
+  margin-top: auto;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--orange-surface);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.ws-play-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 14px;
+}
+
+.ws-play-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+@media (max-width: 400px) {
+  .ws-stations { grid-template-columns: 1fr; }
+  .ws-station-btn { min-height: 0; }
+}
+
+/* ── Animations ─────────────────────────────────────────────────────────── */
+
+@keyframes ws-snap {
+  0%   { opacity: 0; transform: translateY(-60px) scale(1.4) rotate(-12deg); }
+  70%  { opacity: 1; transform: translateY(4px) scale(0.96) rotate(2deg); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes ws-pop {
+  0%   { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes ws-slash {
+  0%   { transform: rotate(-35deg) scaleX(0); }
+  100% { transform: rotate(-35deg) scaleX(1); }
+}
+
+@keyframes ws-star-pop {
+  0%   { transform: scale(0) rotate(-90deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+/* the neutral "hmm": a slow head tilt, no shake */
+@keyframes ws-hmm {
+  0%, 100% { transform: rotate(0); }
+  30%      { transform: rotate(-12deg); }
+  60%      { transform: rotate(8deg); }
+}
+
+@keyframes ws-selected {
+  0%, 100% { box-shadow: 0 0 0 4px var(--orange); }
+  50%      { box-shadow: 0 0 0 7px var(--orange-border); }
+}
+
+@keyframes ws-glow {
+  0%, 100% { box-shadow: none; }
+  50%      { box-shadow: 0 0 10px var(--ws-charge); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ws-rp--fresh,
+  .ws-number-card--placed,
+  .ws-piece--selected,
+  .ws-slot-btn--ready,
+  .ws-tree-node--prime,
+  .ws-cancel-chip--on::after,
+  .ws-tray-slot--fresh,
+  .ws-feedback-star,
+  .ws-feedback-hmm,
+  .ws-battery--full .ws-battery-body { animation: none; }
+}
