@@ -94,7 +94,7 @@ export default function NumberWorkshopPage() {
   if (phase.kind === 'hub') {
     return (
       <div className="fractions-page ws-page">
-        {header(() => navigate(TOPIC_PATH.fractions), t('trainingBack'))}
+        {header(() => navigate(TOPIC_PATH.divisibility), t('trainingBack'))}
         <WorkshopHub save={save} onPick={enterStation} />
       </div>
     )
