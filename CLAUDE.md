@@ -43,10 +43,13 @@ To unit-test exercise *data*, put the entries in their own pure module and sprea
 types, which Node's test runner and `tsconfig.node.json` cannot load.
 
 **Divisibility exercises** (`prime-forge`, `shared-keys`, `divisor-duel`, `meeting-point`, `multiple-magnet`) are listed in `DIVISIBILITY_TYPES` in
-`exercises.ts`. They are filtered out of the fractions session and shown only by
-`<TrainingCentre topic="divisibility" />` (`/divisibility-training`), which shows the `TOPICS` tiles whose
-types are all divisibility types. For a new divisibility type, add it to `DIVISIBILITY_TYPES` and skip
-steps 4–6 (Fractions.tsx / `ExerciseResult`): Training does not save results.
+`exercises.ts`. They are filtered out of the fractions session. Each divisibility `TOPICS` tile has its
+own button on the divisibility page and its own route (`/prime-factors`, `/common-divisors`,
+`/common-multiples`), which renders `<TrainingCentre topic="divisibility" tile="…" />`: it opens straight
+into that tile, and Back returns to the topic page. For a new divisibility type, add it to
+`DIVISIBILITY_TYPES` and either put it in an existing tile, or add a tile (with `titleKey`), a route in
+`App.tsx` and a `TOPIC_GAMES.divisibility` entry. Skip steps 4–6 (Fractions.tsx / `ExerciseResult`):
+Training does not save results.
 
 ### Canvas exercises vs CSS/HTML exercises
 
@@ -82,4 +85,4 @@ Anonymous auth via `useAuth()` hook; Firestore progress via `useProgress(uid)`. 
 
 ### Routing
 
-React Router v7. `/` → Home, `/fractions` → Fractions, `/training` and `/divisibility-training` → TrainingCentre per topic. `vercel.json` rewrites all routes to `index.html` for SPA refresh support.
+React Router v7. `/` → Home, `/fractions` → Fractions, `/training` → TrainingCentre (fractions tiles), `/prime-factors` / `/common-divisors` / `/common-multiples` → TrainingCentre opened on one divisibility tile. `vercel.json` rewrites all routes to `index.html` for SPA refresh support.

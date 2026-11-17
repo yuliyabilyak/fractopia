@@ -32,6 +32,8 @@ export const TOPIC_GAMES: Record<TopicId, TopicGame[]> = {
     { path: '/detective', labelKey: 'ndMode' },
     { path: '/bridges', labelKey: 'nbMode' },
     { path: '/workshop', labelKey: 'wsMode' },
-    { path: '/divisibility-training', labelKey: 'trainingCentre' },
+    { path: '/prime-factors', labelKey: 'pfMode' },
+    { path: '/common-divisors', labelKey: 'skMode' },
+    { path: '/common-multiples', labelKey: 'mmMode' },
   ],
 }

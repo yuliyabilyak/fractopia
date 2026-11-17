@@ -47,6 +47,7 @@ export type Keys =
   | 'fdPartitionPrompt' | 'fdPartitionIntro' | 'fdPartitionSplit' | 'fdPartitionQuestion'
   | 'fdGroupingPrompt' | 'fdGroupingIntro' | 'fdGroupingSplit' | 'fdGroupingQuestion'
   | 'fdContinue' | 'fdTapHint' | 'fdShadeHint' | 'fdCorrectCount'
+  | 'pfMode' | 'skMode' | 'mmMode'
   | 'pfPromptFactorize' | 'pfPromptSelect'
   | 'pfFindOnePrime' | 'pfFindTwoSame' | 'pfFindThreeDifferent' | 'pfFindFourDifferent'
   | 'pfTapNode' | 'pfSplitInto' | 'pfAllPrime' | 'pfAlreadySimple' | 'pfNotDivisor' | 'pfPickNodeFirst'
@@ -295,6 +296,9 @@ const T: Record<Lang, Record<Keys, string>> = {
     fdTapHint:          'Tap each part to count it',
     fdShadeHint:        'Shade one part out of {d}',
     fdCorrectCount:     'The answer was {a}',
+    pfMode:               '⚒️ Prime Factors',
+    skMode:               '🔑 Common Divisors',
+    mmMode:               '🏁 Common Multiples',
     pfPromptFactorize:    'Break {n} into prime numbers.',
     pfPromptSelect:       'Which card shows {n} in prime numbers?',
     pfFindOnePrime:       'Find a number up to {max} made of one prime, used again and again.',
@@ -909,6 +913,9 @@ const T: Record<Lang, Record<Keys, string>> = {
     fdTapHint:          'Торкайся кожної частини, щоб порахувати',
     fdShadeHint:        'Зафарбуй одну частину з {d}',
     fdCorrectCount:     'Правильна відповідь: {a}',
+    pfMode:               '⚒️ Прості множники',
+    skMode:               '🔑 Спільні дільники',
+    mmMode:               '🏁 Спільні кратні',
     pfPromptFactorize:    'Розклади {n} на прості множники.',
     pfPromptSelect:       'Яка картка показує {n} у простих числах?',
     pfFindOnePrime:       'Знайди число до {max} з одного простого числа, яке повторюється.',
@@ -1523,6 +1530,9 @@ const T: Record<Lang, Record<Keys, string>> = {
     fdTapHint:          'Klepni na každý díl a spočítej ho',
     fdShadeHint:        'Vybarvi jeden díl z {d}',
     fdCorrectCount:     'Správná odpověď byla {a}',
+    pfMode:               '⚒️ Rozklad na prvočísla',
+    skMode:               '🔑 Společní dělitelé',
+    mmMode:               '🏁 Společné násobky',
     pfPromptFactorize:    'Rozlož {n} na součin prvočísel.',
     pfPromptSelect:       'Která karta ukazuje rozklad čísla {n} na součin prvočísel?',
     pfFindOnePrime:       'Najdi číslo do {max}, které je součinem jen jednoho prvočísla.',

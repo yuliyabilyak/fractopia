@@ -29,7 +29,9 @@ export default function App() {
           <Route path={TOPIC_PATH.divisibility} element={<TopicPage topic="divisibility" />} />
           <Route path="/fractions" element={<Fractions />} />
           <Route path="/training" element={<TrainingCentre topic="fractions" />} />
-          <Route path="/divisibility-training" element={<TrainingCentre topic="divisibility" />} />
+          <Route path="/prime-factors" element={<TrainingCentre topic="divisibility" tile="prime-forge" />} />
+          <Route path="/common-divisors" element={<TrainingCentre topic="divisibility" tile="shared-keys" />} />
+          <Route path="/common-multiples" element={<TrainingCentre topic="divisibility" tile="common-multiples" />} />
           <Route path="/race" element={<DecimalRace />} />
           <Route path="/maze" element={<DecimalMaze />} />
           <Route path="/pyramid" element={<PyramidClimb />} />

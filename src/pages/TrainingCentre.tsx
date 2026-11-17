@@ -1,6 +1,7 @@
-import { useState, useCallback, useMemo, useRef, useEffect } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { TOPIC_PATH, type TopicId } from '../data/topics'
+import type { Keys } from '../i18n/translations'
 import { useLang } from '../i18n/LangContext'
 import LangSwitcher from '../components/LangSwitcher'
 import ThemeToggle from '../components/ThemeToggle'
@@ -46,6 +47,8 @@ interface Topic {
   emoji: string
   label: string
   types: ExerciseType[]
+  /** page title when the tile opens on its own from a topic page */
+  titleKey?: Keys
 }
 
 const TOPICS: Topic[] = [
@@ -73,9 +76,10 @@ const TOPICS: Topic[] = [
   { id: 'balance',          emoji: '🪨', label: 'Balance',          types: ['balance'] },
   { id: 'fraction-operation', emoji: '➕', label: 'Adding & Subtracting', types: ['fraction-operation'] },
   { id: 'fraction-divide', emoji: '➗', label: 'Dividing Fractions', types: ['fraction-divide'] },
-  { id: 'prime-forge',     emoji: '⚒️', label: 'Prime Factors',      types: ['prime-forge'] },
-  { id: 'shared-keys',     emoji: '🔑', label: 'Common Divisors',    types: ['shared-keys', 'divisor-duel'] },
-  { id: 'common-multiples', emoji: '🏁', label: 'Common Multiples',   types: ['multiple-magnet', 'meeting-point'] },
+  // divisibility tiles open on their own from the divisibility page (see App.tsx routes)
+  { id: 'prime-forge',     emoji: '⚒️', label: 'Prime Factors',      types: ['prime-forge'], titleKey: 'pfMode' },
+  { id: 'shared-keys',     emoji: '🔑', label: 'Common Divisors',    types: ['shared-keys', 'divisor-duel'], titleKey: 'skMode' },
+  { id: 'common-multiples', emoji: '🏁', label: 'Common Multiples',   types: ['multiple-magnet', 'meeting-point'], titleKey: 'mmMode' },
 ]
 
 function compareAnswer(ex: Exercise, answer: 'left' | 'right' | 'equal'): boolean {
@@ -92,40 +96,38 @@ const topicOf = (tile: Topic): TopicId => (tile.types.every(isDivisibilityType) 
 
 interface Props {
   topic: TopicId
+  /** open straight into this tile: no tile grid, Back returns to the topic page */
+  tile?: string
 }
 
-export default function TrainingCentre({ topic }: Props) {
+/** A random exercise from the tile's pool, avoiding the recent ones when possible. */
+function pickFrom(tile: Topic, recent: Exercise[]): Exercise {
+  const pool = ALL_EXERCISES.filter(ex => tile.types.includes(ex.type))
+  const candidates = pool.filter(ex => !recent.includes(ex))
+  const source = candidates.length > 0 ? candidates : pool
+  return source[Math.floor(Math.random() * source.length)]
+}
+
+export default function TrainingCentre({ topic, tile }: Props) {
   const navigate = useNavigate()
   const { t } = useLang()
-  const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null)
-  const [current, setCurrent] = useState<Exercise | null>(null)
+  const directTile = tile ? TOPICS.find(tp => tp.id === tile) ?? null : null
+  const [selectedTopic, setSelectedTopic] = useState<Topic | null>(directTile)
+  const [current, setCurrent] = useState<Exercise | null>(() => (directTile ? pickFrom(directTile, []) : null))
   const [feedback, setFeedback] = useState<boolean | null>(null)
   const [exKey, setExKey] = useState(0)
   // track last 3 exercises per topic to prevent repeats
-  const recentByTopic = useRef<Map<string, Exercise[]>>(new Map())
-
-  const poolByType = useMemo(() => {
-    const map = new Map<ExerciseType, Exercise[]>()
-    for (const ex of ALL_EXERCISES) {
-      const arr = map.get(ex.type)
-      if (arr) arr.push(ex)
-      else map.set(ex.type, [ex])
-    }
-    return map
-  }, [])
+  const recentByTopic = useRef<Map<string, Exercise[]>>(new Map(directTile && current ? [[directTile.id, [current]]] : []))
 
   const pickExercise = useCallback((topic: Topic) => {
-    const pool = topic.types.flatMap(t => poolByType.get(t) ?? [])
     const recent = recentByTopic.current.get(topic.id) ?? []
-    const candidates = pool.filter(ex => !recent.includes(ex))
-    const source = candidates.length > 0 ? candidates : pool
-    const ex = source[Math.floor(Math.random() * source.length)]
+    const ex = pickFrom(topic, recent)
     recentByTopic.current.set(topic.id, [...recent, ex].slice(-3))
     setSelectedTopic(topic)
     setCurrent(ex)
     setFeedback(null)
     setExKey(k => k + 1)
-  }, [poolByType])
+  }, [])
 
   const handleAnswer = useCallback((correct: boolean) => {
     setFeedback(correct)
@@ -148,10 +150,10 @@ export default function TrainingCentre({ topic }: Props) {
   return (
     <div className="training-page">
       <div className="training-header">
-        <button className="training-back-btn" onClick={selectedTopic ? handleBack : () => navigate(TOPIC_PATH[topic])}>
+        <button className="training-back-btn" onClick={selectedTopic && !directTile ? handleBack : () => navigate(TOPIC_PATH[topic])}>
           ← {t('trainingBack')}
         </button>
-        <h1 className="training-title">{t('trainingTitle')}</h1>
+        <h1 className="training-title">{t(directTile?.titleKey ?? 'trainingTitle')}</h1>
         <div className="training-header-right">
           <LangSwitcher />
           <ThemeToggle />
