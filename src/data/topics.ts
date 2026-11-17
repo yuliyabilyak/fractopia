@@ -32,5 +32,6 @@ export const TOPIC_GAMES: Record<TopicId, TopicGame[]> = {
     { path: '/detective', labelKey: 'ndMode' },
     { path: '/bridges', labelKey: 'nbMode' },
     { path: '/workshop', labelKey: 'wsMode' },
+    { path: '/divisibility-training', labelKey: 'trainingCentre' },
   ],
 }

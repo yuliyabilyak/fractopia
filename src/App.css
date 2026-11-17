@@ -605,6 +605,10 @@ body {
 
 /* ---- Training Centre ---- */
 .training-page {
+  /* #root centres its children, which would shrink this page to the grid's
+     one-row width and push the left tiles off-screen on phones */
+  width: 100%;
+  max-width: 780px;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
@@ -7576,4 +7580,1015 @@ span.ws-cancel-chip { cursor: default; min-width: 40px; min-height: 40px; }
   .ws-feedback-star,
   .ws-feedback-hmm,
   .ws-battery--full .ws-battery-body { animation: none; }
+}
+
+/* ── Prime Forge (prime-forge) ──────────────────────────────────────────── */
+
+.pf-card {
+  --pf-forge-bg:      #fff7ed;
+  --pf-ingot-bg:      #fdba74;
+  --pf-ingot-border:  #ea580c;
+  --pf-ingot-glow:    rgba(249, 115, 22, 0.55);
+  --pf-ingot-text:    #431407;
+  --pf-node-bg:       #f5f5f4;
+  --pf-node-border:   #a8a29e;
+  --pf-branch:        #a8a29e;
+  --pf-anvil:         #57534e;
+  --pf-gold:          #fde68a;
+  --pf-gold-border:   #d97706;
+  --pf-gold-text:     #78350f;
+  --pf-grey-bg:       #e5e7eb;
+  --pf-grey-border:   #9ca3af;
+  --pf-grey-text:     #4b5563;
+  --pf-ember-off:     #e7e5e4;
+  --pf-ember-on:      #f97316;
+  --pf-neutral-bg:    #f1f5f9;
+  --pf-neutral-border:#cbd5e1;
+  --pf-gem-0:         #2563eb;
+  --pf-gem-1:         #059669;
+  --pf-gem-2:         #7c3aed;
+  --pf-gem-3:         #db2777;
+  position: relative;
+}
+
+[data-theme="dark"] .pf-card {
+  --pf-forge-bg:      #1c1410;
+  --pf-ingot-bg:      #9a3412;
+  --pf-ingot-border:  #fb923c;
+  --pf-ingot-glow:    rgba(251, 146, 60, 0.5);
+  --pf-ingot-text:    #fff7ed;
+  --pf-node-bg:       #292524;
+  --pf-node-border:   #78716c;
+  --pf-branch:        #78716c;
+  --pf-anvil:         #a8a29e;
+  --pf-gold:          #78350f;
+  --pf-gold-border:   #fbbf24;
+  --pf-gold-text:     #fef3c7;
+  --pf-grey-bg:       #334155;
+  --pf-grey-border:   #64748b;
+  --pf-grey-text:     #cbd5e1;
+  --pf-ember-off:     #334155;
+  --pf-ember-on:      #fb923c;
+  --pf-neutral-bg:    #162032;
+  --pf-neutral-border:#334155;
+  --pf-gem-0:         #60a5fa;
+  --pf-gem-1:         #34d399;
+  --pf-gem-2:         #a78bfa;
+  --pf-gem-3:         #f472b6;
+}
+
+.pf-card button:focus-visible {
+  outline: 3px solid var(--text);
+  outline-offset: 3px;
+}
+
+.pf-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ember bar: session streak, with the number so it never relies on colour */
+.pf-ember {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  align-self: flex-end;
+}
+
+.pf-ember-icon { font-size: 1.4rem; }
+
+.pf-ember-track { display: flex; gap: 4px; }
+
+.pf-ember-seg {
+  width: 22px;
+  height: 12px;
+  border-radius: 6px;
+  background: var(--pf-ember-off);
+}
+
+.pf-ember-seg--lit {
+  background: var(--pf-ember-on);
+  box-shadow: 0 0 8px var(--pf-ingot-glow);
+  animation: pf-ember-light 0.5s ease-out;
+}
+
+.pf-ember-count {
+  min-width: 1.5em;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-body);
+}
+
+/* the forge: tree on an anvil */
+.pf-forge {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 12px 0;
+  border-radius: 16px;
+  background: var(--pf-forge-bg);
+}
+
+.pf-anvil {
+  width: min(70%, 260px);
+  height: 26px;
+  margin-top: 14px;
+  background: var(--pf-anvil);
+  clip-path: polygon(0 0, 100% 0, 88% 45%, 78% 100%, 22% 100%, 12% 45%);
+}
+
+.pf-hammer {
+  position: absolute;
+  top: 6px;
+  right: 14px;
+  font-size: 2rem;
+  transform-origin: 80% 80%;
+  animation: pf-swing 0.45s ease-out both;
+  pointer-events: none;
+}
+
+/* factor tree — same branch drawing as the workshop tree */
+.pf-tree {
+  display: flex;
+  justify-content: center;
+  max-width: 100%;
+}
+
+.pf-branch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pf-kids { display: flex; }
+
+.pf-kids > .pf-branch {
+  position: relative;
+  padding: 24px 5px 0;
+  animation: pf-strike 0.35s ease-out;
+}
+
+.pf-kids > .pf-branch::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: calc(50% - 1.5px);
+  width: 3px;
+  height: 24px;
+  background: var(--pf-branch);
+}
+
+.pf-kids > .pf-branch::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  height: 3px;
+  background: var(--pf-branch);
+}
+
+.pf-kids > .pf-branch:first-child::after { left: 50%; right: 0; }
+.pf-kids > .pf-branch:last-child::after  { left: 0; right: 50%; }
+
+.pf-node {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  min-height: 56px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 3px solid var(--pf-node-border);
+  background: var(--pf-node-bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+button.pf-node { cursor: pointer; }
+
+.pf-node--ingot {
+  border-radius: 14px;
+  border-color: var(--pf-ingot-border);
+  background: var(--pf-ingot-bg);
+  color: var(--pf-ingot-text);
+}
+
+.pf-node--ingot:not(.pf-node--split) { animation: pf-glow 2s ease-in-out infinite; }
+
+.pf-node--split { opacity: 0.85; }
+
+.pf-node--open { border-style: dashed; }
+
+.pf-node--open:hover { border-color: var(--orange); }
+
+.pf-node--selected {
+  border-style: solid;
+  border-color: var(--orange);
+  box-shadow: 0 0 0 5px var(--orange-border);
+}
+
+/* prime parts: gold *and* a ★ badge, never colour alone */
+.pf-node--prime {
+  border-color: var(--pf-gold-border);
+  background: var(--pf-gold);
+  color: var(--pf-gold-text);
+}
+
+.pf-node .pf-star {
+  position: absolute;
+  top: -9px;
+  right: -9px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--pf-gold-border);
+  color: var(--surface);
+  font-size: 0.85rem;
+  line-height: 24px;
+  text-align: center;
+}
+
+.pf-tree--dense .pf-node {
+  min-width: 46px;
+  min-height: 46px;
+  padding: 0 8px;
+  font-size: 1.15rem;
+}
+
+.pf-tree--dense .pf-kids > .pf-branch { padding: 20px 2px 0; }
+.pf-tree--dense .pf-kids > .pf-branch::before { height: 20px; }
+
+/* one instruction line */
+.pf-status {
+  margin: 0;
+  min-height: 1.6em;
+  font-size: 1.15rem;
+  text-align: center;
+  color: var(--text-body);
+}
+
+/* the multiplication sign: large and spaced so it never reads as x or +.
+   OpenDyslexic draws × like a small letter x, so use a system font for it. */
+.pf-times {
+  display: inline-block;
+  margin: 0 0.4em;
+  font-family: system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  font-size: 1.7em;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--text-muted);
+}
+
+.pf-pair {
+  display: inline-flex;
+  align-items: flex-start;
+  white-space: nowrap;
+}
+
+/* line up × with the chip even when a split hint hangs below it */
+.pf-pair > .pf-times { line-height: 48px; }
+
+.pf-row {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  row-gap: 8px;
+}
+
+.pf-chip-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.pf-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 3px solid var(--pf-node-border);
+  background: var(--pf-node-bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.pf-chip .pf-star { font-size: 0.85em; color: var(--pf-gold-border); }
+
+.pf-chip--prime {
+  border-color: var(--pf-gold-border);
+  background: var(--pf-gold);
+  color: var(--pf-gold-text);
+}
+
+.pf-chip--grey {
+  border-style: dashed;
+  border-color: var(--pf-grey-border);
+  background: var(--pf-grey-bg);
+  color: var(--pf-grey-text);
+}
+
+.pf-chip--btn { cursor: pointer; transition: transform 0.12s; }
+.pf-chip--btn:active:not(:disabled) { transform: scale(0.94); }
+.pf-chip--btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.pf-chip--shake { animation: pf-shake 0.4s ease-in-out; }
+
+.pf-split-hint {
+  font-size: 0.95rem;
+  color: var(--pf-grey-text);
+}
+
+/* divisor cards / prime cards */
+.pf-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.pf-card-btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 60px;
+  padding: 0 18px;
+  border-radius: 14px;
+  border: 3px solid var(--orange-border);
+  background: var(--orange-surface);
+  color: var(--orange-dark);
+  font-family: inherit;
+  font-size: 1.35rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.12s;
+}
+
+.pf-card-btn:hover { background: var(--orange-choice-hover); border-color: var(--orange); }
+.pf-card-btn:active { transform: scale(0.96); }
+
+.pf-card-btn .pf-times { color: inherit; }
+
+.pf-tray,
+.pf-rack,
+.pf-build {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.pf-tray-label {
+  width: 100%;
+  text-align: center;
+  font-size: 1rem;
+  color: var(--text-hint);
+}
+
+.pf-equals {
+  margin: 0 0.45em;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.pf-build-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.pf-build-empty {
+  font-size: 1.8rem;
+  color: var(--text-faint);
+}
+
+/* rule picture: same shape = same prime */
+.pf-rule {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 10px 18px;
+  border-radius: 16px;
+  background: var(--pf-forge-bg);
+}
+
+.pf-gem { font-size: 1.8rem; line-height: 1; }
+.pf-gem--0 { color: var(--pf-gem-0); }
+.pf-gem--1 { color: var(--pf-gem-1); }
+.pf-gem--2 { color: var(--pf-gem-2); }
+.pf-gem--3 { color: var(--pf-gem-3); }
+
+.pf-gem-more {
+  margin-left: 0.3em;
+  font-size: 1.6rem;
+  color: var(--text-muted);
+}
+
+.pf-limit {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 2px solid var(--orange-border);
+  background: var(--surface);
+  color: var(--orange-dark);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+/* select mode answer cards */
+.pf-choices {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  width: 100%;
+  max-width: 460px;
+}
+
+.pf-choice {
+  min-height: 72px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  border: 3px solid var(--orange-border);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.12s;
+}
+
+.pf-choice:hover { background: var(--orange-hover-surface); border-color: var(--orange); }
+.pf-choice:active { transform: scale(0.98); }
+
+.pf-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.pf-secondary-btn {
+  min-height: 52px;
+  padding: 0 22px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  color: var(--text-body);
+  font-family: inherit;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.pf-secondary-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.pf-submit {
+  min-height: 52px;
+  font-family: inherit;
+  font-size: 1.2rem;
+}
+
+/* results: neutral panel when wrong, gold burst when right */
+.pf-reveal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 18px 12px;
+  border-radius: 16px;
+  border: 2px solid var(--pf-neutral-border);
+  background: var(--pf-neutral-bg);
+}
+
+.pf-reveal--win {
+  position: relative;
+  border-color: var(--pf-gold-border);
+  background: var(--pf-forge-bg);
+}
+
+.pf-burst {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80px;
+  height: 80px;
+  margin: -40px 0 0 -40px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--pf-gold) 0%, var(--pf-gold-border) 45%, transparent 70%);
+  pointer-events: none;
+  animation: pf-burst 0.9s ease-out both;
+}
+
+@keyframes pf-glow {
+  0%, 100% { box-shadow: 0 0 6px var(--pf-ingot-glow); }
+  50%      { box-shadow: 0 0 20px var(--pf-ingot-glow); }
+}
+
+@keyframes pf-strike {
+  0%   { transform: translateY(-14px) scale(0.6); opacity: 0; }
+  70%  { transform: translateY(2px) scale(1.06); opacity: 1; }
+  100% { transform: none; }
+}
+
+@keyframes pf-swing {
+  0%   { transform: rotate(-50deg); opacity: 0; }
+  40%  { transform: rotate(20deg); opacity: 1; }
+  100% { transform: rotate(0); opacity: 0; }
+}
+
+@keyframes pf-shake {
+  0%, 100% { transform: translateX(0); }
+  25%      { transform: translateX(-6px); }
+  50%      { transform: translateX(6px); }
+  75%      { transform: translateX(-3px); }
+}
+
+@keyframes pf-ember-light {
+  from { transform: scaleY(0.4); opacity: 0.4; }
+  to   { transform: none; opacity: 1; }
+}
+
+@keyframes pf-burst {
+  0%   { transform: scale(0.2); opacity: 0.9; }
+  100% { transform: scale(5); opacity: 0; }
+}
+
+@media (max-width: 480px) {
+  .pf-forge { padding: 16px 6px 0; }
+  .pf-node { min-width: 50px; min-height: 50px; font-size: 1.25rem; }
+  .pf-tree--dense .pf-node { min-width: 44px; min-height: 44px; padding: 0 6px; font-size: 1.05rem; }
+  .pf-card-btn { font-size: 1.2rem; padding: 0 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-ember-seg--lit,
+  .pf-hammer,
+  .pf-kids > .pf-branch,
+  .pf-node--ingot:not(.pf-node--split),
+  .pf-chip--shake,
+  .pf-burst { animation: none; }
+  .pf-hammer, .pf-burst { display: none; }
+}
+
+/* ── Shared Keys (shared-keys) ──────────────────────────────────────────── */
+
+.sk-card {
+  --sk-metal:        #a8a29e;
+  --sk-lock-bg:      #fef3c7;
+  --sk-lock-border:  #d97706;
+  --sk-key-bg:       #f5f5f4;
+  --sk-gold:         #fde68a;
+  --sk-gold-border:  #d97706;
+  --sk-gold-text:    #78350f;
+  --sk-neutral-bg:   #f1f5f9;
+  --sk-neutral-border:#94a3b8;
+  /* tooth families — same palette Prime Forge uses for different primes */
+  --sk-f0:           #2563eb;
+  --sk-f1:           #059669;
+  --sk-f2:           #7c3aed;
+  --sk-f3:           #db2777;
+  --sk-f4:           #b45309;
+}
+
+[data-theme="dark"] .sk-card {
+  --sk-metal:        #78716c;
+  --sk-lock-bg:      #3a2a0c;
+  --sk-lock-border:  #fbbf24;
+  --sk-key-bg:       #292524;
+  --sk-gold:         #78350f;
+  --sk-gold-border:  #fbbf24;
+  --sk-gold-text:    #fef3c7;
+  --sk-neutral-bg:   #162032;
+  --sk-neutral-border:#64748b;
+  --sk-f0:           #60a5fa;
+  --sk-f1:           #34d399;
+  --sk-f2:           #a78bfa;
+  --sk-f3:           #f472b6;
+  --sk-f4:           #fbbf24;
+}
+
+.sk-card button:focus-visible {
+  outline: 3px solid var(--text);
+  outline-offset: 3px;
+}
+
+/* lock */
+.sk-lock-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.sk-lock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sk-shackle {
+  width: 84px;
+  height: 46px;
+  margin-bottom: -6px;
+  border: 10px solid var(--sk-metal);
+  border-bottom: none;
+  border-radius: 44px 44px 0 0;
+  transform-origin: 85% 100%;
+  transition: transform 0.4s ease-out;
+}
+
+.sk-lock--open .sk-shackle { transform: translateY(-12px) rotate(-14deg); }
+
+.sk-lock-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-width: 170px;
+  max-width: 100%;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 3px solid var(--sk-lock-border);
+  background: var(--sk-lock-bg);
+}
+
+.sk-lock-number {
+  font-size: 2.4rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text);
+}
+
+.sk-legend {
+  margin: 0;
+  font-size: 1rem;
+  text-align: center;
+  color: var(--text-hint);
+}
+
+/* teeth: coloured by family and always numbered */
+.sk-teeth {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+}
+
+.sk-teeth--none {
+  font-size: 1.2rem;
+  color: var(--text-faint);
+}
+
+.sk-tooth {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 6px;
+  border-radius: 4px 4px 12px 12px;
+  border: 2px solid currentColor;
+  background: var(--surface);
+  font-size: 1rem;
+  font-weight: 700;
+  transition: opacity 0.3s, box-shadow 0.3s;
+}
+
+.sk-tooth--f0 { color: var(--sk-f0); }
+.sk-tooth--f1 { color: var(--sk-f1); }
+.sk-tooth--f2 { color: var(--sk-f2); }
+.sk-tooth--f3 { color: var(--sk-f3); }
+.sk-tooth--f4 { color: var(--sk-f4); }
+
+/* shared teeth glow *and* carry a ★; the rest fade */
+.sk-tooth--glow {
+  border-width: 3px;
+  background: var(--sk-gold);
+  box-shadow: 0 0 0 3px var(--sk-gold-border);
+  animation: sk-glow 1.2s ease-in-out 2;
+}
+
+/* ★ badge in a solid disc so it stands out from the gold glow ring */
+.sk-tooth-star {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--sk-gold-text);
+  color: var(--sk-gold);
+  font-size: 0.75rem;
+  line-height: 20px;
+  text-align: center;
+}
+
+.sk-tooth--dim { opacity: 0.5; }
+
+/* key cards */
+.sk-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: 100%;
+}
+
+.sk-key-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-height: 112px;
+  padding: 12px 8px 10px;
+  border-radius: 16px;
+  border: 3px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.12s;
+}
+
+.sk-key-card:hover:not([aria-disabled]) { border-color: var(--orange-border); }
+.sk-key-card[aria-disabled] { cursor: default; }
+
+.sk-key-bow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  height: 56px;
+  padding: 0 8px;
+  border-radius: 999px;
+  border: 5px solid var(--sk-metal);
+  background: var(--sk-key-bg);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.sk-key-blade {
+  width: 60%;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--sk-metal);
+}
+
+.sk-badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--orange);
+  color: #fff;
+  font-size: 1rem;
+  line-height: 30px;
+  text-align: center;
+}
+
+.sk-badge--gold { background: var(--sk-gold-border); }
+
+.sk-key-label {
+  font-size: 0.95rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+/* selected: thicker orange frame + ✓ badge */
+.sk-key-card--selected {
+  border-width: 4px;
+  border-color: var(--orange);
+  background: var(--orange-surface);
+}
+
+/* fits: slides up into the lock, gold frame + ★ */
+.sk-key-card--fit {
+  border-color: var(--sk-gold-border);
+  background: var(--sk-gold);
+  animation: sk-slide 0.6s ease-out;
+}
+
+.sk-key-card--fit .sk-key-label { color: var(--sk-gold-text); }
+
+/* fits but was missed: a gentle dashed gold frame */
+.sk-key-card--missed {
+  border-style: dashed;
+  border-color: var(--sk-gold-border);
+}
+
+/* chosen but doesn't fit: neutral bounce back, never red */
+.sk-key-card--bounce {
+  border-color: var(--sk-neutral-border);
+  background: var(--sk-neutral-bg);
+  animation: sk-bounce 0.6s ease-out;
+}
+
+/* fade the frame only — numbers on idle keys must stay readable */
+.sk-key-card--idle { border-color: var(--border-slot); }
+.sk-key-card--idle .sk-key-bow { opacity: 0.75; }
+
+.sk-key-card--static { cursor: default; min-width: 150px; }
+
+.sk-hint {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--sk-neutral-bg);
+  font-size: 1.05rem;
+  text-align: center;
+  color: var(--text-body);
+}
+
+/* build mode */
+.sk-test {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.sk-test--fit .sk-key-card { border-color: var(--sk-gold-border); animation: sk-slide 0.6s ease-out; }
+.sk-test--bounce .sk-key-card { border-color: var(--sk-neutral-border); background: var(--sk-neutral-bg); animation: sk-bounce 0.6s ease-out; }
+
+.sk-status {
+  margin: 0;
+  font-size: 1.1rem;
+  text-align: center;
+  color: var(--text-body);
+}
+
+.sk-ring {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.sk-ring-label {
+  font-size: 1.05rem;
+  color: var(--text-sub);
+}
+
+.sk-ring-slots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.sk-ring-slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 76px;
+  height: 48px;
+  padding: 0 10px;
+  border-radius: 24px;
+  border: 3px dashed var(--border);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.sk-ring-slot--filled {
+  border-style: solid;
+  border-color: var(--sk-gold-border);
+  background: var(--sk-gold);
+  color: var(--sk-gold-text);
+  animation: sk-pop 0.35s ease-out;
+}
+
+.sk-slot {
+  display: flex;
+  gap: 10px;
+}
+
+.sk-slot-cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 68px;
+  border-radius: 10px;
+  border: 3px dashed var(--orange-border);
+  background: var(--surface);
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.sk-slot-cell--filled { border-style: solid; }
+
+.sk-digits {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.sk-digit {
+  min-height: 58px;
+  border-radius: 14px;
+  border: 3px solid var(--orange-border);
+  background: var(--orange-surface);
+  color: var(--orange-dark);
+  font-family: inherit;
+  font-size: 1.6rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.12s;
+}
+
+.sk-digit:hover:not(:disabled) { background: var(--orange-choice-hover); }
+.sk-digit:active:not(:disabled) { transform: scale(0.94); }
+.sk-digit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.sk-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.sk-btn {
+  min-height: 52px;
+  font-family: inherit;
+  font-size: 1.2rem;
+}
+
+.sk-secondary-btn {
+  min-height: 52px;
+  padding: 0 22px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  color: var(--text-body);
+  font-family: inherit;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.sk-secondary-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+@keyframes sk-slide {
+  0%   { transform: translateY(0); }
+  45%  { transform: translateY(-14px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes sk-bounce {
+  0%   { transform: translateY(0); }
+  30%  { transform: translateY(-10px); }
+  55%  { transform: translateY(4px); }
+  80%  { transform: translateY(-2px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes sk-glow {
+  0%, 100% { box-shadow: 0 0 0 3px var(--sk-gold-border); }
+  50%      { box-shadow: 0 0 0 6px var(--sk-gold-border); }
+}
+
+@keyframes sk-pop {
+  0%   { transform: scale(0.6); }
+  70%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+@media (max-width: 480px) {
+  .sk-grid { grid-template-columns: repeat(2, 1fr); }
+  .sk-digit { min-height: 52px; font-size: 1.4rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sk-shackle { transition: none; }
+  .sk-tooth--glow,
+  .sk-key-card--fit,
+  .sk-key-card--bounce,
+  .sk-test .sk-key-card,
+  .sk-ring-slot--filled { animation: none; }
 }

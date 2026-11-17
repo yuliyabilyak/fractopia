@@ -7,9 +7,13 @@
 // and an answer is checked by multiplying its factors, never by comparing it to
 // one stored arrangement.
 //
-// Pure module — no runtime imports — so `node --test` can load it directly.
+// Pure module — its only runtime import carries a `.ts` extension — so
+// `node --test` can load it directly.
 
 import type { Keys } from '../i18n/translations'
+import { isPrime, primeFactors } from '../utils/primes.ts'
+
+export { isPrime, primeFactors }
 
 export type StationId = 'tile-press' | 'factor-tree' | 'missing-multiplier' | 'decimal-scaler' | 'fraction-cancel'
 export type Level = 1 | 2 | 3
@@ -146,21 +150,6 @@ export function formatDecimal(v: Rat, places: number): string {
 }
 
 const isWhole = (s: string) => /^\d+$/.test(s.trim())
-
-export function isPrime(n: number): boolean {
-  if (!Number.isInteger(n) || n < 2) return false
-  for (let k = 2; k * k <= n; k++) if (n % k === 0) return false
-  return true
-}
-
-/** Prime factors in ascending order: 72 → [2, 2, 2, 3, 3]. */
-export function primeFactors(n: number): number[] {
-  const out: number[] = []
-  let m = n
-  for (let k = 2; k * k <= m; k++) while (m % k === 0) { out.push(k); m /= k }
-  if (m > 1) out.push(m)
-  return out
-}
 
 /** Ways to split n into two multipliers, both ≥ 2: 24 → [2,12], [3,8], [4,6]. */
 export function factorPairs(n: number, maxSide = Infinity): [number, number][] {

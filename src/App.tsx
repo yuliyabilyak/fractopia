@@ -28,7 +28,8 @@ export default function App() {
           <Route path={TOPIC_PATH.fractions} element={<TopicPage topic="fractions" />} />
           <Route path={TOPIC_PATH.divisibility} element={<TopicPage topic="divisibility" />} />
           <Route path="/fractions" element={<Fractions />} />
-          <Route path="/training" element={<TrainingCentre />} />
+          <Route path="/training" element={<TrainingCentre topic="fractions" />} />
+          <Route path="/divisibility-training" element={<TrainingCentre topic="divisibility" />} />
           <Route path="/race" element={<DecimalRace />} />
           <Route path="/maze" element={<DecimalMaze />} />
           <Route path="/pyramid" element={<PyramidClimb />} />

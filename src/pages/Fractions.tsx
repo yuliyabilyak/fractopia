@@ -36,9 +36,12 @@ import FractionDivide from '../components/FractionDivide'
 import FeedbackBanner from '../components/FeedbackBanner'
 import ThemeToggle from '../components/ThemeToggle'
 import type { ExerciseResult } from '../types'
-import { ALL_EXERCISES, shuffle, type Exercise, type ExerciseType } from '../data/exercises'
+import { ALL_EXERCISES, isDivisibilityType, shuffle, type Exercise, type ExerciseType } from '../data/exercises'
 
 const SESSION_SIZE = 12
+
+// divisibility exercises live on the divisibility topic page, not in this session
+const FRACTION_EXERCISES = ALL_EXERCISES.filter(ex => !isDivisibilityType(ex.type))
 
 
 function compareAnswer(ex: Exercise, answer: 'left' | 'right' | 'equal'): boolean {
@@ -97,7 +100,7 @@ function toExerciseType(type: ExerciseType): ExerciseResult['exerciseType'] {
 
 export default function Fractions() {
   const [sessionKey, setSessionKey] = useState(0)
-  const session = useMemo(() => shuffle(ALL_EXERCISES).slice(0, SESSION_SIZE), [sessionKey])
+  const session = useMemo(() => shuffle(FRACTION_EXERCISES).slice(0, SESSION_SIZE), [sessionKey])
   const [index, setIndex] = useState(0)
   const [feedback, setFeedback] = useState<boolean | null>(null)
   const [score, setScore] = useState(0)
@@ -325,7 +328,6 @@ export default function Fractions() {
           onAnswer={handleAnswer}
         />
       )}
-
       <FeedbackBanner correct={feedback} onNext={next} />
     </div>
   )

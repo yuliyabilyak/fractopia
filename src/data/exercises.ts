@@ -5,8 +5,9 @@ import type { FracPair } from '../components/MatchingFractions'
 import type { DetectiveCard } from '../components/FractionDetective'
 import type { TimeCard } from '../components/TimeDetective'
 import type { Fraction } from '../types'
+import type { PrimeConstraint } from '../utils/primes'
 
-export type ExerciseType = 'bar' | 'pizza' | 'compare' | 'compare-same' | 'compare-same-num' | 'hexagon' | 'grid' | 'identify' | 'triangle' | 'star' | 'diamond' | 'number-line' | 'equivalent' | 'sort' | 'hit-target' | 'time-fraction' | 'fraction-quantity' | 'time-operation' | 'matching' | 'fraction-tower' | 'ice-cream' | 'train' | 'rocket' | 'monster' | 'detective' | 'balance' | 'time-machine' | 'time-detective' | 'fraction-operation' | 'fraction-divide'
+export type ExerciseType = 'bar' | 'pizza' | 'compare' | 'compare-same' | 'compare-same-num' | 'hexagon' | 'grid' | 'identify' | 'triangle' | 'star' | 'diamond' | 'number-line' | 'equivalent' | 'sort' | 'hit-target' | 'time-fraction' | 'fraction-quantity' | 'time-operation' | 'matching' | 'fraction-tower' | 'ice-cream' | 'train' | 'rocket' | 'monster' | 'detective' | 'balance' | 'time-machine' | 'time-detective' | 'fraction-operation' | 'fraction-divide' | 'prime-forge' | 'shared-keys'
 
 export interface Exercise {
   type: ExerciseType
@@ -48,6 +49,20 @@ export interface Exercise {
   dividendD?: number
   divisorN?: number
   numChoices?: number[]
+  // --- prime-forge --- (prefixed: `target`, `choices` and `answer` already mean other things)
+  pfTask?: 'factorize' | 'find-with-constraint'
+  pfTarget?: number
+  pfConstraint?: PrimeConstraint
+  pfMinValue?: number
+  pfMaxValue?: number
+  pfChoices?: number[][]
+  pfAnswer?: number[]
+  pfHints?: number[]
+  // --- shared-keys --- (`mode` reuses select / generate; generate = build a key)
+  skBase?: number
+  skDigits?: 1 | 2
+  skCandidates?: number[]
+  skKeysNeeded?: number
 }
 
 /**
@@ -68,6 +83,51 @@ export interface FractionDivideExercise extends Exercise {
   shape: 'bar' | 'pizza'
   mode: 'select' | 'generate'
 }
+
+/**
+ * Narrowed view of the prime-forge entries in ALL_EXERCISES.
+ *
+ *   factorize              break `pfTarget` into primes — `generate` builds a factor
+ *                          tree, `select` picks one of `pfChoices` (factor lists).
+ *                          `pfAnswer` is the canonical sorted factor list (reference
+ *                          only — grading recomputes it with src/utils/primes.ts).
+ *   find-with-constraint   build any number in [pfMinValue, pfMaxValue] whose prime
+ *                          factorization satisfies `pfConstraint`. Generate only.
+ *                          The two-same prompt says "two-digit", so pair it with 10–99.
+ *
+ * `pfHints` are large primes shown in the prime-cards tray (level 4).
+ * numerator/denominator mirror the target as n/1, like time-machine; for find
+ * tasks they mirror pfMaxValue.
+ */
+export interface PrimeForgeExercise extends Exercise {
+  type: 'prime-forge'
+  pfTask: 'factorize' | 'find-with-constraint'
+  mode: 'select' | 'generate'
+}
+
+/**
+ * Narrowed view of the shared-keys entries in ALL_EXERCISES ("společný dělitel").
+ * A key k fits lock `skBase` when they share a divisor greater than 1; the lock
+ * number itself only fits when it is prime.
+ *
+ *   select    tap every fitting key among `skCandidates` (exact set required)
+ *   generate  build `skKeysNeeded` different fitting keys of `skDigits` digits
+ *             from digit cards (capped at the number of keys that exist)
+ *
+ * numerator/denominator mirror the lock as n/1, like time-machine.
+ */
+export interface SharedKeysExercise extends Exercise {
+  type: 'shared-keys'
+  mode: 'select' | 'generate'
+  skBase: number
+  skDigits: 1 | 2
+}
+
+/** Exercise types that belong to the divisibility topic: they never enter the fractions
+ *  session and only appear in the divisibility Training Centre. */
+export const DIVISIBILITY_TYPES: ExerciseType[] = ['prime-forge', 'shared-keys']
+
+export const isDivisibilityType = (type: ExerciseType) => DIVISIBILITY_TYPES.includes(type)
 
 export function shuffle<T>(arr: T[]): T[] {
   const a = [...arr]
@@ -965,4 +1025,78 @@ export const ALL_EXERCISES: Exercise[] = [
     numChoices: [2, 4, 1, 8], correctIndex: 0 },
   { type: 'fraction-divide', model: 'grouping', shape: 'bar', mode: 'generate',
     numerator: 3, denominator: 4, dividendN: 3, dividendD: 4, divisorN: 1, divisorD: 8, answer: 6 },
+
+  // --- prime-forge ---
+  // Level 1: targets ≤ 30, two-level trees
+  { type: 'prime-forge', numerator: 12, denominator: 1, pfTask: 'factorize', mode: 'generate', pfTarget: 12, pfAnswer: [2, 2, 3] },
+  { type: 'prime-forge', numerator: 18, denominator: 1, pfTask: 'factorize', mode: 'generate', pfTarget: 18, pfAnswer: [2, 3, 3] },
+  { type: 'prime-forge', numerator: 20, denominator: 1, pfTask: 'factorize', mode: 'select', pfTarget: 20, pfAnswer: [2, 2, 5],
+    pfChoices: [[4, 5], [2, 2, 5], [2, 2, 7], [2, 5]], correctIndex: 1 },
+  { type: 'prime-forge', numerator: 28, denominator: 1, pfTask: 'factorize', mode: 'generate', pfTarget: 28, pfAnswer: [2, 2, 7] },
+  { type: 'prime-forge', numerator: 30, denominator: 1, pfTask: 'factorize', mode: 'select', pfTarget: 30, pfAnswer: [2, 3, 5],
+    pfChoices: [[6, 5], [2, 3, 7], [2, 2, 3, 5], [2, 3, 5]], correctIndex: 3 },
+
+  // Level 2: targets ≤ 100, 3–6 leaves with repeated primes
+  { type: 'prime-forge', numerator: 36, denominator: 1, pfTask: 'factorize', mode: 'generate', pfTarget: 36, pfAnswer: [2, 2, 3, 3] },
+  { type: 'prime-forge', numerator: 48, denominator: 1, pfTask: 'factorize', mode: 'generate', pfTarget: 48, pfAnswer: [2, 2, 2, 2, 3] },
+  { type: 'prime-forge', numerator: 60, denominator: 1, pfTask: 'factorize', mode: 'select', pfTarget: 60, pfAnswer: [2, 2, 3, 5],
+    pfChoices: [[2, 2, 3, 5], [4, 3, 5], [2, 2, 3, 7], [2, 3, 5]], correctIndex: 0 },
+  { type: 'prime-forge', numerator: 72, denominator: 1, pfTask: 'factorize', mode: 'generate', pfTarget: 72, pfAnswer: [2, 2, 2, 3, 3] },
+  { type: 'prime-forge', numerator: 84, denominator: 1, pfTask: 'factorize', mode: 'select', pfTarget: 84, pfAnswer: [2, 2, 3, 7],
+    pfChoices: [[2, 3, 7], [4, 3, 7], [2, 2, 3, 7], [2, 2, 2, 3, 7]], correctIndex: 2 },
+  { type: 'prime-forge', numerator: 90, denominator: 1, pfTask: 'factorize', mode: 'generate', pfTarget: 90, pfAnswer: [2, 3, 3, 5] },
+  { type: 'prime-forge', numerator: 96, denominator: 1, pfTask: 'factorize', mode: 'generate', pfTarget: 96, pfAnswer: [2, 2, 2, 2, 2, 3] },
+
+  // Level 3: find a number that fits a rule — any valid answer is accepted
+  { type: 'prime-forge', numerator: 99, denominator: 1, pfTask: 'find-with-constraint', mode: 'generate', pfConstraint: 'one-prime', pfMaxValue: 99 },
+  { type: 'prime-forge', numerator: 50, denominator: 1, pfTask: 'find-with-constraint', mode: 'generate', pfConstraint: 'one-prime', pfMaxValue: 50 },
+  { type: 'prime-forge', numerator: 99, denominator: 1, pfTask: 'find-with-constraint', mode: 'generate', pfConstraint: 'two-same', pfMinValue: 10, pfMaxValue: 99 },
+  { type: 'prime-forge', numerator: 99, denominator: 1, pfTask: 'find-with-constraint', mode: 'generate', pfConstraint: 'three-different', pfMaxValue: 99 },
+  { type: 'prime-forge', numerator: 210, denominator: 1, pfTask: 'find-with-constraint', mode: 'generate', pfConstraint: 'four-different', pfMaxValue: 210 },
+
+  // Level 4: large textbook numbers — big primes come as hint cards
+  { type: 'prime-forge', numerator: 286, denominator: 1, pfTask: 'factorize', mode: 'generate', pfTarget: 286, pfAnswer: [2, 11, 13], pfHints: [11, 13] },
+  { type: 'prime-forge', numerator: 286, denominator: 1, pfTask: 'factorize', mode: 'select', pfTarget: 286, pfAnswer: [2, 11, 13],
+    pfChoices: [[2, 143], [2, 11, 13], [2, 13, 13], [11, 13]], correctIndex: 1 },
+  { type: 'prime-forge', numerator: 910, denominator: 1, pfTask: 'factorize', mode: 'generate', pfTarget: 910, pfAnswer: [2, 5, 7, 13], pfHints: [7, 13] },
+  { type: 'prime-forge', numerator: 1870, denominator: 1, pfTask: 'factorize', mode: 'generate', pfTarget: 1870, pfAnswer: [2, 5, 11, 17], pfHints: [11, 17] },
+  { type: 'prime-forge', numerator: 2907, denominator: 1, pfTask: 'factorize', mode: 'generate', pfTarget: 2907, pfAnswer: [3, 3, 17, 19], pfHints: [17, 19] },
+  { type: 'prime-forge', numerator: 5313, denominator: 1, pfTask: 'factorize', mode: 'generate', pfTarget: 5313, pfAnswer: [3, 7, 11, 23], pfHints: [11, 23] },
+
+  // --- shared-keys ---
+  // Valid keys are never stored: grading recomputes them with src/utils/divisors.ts.
+  // Every select grid below was checked with those helpers (8–9 distinct candidates,
+  // valid count per level, prime locks include all their two-digit multiples).
+  // Level 1: small locks with many teeth, 3–4 of 8 keys fit
+  { type: 'shared-keys', numerator: 6, denominator: 1, mode: 'select', skBase: 6, skDigits: 2, skCandidates: [11, 12, 13, 15, 17, 19, 20, 25] },
+  { type: 'shared-keys', numerator: 8, denominator: 1, mode: 'select', skBase: 8, skDigits: 1, skCandidates: [1, 2, 3, 4, 5, 6, 7, 9] },
+  { type: 'shared-keys', numerator: 10, denominator: 1, mode: 'select', skBase: 10, skDigits: 1, skCandidates: [1, 2, 3, 5, 6, 7, 8, 9] },
+  { type: 'shared-keys', numerator: 12, denominator: 1, mode: 'select', skBase: 12, skDigits: 2, skCandidates: [11, 13, 14, 15, 17, 19, 21, 25] },
+
+  // Level 2: the textbook locks 10 and 12, two-digit keys
+  { type: 'shared-keys', numerator: 10, denominator: 1, mode: 'select', skBase: 10, skDigits: 2, skCandidates: [11, 12, 15, 19, 21, 25, 27, 31, 40] },
+  { type: 'shared-keys', numerator: 10, denominator: 1, mode: 'generate', skBase: 10, skDigits: 2, skKeysNeeded: 3 },
+  { type: 'shared-keys', numerator: 12, denominator: 1, mode: 'select', skBase: 12, skDigits: 2, skCandidates: [11, 13, 21, 22, 25, 26, 27, 33, 35] },
+  { type: 'shared-keys', numerator: 12, denominator: 1, mode: 'generate', skBase: 12, skDigits: 2, skKeysNeeded: 3 },
+  { type: 'shared-keys', numerator: 18, denominator: 1, mode: 'select', skBase: 18, skDigits: 2, skCandidates: [19, 17, 81, 28, 35, 45, 49, 64, 77] },
+  { type: 'shared-keys', numerator: 20, denominator: 1, mode: 'select', skBase: 20, skDigits: 2, skCandidates: [19, 21, 22, 25, 27, 33, 35, 49, 55] },
+  { type: 'shared-keys', numerator: 24, denominator: 1, mode: 'generate', skBase: 24, skDigits: 2, skKeysNeeded: 2 },
+  { type: 'shared-keys', numerator: 30, denominator: 1, mode: 'select', skBase: 30, skDigits: 2, skCandidates: [29, 31, 49, 77, 91, 35, 42, 55, 17] },
+
+  // Level 3: fewer teeth, only 2–3 of 9 keys fit
+  { type: 'shared-keys', numerator: 14, denominator: 1, mode: 'select', skBase: 14, skDigits: 2, skCandidates: [13, 15, 41, 27, 49, 22, 33, 45, 19] },
+  { type: 'shared-keys', numerator: 15, denominator: 1, mode: 'select', skBase: 15, skDigits: 2, skCandidates: [14, 16, 51, 26, 35, 41, 44, 57, 77] },
+  { type: 'shared-keys', numerator: 21, denominator: 1, mode: 'select', skBase: 21, skDigits: 2, skCandidates: [12, 20, 22, 23, 28, 31, 44, 50, 63] },
+  { type: 'shared-keys', numerator: 35, denominator: 1, mode: 'select', skBase: 35, skDigits: 2, skCandidates: [34, 36, 53, 49, 40, 41, 57, 66, 92] },
+  { type: 'shared-keys', numerator: 49, denominator: 1, mode: 'select', skBase: 49, skDigits: 2, skCandidates: [46, 50, 94, 77, 98, 47, 64, 15, 25] },
+  { type: 'shared-keys', numerator: 15, denominator: 1, mode: 'generate', skBase: 15, skDigits: 2, skKeysNeeded: 2 },
+
+  // Level 4: prime locks (textbook 37 and 73) — only the lock and its multiples fit.
+  // skKeysNeeded never exceeds the keys that exist (73 has just one); the component also caps it.
+  { type: 'shared-keys', numerator: 37, denominator: 1, mode: 'select', skBase: 37, skDigits: 2, skCandidates: [37, 74, 73, 47, 38, 36, 57, 27, 17] },
+  { type: 'shared-keys', numerator: 37, denominator: 1, mode: 'generate', skBase: 37, skDigits: 2, skKeysNeeded: 2 },
+  { type: 'shared-keys', numerator: 73, denominator: 1, mode: 'generate', skBase: 73, skDigits: 2, skKeysNeeded: 1 },
+  { type: 'shared-keys', numerator: 41, denominator: 1, mode: 'select', skBase: 41, skDigits: 2, skCandidates: [41, 82, 14, 40, 42, 43, 61, 81, 21] },
+  { type: 'shared-keys', numerator: 43, denominator: 1, mode: 'generate', skBase: 43, skDigits: 2, skKeysNeeded: 2 },
+  { type: 'shared-keys', numerator: 47, denominator: 1, mode: 'select', skBase: 47, skDigits: 2, skCandidates: [47, 94, 74, 46, 45, 49, 37, 71, 97] },
 ]

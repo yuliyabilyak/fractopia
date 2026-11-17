@@ -38,6 +38,12 @@ exercise type requires **eight coordinated changes**:
 7. **`src/i18n/translations.ts`** — add translation keys for all three languages (en / uk / cs)
 8. **`TrainingCentre.tsx`** — add the same conditional render *and* a `TOPICS` entry, or the type is unreachable from the Training Centre
 
+**Divisibility exercises** (`prime-forge`, `shared-keys`) are listed in `DIVISIBILITY_TYPES` in
+`exercises.ts`. They are filtered out of the fractions session and shown only by
+`<TrainingCentre topic="divisibility" />` (`/divisibility-training`), which shows the `TOPICS` tiles whose
+types are all divisibility types. For a new divisibility type, add it to `DIVISIBILITY_TYPES` and skip
+steps 4–6 (Fractions.tsx / `ExerciseResult`): Training does not save results.
+
 ### Canvas exercises vs CSS/HTML exercises
 
 Exercises that need interactive drawing (bars, pizzas, grids, etc.) use **Konva** (`react-konva`). Call `useContainerWidth(BASE_SIZE)` to get a responsive `{ ref, width }`, compute `scale = width / BASE_W`, and pass `scaleX={scale} scaleY={scale}` to the Konva `<Layer>`.
@@ -68,4 +74,4 @@ Anonymous auth via `useAuth()` hook; Firestore progress via `useProgress(uid)`. 
 
 ### Routing
 
-React Router v7. `/` → Home, `/fractions` → Fractions. `vercel.json` rewrites all routes to `index.html` for SPA refresh support.
+React Router v7. `/` → Home, `/fractions` → Fractions, `/training` and `/divisibility-training` → TrainingCentre per topic. `vercel.json` rewrites all routes to `index.html` for SPA refresh support.

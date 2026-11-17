@@ -1,6 +1,6 @@
-import { useState, useCallback, useMemo, useRef } from 'react'
+import { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { TOPIC_PATH } from '../data/topics'
+import { TOPIC_PATH, type TopicId } from '../data/topics'
 import { useLang } from '../i18n/LangContext'
 import LangSwitcher from '../components/LangSwitcher'
 import ThemeToggle from '../components/ThemeToggle'
@@ -33,7 +33,10 @@ import TimeMachineQuest from '../components/TimeMachineQuest'
 import TimeDetective from '../components/TimeDetective'
 import FractionOperation from '../components/FractionOperation'
 import FractionDivide from '../components/FractionDivide'
-import { ALL_EXERCISES, type Exercise, type ExerciseType } from '../data/exercises'
+import PrimeForge from '../components/PrimeForge'
+import SharedKeys from '../components/SharedKeys'
+import { ALL_EXERCISES, isDivisibilityType, type Exercise, type ExerciseType } from '../data/exercises'
+import { resetEmberStreak } from '../utils/emberStreak'
 
 interface Topic {
   id: string
@@ -67,6 +70,8 @@ const TOPICS: Topic[] = [
   { id: 'balance',          emoji: '🪨', label: 'Balance',          types: ['balance'] },
   { id: 'fraction-operation', emoji: '➕', label: 'Adding & Subtracting', types: ['fraction-operation'] },
   { id: 'fraction-divide', emoji: '➗', label: 'Dividing Fractions', types: ['fraction-divide'] },
+  { id: 'prime-forge',     emoji: '⚒️', label: 'Prime Factors',      types: ['prime-forge'] },
+  { id: 'shared-keys',     emoji: '🔑', label: 'Common Divisors',    types: ['shared-keys'] },
 ]
 
 function compareAnswer(ex: Exercise, answer: 'left' | 'right' | 'equal'): boolean {
@@ -78,7 +83,14 @@ function compareAnswer(ex: Exercise, answer: 'left' | 'right' | 'equal'): boolea
   return answer === 'equal'
 }
 
-export default function TrainingCentre() {
+/** A topic tile belongs to the divisibility page when all its exercise types do. */
+const topicOf = (tile: Topic): TopicId => (tile.types.every(isDivisibilityType) ? 'divisibility' : 'fractions')
+
+interface Props {
+  topic: TopicId
+}
+
+export default function TrainingCentre({ topic }: Props) {
   const navigate = useNavigate()
   const { t } = useLang()
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null)
@@ -115,11 +127,15 @@ export default function TrainingCentre() {
     setFeedback(correct)
   }, [])
 
+  // Prime Forge's ember streak is per session: clear it when the page is left
+  useEffect(() => resetEmberStreak, [])
+
   const handleNext = useCallback(() => {
     if (selectedTopic) pickExercise(selectedTopic)
   }, [selectedTopic, pickExercise])
 
   const handleBack = () => {
+    resetEmberStreak()
     setSelectedTopic(null)
     setCurrent(null)
     setFeedback(null)
@@ -128,7 +144,7 @@ export default function TrainingCentre() {
   return (
     <div className="training-page">
       <div className="training-header">
-        <button className="training-back-btn" onClick={selectedTopic ? handleBack : () => navigate(TOPIC_PATH.fractions)}>
+        <button className="training-back-btn" onClick={selectedTopic ? handleBack : () => navigate(TOPIC_PATH[topic])}>
           ← {t('trainingBack')}
         </button>
         <h1 className="training-title">{t('trainingTitle')}</h1>
@@ -142,14 +158,14 @@ export default function TrainingCentre() {
         <>
           <p className="training-pick">{t('trainingPick')}</p>
           <div className="training-grid">
-            {TOPICS.map((topic) => (
+            {TOPICS.filter(tile => topicOf(tile) === topic).map((tile) => (
               <button
-                key={topic.id}
+                key={tile.id}
                 className="training-type-btn"
-                onClick={() => pickExercise(topic)}
+                onClick={() => pickExercise(tile)}
               >
-                <span className="training-type-emoji">{topic.emoji}</span>
-                <span className="training-type-label">{topic.label}</span>
+                <span className="training-type-emoji">{tile.emoji}</span>
+                <span className="training-type-label">{tile.label}</span>
               </button>
             ))}
           </div>
@@ -304,6 +320,31 @@ export default function TrainingCentre() {
               left={current.left}
               right={current.right}
               onAnswer={(answer) => handleAnswer(compareAnswer(current, answer))}
+            />
+          )}
+          {current.type === 'prime-forge' && feedback === null && current.pfTask && current.mode && (
+            <PrimeForge
+              key={exKey}
+              task={current.pfTask}
+              mode={current.mode}
+              target={current.pfTarget}
+              constraint={current.pfConstraint}
+              minValue={current.pfMinValue}
+              maxValue={current.pfMaxValue}
+              choices={current.pfChoices}
+              hints={current.pfHints}
+              onAnswer={handleAnswer}
+            />
+          )}
+          {current.type === 'shared-keys' && feedback === null && current.mode && current.skBase !== undefined && current.skDigits && (
+            <SharedKeys
+              key={exKey}
+              base={current.skBase}
+              mode={current.mode}
+              digits={current.skDigits}
+              candidates={current.skCandidates}
+              keysNeeded={current.skKeysNeeded}
+              onAnswer={handleAnswer}
             />
           )}
 
