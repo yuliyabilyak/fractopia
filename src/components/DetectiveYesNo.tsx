@@ -4,7 +4,6 @@ import { useDetectiveText } from '../hooks/useDetectiveText'
 import { playFeedbackSound } from '../utils/sounds'
 import DetectiveNumber from './DetectiveNumber'
 import DetectiveClues from './DetectiveClues'
-import DetectiveSpeakButton from './DetectiveSpeakButton'
 import {
   checkAnswer, challengeRules, explain, explainBoth,
   type Challenge, type Highlight, type RuleResult,
@@ -60,7 +59,6 @@ export default function DetectiveYesNo({ challenge, onDone }: Props) {
     <div className="exercise-card nd-card">
       <div className="nd-question-row">
         <h2 className="nd-question" tabIndex={-1} ref={questionRef}>{question}</h2>
-        <DetectiveSpeakButton lines={[question]} />
       </div>
 
       <DetectiveNumber n={challenge.n} highlight={highlight} />

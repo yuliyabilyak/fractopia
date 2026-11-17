@@ -1,7 +1,9 @@
 /**
- * Pure common-divisor helpers for the shared-keys exercise. Every grading path
- * goes through these. "Common divisor" always means one greater than 1 — 1
- * divides everything, so it never counts as a shared tooth.
+ * Pure divisor helpers for shared-keys and divisor-duel. Every grading path goes
+ * through these.
+ *   - `divisors` / `commonDivisorsMany` include 1 (divisor-duel: "only 1 is shared"
+ *     is a real answer).
+ *   - `…Above1` exclude it (shared-keys: 1 divides everything, so it is never a tooth).
  * Runtime imports carry a `.ts` extension so `node --test` can load this file.
  */
 import { isPrime } from './primes.ts'
@@ -13,17 +15,26 @@ export function gcd(a: number, b: number): number {
   return x
 }
 
-/** Divisors greater than 1, ascending, including n itself: 12 → [2, 3, 4, 6, 12]. */
-export function divisorsOf(n: number): number[] {
+/** Greatest common divisor of all the numbers: [60, 96, 144] → 12. */
+export const gcdMany = (numbers: number[]): number => numbers.reduce(gcd, 0)
+
+/** Every divisor, ascending, 1 and n included: 12 → [1, 2, 3, 4, 6, 12]. */
+export function divisors(n: number): number[] {
   const out: number[] = []
-  if (!Number.isInteger(n) || n < 2) return out
-  for (let d = 2; d <= n; d++) if (n % d === 0) out.push(d)
+  if (!Number.isInteger(n) || n < 1) return out
+  for (let d = 1; d <= n; d++) if (n % d === 0) out.push(d)
   return out
 }
 
+/** Divisors shared by every number, 1 included: [84, 96] → [1, 2, 3, 4, 6, 12]. */
+export const commonDivisorsMany = (numbers: number[]): number[] => divisors(gcdMany(numbers))
+
+/** Divisors greater than 1, ascending, including n itself: 12 → [2, 3, 4, 6, 12]. */
+export const divisorsAbove1 = (n: number): number[] => divisors(n).filter(d => d > 1)
+
 /** Divisors of both a and b, excluding 1: (12, 18) → [2, 3, 6]. */
-export function commonDivisors(a: number, b: number): number[] {
-  return divisorsOf(gcd(a, b))
+export function commonDivisorsAbove1(a: number, b: number): number[] {
+  return divisorsAbove1(gcd(a, b))
 }
 
 /**

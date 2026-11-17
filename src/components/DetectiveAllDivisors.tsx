@@ -4,7 +4,6 @@ import { useDetectiveText } from '../hooks/useDetectiveText'
 import { playFeedbackSound } from '../utils/sounds'
 import DetectiveNumber from './DetectiveNumber'
 import DetectiveClues from './DetectiveClues'
-import DetectiveSpeakButton from './DetectiveSpeakButton'
 import {
   checkAnswer, explain,
   type Challenge, type Divisor, type Explanation, type RuleResult,
@@ -81,7 +80,6 @@ export default function DetectiveAllDivisors({ challenge, onDone }: Props) {
     <div className="exercise-card nd-card">
       <div className="nd-question-row">
         <h2 className="nd-question" tabIndex={-1} ref={questionRef}>{question}</h2>
-        <DetectiveSpeakButton lines={[question, t('ndPickAll')]} />
       </div>
 
       <DetectiveNumber n={challenge.n} highlight={highlight} />

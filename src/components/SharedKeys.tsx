@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
+import { useState } from 'react'
 import { useLang } from '../i18n/LangContext'
-import SpeakPrompt from './SpeakPrompt'
-import { speak } from '../utils/speech'
+import { useFocusWhen } from '../hooks/useFocusWhen'
+import Prompt from './Prompt'
+import { arrowNav } from '../utils/arrowNav'
 import {
-  commonDivisors, divisorsOf, fittingKeys, isSelectionCorrect, keyFlaw, keysNeededFor, type KeyFlaw,
+  commonDivisorsAbove1, divisorsAbove1, fittingKeys, isSelectionCorrect, keyFlaw, keysNeededFor, type KeyFlaw,
 } from '../utils/divisors'
 import { isPrime } from '../utils/primes'
 
@@ -41,7 +42,7 @@ const toothFamily = (d: number) => {
 }
 
 function Teeth({ n, shared, reveal = false }: { n: number; shared?: number[]; reveal?: boolean }) {
-  const teeth = divisorsOf(n)
+  const teeth = divisorsAbove1(n)
   const glow = new Set(shared ?? [])
   if (teeth.length === 0) return <span className="sk-teeth sk-teeth--none" aria-hidden="true">–</span>
   return (
@@ -66,7 +67,7 @@ function Lock({ base, shared, reveal, open }: { base: number; shared?: number[];
       <div
         className={`sk-lock${open ? ' sk-lock--open' : ''}`}
         role="img"
-        aria-label={t('skLockAria', { b: base, t: divisorsOf(base).join(', ') })}
+        aria-label={t('skLockAria', { b: base, t: divisorsAbove1(base).join(', ') })}
       >
         <span className="sk-shackle" aria-hidden="true" />
         <span className="sk-lock-body" aria-hidden="true">
@@ -89,24 +90,6 @@ function KeyFace({ k, shared, reveal }: { k: number; shared?: number[]; reveal?:
   )
 }
 
-/** Arrow keys move focus through a grid of buttons; Enter/Space press them natively. */
-function arrowNav(e: KeyboardEvent<HTMLElement>, selector: string) {
-  const items = Array.from(e.currentTarget.querySelectorAll<HTMLElement>(selector))
-  const i = items.indexOf(document.activeElement as HTMLElement)
-  if (i < 0) return
-  const cols = items.filter(el => el.offsetTop === items[0].offsetTop).length || 1
-  const step: Record<string, number> = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -cols, ArrowDown: cols }
-  if (!(e.key in step)) return
-  e.preventDefault()
-  items[Math.min(items.length - 1, Math.max(0, i + step[e.key]))].focus()
-}
-
-function useFocusWhen(when: boolean) {
-  const ref = useRef<HTMLButtonElement>(null)
-  useEffect(() => { if (when) ref.current?.focus() }, [when])
-  return ref
-}
-
 // ── Select: tap every key that fits ──────────────────────────────────────────
 
 function SelectKeys({ base, candidates, onAnswer }: { base: number; candidates: number[]; onAnswer: (correct: boolean) => void }) {
@@ -118,16 +101,15 @@ function SelectKeys({ base, candidates, onAnswer }: { base: number; candidates: 
 
   const fits = new Set(fittingKeys(candidates, base))
   const prime = isPrime(base)
-  const lockShared = revealed ? [...new Set([...fits].flatMap(k => commonDivisors(k, base)))] : undefined
+  const lockShared = revealed ? [...new Set([...fits].flatMap(k => commonDivisorsAbove1(k, base)))] : undefined
 
   const toggle = (k: number) => setPicked(p => (p.includes(k) ? p.filter(x => x !== k) : [...p, k]))
 
   const prompt = !revealed ? t('skPromptSelect') : result ? t('skNice') : t('skSelectWrong')
-  const speech = !revealed ? t('skSpeakSelect', { b: base }) : prime ? `${prompt} ${t('skPrimeHint')}` : prompt
 
   return (
     <>
-      <SpeakPrompt html={prompt} text={speech} />
+      <Prompt html={prompt} />
       <Lock base={base} shared={lockShared} reveal={revealed} open={result === true} />
 
       <div className="sk-grid" onKeyDown={e => arrowNav(e, '.sk-key-card')}>
@@ -141,7 +123,7 @@ function SelectKeys({ base, candidates, onAnswer }: { base: number; candidates: 
             : state === 'missed' ? t('skMissed')
             : state === 'bounce' ? t('skNoTooth')
             : null
-          const aria = t('skKeyAria', { k, t: divisorsOf(k).join(', ') || '–' })
+          const aria = t('skKeyAria', { k, t: divisorsAbove1(k).join(', ') || '–' })
           return (
             <button
               key={k}
@@ -154,7 +136,7 @@ function SelectKeys({ base, candidates, onAnswer }: { base: number; candidates: 
             >
               {state === 'selected' && <span className="sk-badge" aria-hidden="true">✓</span>}
               {state === 'fit' && <span className="sk-badge sk-badge--gold" aria-hidden="true">★</span>}
-              <KeyFace k={k} shared={revealed ? commonDivisors(k, base) : undefined} reveal={revealed} />
+              <KeyFace k={k} shared={revealed ? commonDivisorsAbove1(k, base) : undefined} reveal={revealed} />
               {label && <span className="sk-key-label">{label}</span>}
             </button>
           )
@@ -196,7 +178,7 @@ function BuildKeys({ base, digits, keysNeeded, onAnswer }: {
   keysNeeded: number
   onAnswer: (correct: boolean, wrongTries: number) => void
 }) {
-  const { t, lang } = useLang()
+  const { t } = useLang()
   const needed = keysNeededFor(base, digits, keysNeeded)
   const [entry, setEntry] = useState<number[]>([])
   const [ring, setRing] = useState<number[]>([])
@@ -208,7 +190,7 @@ function BuildKeys({ base, digits, keysNeeded, onAnswer }: {
 
   const attemptText = (a: Attempt) => {
     switch (a.outcome) {
-      case 'fit':          return t('skFits', { k: a.k, t: commonDivisors(a.k, base).join(', ') })
+      case 'fit':          return t('skFits', { k: a.k, t: commonDivisorsAbove1(a.k, base).join(', ') })
       case 'duplicate':    return t('skDuplicate', { k: a.k })
       case 'same-as-lock': return t('skSameAsLock', { k: a.k })
       default:             return t('skNoFit', { k: a.k, b: base })
@@ -229,21 +211,16 @@ function BuildKeys({ base, digits, keysNeeded, onAnswer }: {
     }
     setEntry([])
     setLast(a)
-    speak(attemptText(a), lang)
   }
 
   const fitsShown = last && (last.outcome === 'fit' || last.outcome === 'duplicate')
-  const shared = last ? (fitsShown ? commonDivisors(last.k, base) : []) : undefined
+  const shared = last ? (fitsShown ? commonDivisorsAbove1(last.k, base) : []) : undefined
 
   const prompt = done ? (wrongTries === 0 ? t('skNice') : t('skAllFound')) : t('skPromptBuild', { b: base })
-  // the completion line replaces (cancels) the last attempt's narration, so carry it along
-  const speech = done
-    ? [last && attemptText(last), prompt, prime && t('skPrimeHint')].filter(Boolean).join(' ')
-    : t('skSpeakBuild', { b: base })
 
   return (
     <>
-      <SpeakPrompt html={prompt} text={speech} />
+      <Prompt html={prompt} />
       <Lock base={base} shared={shared} reveal={last !== null} open={done} />
 
       {last && (

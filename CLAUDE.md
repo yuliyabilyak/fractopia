@@ -38,7 +38,11 @@ exercise type requires **eight coordinated changes**:
 7. **`src/i18n/translations.ts`** — add translation keys for all three languages (en / uk / cs)
 8. **`TrainingCentre.tsx`** — add the same conditional render *and* a `TOPICS` entry, or the type is unreachable from the Training Centre
 
-**Divisibility exercises** (`prime-forge`, `shared-keys`) are listed in `DIVISIBILITY_TYPES` in
+To unit-test exercise *data*, put the entries in their own pure module and spread it into
+`ALL_EXERCISES` (see `src/data/divisorDuel.ts` + its test): `exercises.ts` itself imports component
+types, which Node's test runner and `tsconfig.node.json` cannot load.
+
+**Divisibility exercises** (`prime-forge`, `shared-keys`, `divisor-duel`, `meeting-point`, `multiple-magnet`) are listed in `DIVISIBILITY_TYPES` in
 `exercises.ts`. They are filtered out of the fractions session and shown only by
 `<TrainingCentre topic="divisibility" />` (`/divisibility-training`), which shows the `TOPICS` tiles whose
 types are all divisibility types. For a new divisibility type, add it to `DIVISIBILITY_TYPES` and skip
@@ -59,6 +63,10 @@ Reusable class names: `.exercise-card`, `.exercise-prompt`, `.btn-check`, `.btn-
 ### Fonts & accessibility
 
 OpenDyslexic is declared in `src/index.css` via `@font-face` pointing at `/public/fonts/`. It is the global body font. Keep minimum font sizes large and tap targets ≥ 44px.
+
+**No voice reading.** Speech synthesis (auto-read prompts and 🔊 read-aloud buttons) was removed from the
+whole app on purpose. Exercise prompts use the plain `Prompt` component. Don't add narration even when an
+exercise spec asks for "audio narration"; check with the user first. Sound effects (`sounds.ts`) are unaffected.
 
 ### Internationalization
 

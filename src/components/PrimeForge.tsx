@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { useLang } from '../i18n/LangContext'
 import type { Keys } from '../i18n/translations'
-import SpeakPrompt from './SpeakPrompt'
+import Prompt from './Prompt'
 import {
   defaultTree, factorizationFlaw, findExample, findFlaw, isPrime, productOf, splitAt, splitPairs,
   treeFromFactors, treeLeaves, type FactorFlaw, type FindFlaw, type FindRule, type PrimeConstraint, type TreeNode,
@@ -94,7 +94,7 @@ export default function PrimeForge({ task, mode, target, constraint, minValue, m
   return (
     <div className="exercise-card pf-card">
       <EmberBar streak={streak} />
-      <SpeakPrompt html={prompt} text={prompt} />
+      <Prompt html={prompt} />
       {body}
     </div>
   )

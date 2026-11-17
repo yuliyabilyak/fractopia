@@ -13,7 +13,7 @@ import { Stage, Layer, Rect, Arc, Circle } from 'react-konva'
 import type { Fraction } from '../types'
 import { useLang } from '../i18n/LangContext'
 import { useContainerWidth } from '../hooks/useContainerWidth'
-import SpeakPrompt from './SpeakPrompt'
+import Prompt from './Prompt'
 import ShadeProgress from './ShadeProgress'
 
 type Model = 'measure' | 'partition' | 'grouping'
@@ -336,7 +336,7 @@ export default function FractionDivide({
 
   return (
     <div className="exercise-card" ref={ref}>
-      <SpeakPrompt html={promptHtml} text={promptText} />
+      <Prompt html={promptHtml} />
 
       {step !== 'question' && (
         <>

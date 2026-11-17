@@ -6,8 +6,11 @@ import type { DetectiveCard } from '../components/FractionDetective'
 import type { TimeCard } from '../components/TimeDetective'
 import type { Fraction } from '../types'
 import type { PrimeConstraint } from '../utils/primes'
+import { DIVISOR_DUEL_EXERCISES } from './divisorDuel'
+import { MEETING_POINT_EXERCISES } from './meetingPoint'
+import { MULTIPLE_MAGNET_EXERCISES } from './multipleMagnet'
 
-export type ExerciseType = 'bar' | 'pizza' | 'compare' | 'compare-same' | 'compare-same-num' | 'hexagon' | 'grid' | 'identify' | 'triangle' | 'star' | 'diamond' | 'number-line' | 'equivalent' | 'sort' | 'hit-target' | 'time-fraction' | 'fraction-quantity' | 'time-operation' | 'matching' | 'fraction-tower' | 'ice-cream' | 'train' | 'rocket' | 'monster' | 'detective' | 'balance' | 'time-machine' | 'time-detective' | 'fraction-operation' | 'fraction-divide' | 'prime-forge' | 'shared-keys'
+export type ExerciseType = 'bar' | 'pizza' | 'compare' | 'compare-same' | 'compare-same-num' | 'hexagon' | 'grid' | 'identify' | 'triangle' | 'star' | 'diamond' | 'number-line' | 'equivalent' | 'sort' | 'hit-target' | 'time-fraction' | 'fraction-quantity' | 'time-operation' | 'matching' | 'fraction-tower' | 'ice-cream' | 'train' | 'rocket' | 'monster' | 'detective' | 'balance' | 'time-machine' | 'time-detective' | 'fraction-operation' | 'fraction-divide' | 'prime-forge' | 'shared-keys' | 'divisor-duel' | 'meeting-point' | 'multiple-magnet'
 
 export interface Exercise {
   type: ExerciseType
@@ -63,6 +66,18 @@ export interface Exercise {
   skDigits?: 1 | 2
   skCandidates?: number[]
   skKeysNeeded?: number
+  // --- divisor-duel --- (`mode` reuses select / generate; generate = the duel)
+  ddNumbers?: number[]
+  ddChoices?: number[]
+  // --- meeting-point --- (`mode` reuses select / generate; generate = run the laps)
+  mpA?: number
+  mpB?: number
+  mpChoices?: number[]
+  // --- multiple-magnet --- (`mode` reuses select / generate; generate = build the cart)
+  mmA?: number
+  mmB?: number
+  mmCount?: 3
+  mmCandidates?: number[]
 }
 
 /**
@@ -123,9 +138,55 @@ export interface SharedKeysExercise extends Exercise {
   skDigits: 1 | 2
 }
 
+/**
+ * Narrowed view of the divisor-duel entries (greatest common divisor, "D (84; 96)").
+ * Entries live in src/data/divisorDuel.ts so node --test can verify them.
+ *
+ *   select    tap one of 4 `ddChoices`; `correctIndex` is test-checked against gcdMany
+ *   generate  nominate the biggest divisor card shared by every column
+ *
+ * The answer is always gcdMany(ddNumbers) and may be 1 ("only 1 is shared").
+ */
+export interface DivisorDuelExercise extends Exercise {
+  type: 'divisor-duel'
+  mode: 'select' | 'generate'
+  ddNumbers: number[]
+}
+
+/**
+ * Narrowed view of the meeting-point entries (least common multiple, "n (12; 9)").
+ * Two runners with laps mpA and mpB start at 0; they first meet at lcm(mpA, mpB).
+ * Entries live in src/data/meetingPoint.ts so node --test can verify them.
+ *
+ *   select    tap one of 4 `mpChoices`; `correctIndex` is test-checked against lcm
+ *   generate  run laps freely, then build the answer from digit cards
+ */
+export interface MeetingPointExercise extends Exercise {
+  type: 'meeting-point'
+  mode: 'select' | 'generate'
+  mpA: number
+  mpB: number
+}
+
+/**
+ * Narrowed view of the multiple-magnet entries (common multiples, "společné násobky").
+ * Two rails show the multiples of mmA and mmB; numbers on both are common multiples.
+ * Entries live in src/data/multipleMagnet.ts so node --test can verify them.
+ *
+ *   select    pick exactly mmCount candidates, each a common multiple (any valid ones)
+ *   generate  fill the cart with mmCount different common multiples from the rails or digit cards
+ */
+export interface MultipleMagnetExercise extends Exercise {
+  type: 'multiple-magnet'
+  mode: 'select' | 'generate'
+  mmA: number
+  mmB: number
+  mmCount: 3
+}
+
 /** Exercise types that belong to the divisibility topic: they never enter the fractions
  *  session and only appear in the divisibility Training Centre. */
-export const DIVISIBILITY_TYPES: ExerciseType[] = ['prime-forge', 'shared-keys']
+export const DIVISIBILITY_TYPES: ExerciseType[] = ['prime-forge', 'shared-keys', 'divisor-duel', 'meeting-point', 'multiple-magnet']
 
 export const isDivisibilityType = (type: ExerciseType) => DIVISIBILITY_TYPES.includes(type)
 
@@ -1099,4 +1160,13 @@ export const ALL_EXERCISES: Exercise[] = [
   { type: 'shared-keys', numerator: 41, denominator: 1, mode: 'select', skBase: 41, skDigits: 2, skCandidates: [41, 82, 14, 40, 42, 43, 61, 81, 21] },
   { type: 'shared-keys', numerator: 43, denominator: 1, mode: 'generate', skBase: 43, skDigits: 2, skKeysNeeded: 2 },
   { type: 'shared-keys', numerator: 47, denominator: 1, mode: 'select', skBase: 47, skDigits: 2, skCandidates: [47, 94, 74, 46, 45, 49, 37, 71, 97] },
+
+  // --- divisor-duel ---
+  ...DIVISOR_DUEL_EXERCISES,
+
+  // --- meeting-point ---
+  ...MEETING_POINT_EXERCISES,
+
+  // --- multiple-magnet ---
+  ...MULTIPLE_MAGNET_EXERCISES,
 ]

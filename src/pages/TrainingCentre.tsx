@@ -35,6 +35,9 @@ import FractionOperation from '../components/FractionOperation'
 import FractionDivide from '../components/FractionDivide'
 import PrimeForge from '../components/PrimeForge'
 import SharedKeys from '../components/SharedKeys'
+import DivisorDuel from '../components/DivisorDuel'
+import MeetingPoint from '../components/MeetingPoint'
+import MultipleMagnet from '../components/MultipleMagnet'
 import { ALL_EXERCISES, isDivisibilityType, type Exercise, type ExerciseType } from '../data/exercises'
 import { resetEmberStreak } from '../utils/emberStreak'
 
@@ -71,7 +74,8 @@ const TOPICS: Topic[] = [
   { id: 'fraction-operation', emoji: '➕', label: 'Adding & Subtracting', types: ['fraction-operation'] },
   { id: 'fraction-divide', emoji: '➗', label: 'Dividing Fractions', types: ['fraction-divide'] },
   { id: 'prime-forge',     emoji: '⚒️', label: 'Prime Factors',      types: ['prime-forge'] },
-  { id: 'shared-keys',     emoji: '🔑', label: 'Common Divisors',    types: ['shared-keys'] },
+  { id: 'shared-keys',     emoji: '🔑', label: 'Common Divisors',    types: ['shared-keys', 'divisor-duel'] },
+  { id: 'common-multiples', emoji: '🏁', label: 'Common Multiples',   types: ['multiple-magnet', 'meeting-point'] },
 ]
 
 function compareAnswer(ex: Exercise, answer: 'left' | 'right' | 'equal'): boolean {
@@ -344,6 +348,36 @@ export default function TrainingCentre({ topic }: Props) {
               digits={current.skDigits}
               candidates={current.skCandidates}
               keysNeeded={current.skKeysNeeded}
+              onAnswer={handleAnswer}
+            />
+          )}
+          {current.type === 'divisor-duel' && feedback === null && current.mode && current.ddNumbers && (
+            <DivisorDuel
+              key={exKey}
+              numbers={current.ddNumbers}
+              mode={current.mode}
+              choices={current.ddChoices}
+              onAnswer={handleAnswer}
+            />
+          )}
+          {current.type === 'meeting-point' && feedback === null && current.mode && current.mpA && current.mpB && (
+            <MeetingPoint
+              key={exKey}
+              a={current.mpA}
+              b={current.mpB}
+              mode={current.mode}
+              choices={current.mpChoices}
+              onAnswer={handleAnswer}
+            />
+          )}
+          {current.type === 'multiple-magnet' && feedback === null && current.mode && current.mmA && current.mmB && current.mmCount && (
+            <MultipleMagnet
+              key={exKey}
+              a={current.mmA}
+              b={current.mmB}
+              count={current.mmCount}
+              mode={current.mode}
+              candidates={current.mmCandidates}
               onAnswer={handleAnswer}
             />
           )}

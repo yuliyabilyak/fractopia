@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useLang } from '../i18n/LangContext'
 import { playFeedbackSound } from '../utils/sounds'
-import SpeakPrompt from './SpeakPrompt'
+import Prompt from './Prompt'
 import PizzaTradePizza from './PizzaTradePizza'
 import { formatMixed, totalSlices, type PizzaOrder, type MixedNumber } from '../data/pizzaTrade'
 
@@ -91,7 +91,7 @@ export default function PizzaTradeOrder({ order, toppingEmoji, onComplete }: Pro
 
   return (
     <div className="exercise-card">
-      <SpeakPrompt html={promptText} text={promptText} />
+      <Prompt html={promptText} />
 
       <div className="pt-order-ticket">
         <PizzaTradePizza denominator={order.left.denominator} totalShaded={totalSlices(order.left)} toppingEmoji={toppingEmoji} size={84} />

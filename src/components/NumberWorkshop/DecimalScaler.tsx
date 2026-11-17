@@ -26,7 +26,6 @@ export default function DecimalScaler({ problem, onAnswer }: Props) {
       <WorkshopPrompt
         textKey="wsPromptScaler"
         value={problem.value}
-        speakAfter={select ? undefined : `${problem.value} = ? × ${problem.scaleFactor}`}
       />
       {select ? (
         <AnswerCards

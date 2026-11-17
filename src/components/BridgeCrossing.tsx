@@ -1,7 +1,6 @@
 import { useEffect, useReducer, useRef } from 'react'
 import { useLang } from '../i18n/LangContext'
 import { playFeedbackSound } from '../utils/sounds'
-import DetectiveSpeakButton from './DetectiveSpeakButton'
 import BridgeStone from './BridgeStone'
 import BridgeFeedback from './BridgeFeedback'
 import BridgeHints from './BridgeHints'
@@ -51,7 +50,6 @@ export default function BridgeCrossing({ challenge, isLast, onDone }: Props) {
     <div className="exercise-card nd-card">
       <div className="nd-question-row">
         <h2 className="nd-question" tabIndex={-1} ref={instructionRef}>{instruction}</h2>
-        <DetectiveSpeakButton lines={[instruction]} />
       </div>
 
       <div className="nb-scene">

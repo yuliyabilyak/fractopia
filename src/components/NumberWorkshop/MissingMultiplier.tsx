@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { isCorrectAnswer, isCorrectChoice, joinFactors, missingSlots, type MissingProblem } from '../../data/numberWorkshop'
+import { isCorrectAnswer, isCorrectChoice, missingSlots, type MissingProblem } from '../../data/numberWorkshop'
 import AnswerCards from './AnswerCards'
 import FillTheSlot from './FillTheSlot'
 import WorkshopPrompt from './WorkshopPrompt'
@@ -13,7 +13,6 @@ interface Props {
 /** Complete the product: 48 = 6 × ?, or 60 = 2 × 5 × ?. */
 export default function MissingMultiplier({ problem, onAnswer }: Props) {
   const slots = missingSlots(problem)
-  const spokenEquation = `${problem.target} = ${joinFactors(slots.map(s => s ?? '?'))}`
 
   const equation = (gap: ReactNode) => (
     <>
@@ -25,7 +24,7 @@ export default function MissingMultiplier({ problem, onAnswer }: Props) {
 
   return (
     <div className="exercise-card ws-station-card">
-      <WorkshopPrompt textKey="wsPromptMissing" speakAfter={spokenEquation} />
+      <WorkshopPrompt textKey="wsPromptMissing" />
       {problem.answerMode === 'select' ? (
         <>
           <div className="ws-equation">{equation(<span className="ws-slot ws-slot--question" aria-hidden="true">?</span>)}</div>

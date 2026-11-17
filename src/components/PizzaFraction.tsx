@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Stage, Layer, Arc, Circle } from 'react-konva'
 import { useLang } from '../i18n/LangContext'
 import { useContainerWidth } from '../hooks/useContainerWidth'
-import SpeakPrompt from './SpeakPrompt'
+import Prompt from './Prompt'
 import ShadeProgress from './ShadeProgress'
 
 interface Props {
@@ -53,7 +53,7 @@ export default function PizzaFraction({ denominator, targetNumerator, onAnswer }
 
   return (
     <div className="exercise-card">
-      <SpeakPrompt html={promptHtml} text={promptText} />
+      <Prompt html={promptHtml} />
       <div ref={ref} style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         <Stage width={stageSize} height={stageSize}>
           <Layer scaleX={scale} scaleY={scale}>

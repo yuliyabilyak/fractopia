@@ -3,7 +3,7 @@ import { Stage, Layer, Rect, Arc, Circle } from 'react-konva'
 import type { Fraction } from '../types'
 import { useLang } from '../i18n/LangContext'
 import { useContainerWidth } from '../hooks/useContainerWidth'
-import SpeakPrompt from './SpeakPrompt'
+import Prompt from './Prompt'
 import ShadeProgress from './ShadeProgress'
 
 interface Props {
@@ -206,7 +206,7 @@ export default function FractionOperation({ shape, operation, left, right, resul
 
   return (
     <div className="exercise-card">
-      <SpeakPrompt html={promptText} text={promptText} />
+      <Prompt html={promptText} />
 
       {step !== 'question' && (
         <div ref={ref} key={step} className="fo-row">
